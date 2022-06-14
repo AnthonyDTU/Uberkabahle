@@ -47,10 +47,10 @@ class AlgorithmController {
   }
 
   void setRecognizedCards(String cardConfigurationMessage) {
-    backendAlgorithm.invokeMethod("set cards", {"cardConfiguration": cardConfigurationMessage});
+    backendAlgorithm.invokeMethod("set cards", {"cardConfiguration": cardConfigurationMessage, "param2": 1});
   }
 
   void initializeTableConfiguration(String cardConfigurationMessage) {
-    backendAlgorithm.invokeMethod("initialize Table Configuration", {"initialCardConfiguration": cardConfigurationMessage});
+    backendAlgorithm.invokeMethod("initialize", {"data": cardConfigurationMessage});
   }
 }

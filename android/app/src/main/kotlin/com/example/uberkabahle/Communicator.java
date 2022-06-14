@@ -1,7 +1,8 @@
-package src;
+//package src;
+package com.example.uberkabahle;
 
-import Move;
-import Table;
+//import Move;
+//import Table;
 
 public class Communicator {
 
