@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:uberkabahle/AdjustScreen/AdjustView.dart';
 import 'package:uberkabahle/AppSettings.dart';
 import 'package:uberkabahle/CameraScreen/TensorFlow/RecognitionIsolateController.dart';
+import 'package:uberkabahle/CameraScreen/TensorFlow/Utillities/CardlocalizerFixedBoard.dart';
 import 'package:uberkabahle/CameraScreen/TensorFlow/Utillities/ImageConverter.dart';
 import 'package:uberkabahle/CameraScreen/TensorFlow/Utillities/Localizer.dart';
 import 'package:uberkabahle/CameraScreen/Widgets/TimeLabel.dart';
@@ -153,12 +154,15 @@ class CameraViewState extends State<CameraView> {
           // Display detected image with bounding boxes:
           // ******************************************************
           Localizer localizer = Localizer();
+          CardLocalizerFixedBoard cardLocalizer =
+              CardLocalizerFixedBoard(AppSettings.inputImageSize.width.toInt(), AppSettings.inputImageSize.height.toInt(), recognitions);
+          cardLocalizer.findLocationsForCardsType2();
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => AdjustView(
                 imageFile: imageFile,
                 options: _classifier.labels,
-                sortedRecognitions: localizer.filterRecognitions(recognitions),
+                sortedRecognitions: cardLocalizer.resultAsListNoNull,
               ),
             ),
           );

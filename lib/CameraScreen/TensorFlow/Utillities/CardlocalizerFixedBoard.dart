@@ -23,6 +23,7 @@ class CardLocalizerFixedBoard {
   List<Recognition> centeredCoordinates = []; //center coordinate of each detected card
   List<Tuple2<double, double>> emptySpaces = []; //for use in findLocationsForCardsType1
   List<Recognition?> detectedLocations = []; //with spaces signified as null
+  List<Recognition> detectedLocationsWithoutNull = []; //with spaces signified as recognitions with label E
 
   CardLocalizerFixedBoard(int imageWidth, int imageHeight, List<Recognition> detections) {
     this.imageHeight = imageHeight;
@@ -40,6 +41,10 @@ class CardLocalizerFixedBoard {
 
   List<Recognition?> get resultAsList {
     return detectedLocations;
+  }
+
+  List<Recognition> get resultAsListNoNull {
+    return detectedLocationsWithoutNull;
   }
 
   List<Recognition> removeListFromList(List<Recognition> list1, List<Recognition> list2) {
@@ -121,6 +126,7 @@ class CardLocalizerFixedBoard {
         detectedLocations.add(card);
       }
     }
+    detectedLocationsWithoutNull = removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
   }
 
   //takes a list of cards and list of spaces and creates a list of cards and null signifying missing spaces
@@ -389,6 +395,7 @@ class CardLocalizerFixedBoard {
         detectedLocations.add(card);
       }
     }
+    detectedLocationsWithoutNull = removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
   }
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -737,5 +744,20 @@ class CardLocalizerFixedBoard {
     });
     //determineRelativePosition(filteredRecognitions);
     return filteredRecognitions;
+  }
+
+  //detectedLocation list without nulls
+
+  List<Recognition> removeNullsFromRecognitionList(List<Recognition?> detectedLocations) {
+    List<Recognition> recognitionListWithoutNull = [];
+
+    for (Recognition? recognition in detectedLocations) {
+      if (recognition != null) {
+        recognitionListWithoutNull.add(recognition);
+      } else {
+        recognitionListWithoutNull.add(Recognition(label: "E", confidence: 0, location: Rect.fromLTWH(0, 0, 0, 0)));
+      }
+    }
+    return recognitionListWithoutNull;
   }
 }
