@@ -154,8 +154,11 @@ class CameraViewState extends State<CameraView> {
           // Display detected image with bounding boxes:
           // ******************************************************
           Localizer localizer = Localizer();
-          CardLocalizerFixedBoard cardLocalizer =
-              CardLocalizerFixedBoard(AppSettings.inputImageSize.width.toInt(), AppSettings.inputImageSize.height.toInt(), recognitions);
+          CardLocalizerFixedBoard cardLocalizer = CardLocalizerFixedBoard(
+            imageHeight: AppSettings.inputImageSize.height.toInt(),
+            imageWidth: AppSettings.inputImageSize.width.toInt(),
+            detections: recognitions,
+          );
           cardLocalizer.findLocationsForCardsType2();
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -173,9 +176,41 @@ class CameraViewState extends State<CameraView> {
     }
   }
 
-  /// Navigates back to the [StartPage], when the back arrow is pressed
-  void backButtonPressed() {
-    Navigator.of(context).pop();
+  /// Shows a confirm dialog, before navigating back to the startscreen.
+  /// If the user cancel the app stays in the cameraview.
+  Future<void> _showConfirmReturnDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Warning!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Going back to the start screen resets the game progress,\nand you will have to start over!\n'),
+                Text('Are you sure you want to continue?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Continue'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   /// Dummy function for handling the testbutton press
@@ -240,7 +275,7 @@ class CameraViewState extends State<CameraView> {
                     Container(
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.all(20),
-                      child: ReturnButton(onPressed: backButtonPressed),
+                      child: ReturnButton(onPressed: _showConfirmReturnDialog),
                     ),
                     Container(
                       alignment: Alignment.bottomLeft,

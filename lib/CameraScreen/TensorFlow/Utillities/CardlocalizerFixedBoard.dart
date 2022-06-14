@@ -25,14 +25,11 @@ class CardLocalizerFixedBoard {
   List<Recognition?> detectedLocations = []; //with spaces signified as null
   List<Recognition> detectedLocationsWithoutNull = []; //with spaces signified as recognitions with label E
 
-  CardLocalizerFixedBoard(int imageWidth, int imageHeight, List<Recognition> detections) {
-    this.imageHeight = imageHeight;
-    this.imageWidth = imageWidth;
-    this.detections = detections;
-    Tuple2<double, double> heightwidth = findAverageHeightWidthOfcard();
+  CardLocalizerFixedBoard({required this.imageHeight, required this.imageWidth, required this.detections}) {
+    Tuple2<double, double> heightwidth = _findAverageHeightWidthOfcard();
     cardHeight = heightwidth.item1;
     cardWidth = heightwidth.item2;
-    centeredCoordinates = filterRecognitions(detections);
+    centeredCoordinates = _filterRecognitions(detections);
   }
 
   set spaceList(List<Tuple2<double, double>> emptySpaces) {
@@ -47,7 +44,7 @@ class CardLocalizerFixedBoard {
     return detectedLocationsWithoutNull;
   }
 
-  List<Recognition> removeListFromList(List<Recognition> list1, List<Recognition> list2) {
+  List<Recognition> _removeListFromList(List<Recognition> list1, List<Recognition> list2) {
     List<Recognition> finalList = [];
     for (Recognition recognition in list1) {
       if (!list2.contains(recognition)) {
@@ -67,7 +64,7 @@ class CardLocalizerFixedBoard {
     return highestConfidenceRecognition;
   }
 
-  String getLabelFromNullableRecognition(Recognition? recognition) {
+  String _getLabelFromNullableRecognition(Recognition? recognition) {
     if (recognition != null) {
       return recognition.label;
     } else {
@@ -77,18 +74,18 @@ class CardLocalizerFixedBoard {
 
   String createJsonStringFromResult() {
     Map<String, dynamic> mapToJson = {
-      "deck": getLabelFromNullableRecognition(detectedLocations[11]),
-      "foundation1": getLabelFromNullableRecognition(detectedLocations[0]),
-      "foundation2": getLabelFromNullableRecognition(detectedLocations[1]),
-      "foundation3": getLabelFromNullableRecognition(detectedLocations[2]),
-      "foundation4": getLabelFromNullableRecognition(detectedLocations[3]),
-      "Tableu1": getLabelFromNullableRecognition(detectedLocations[4]),
-      "Tableu2": getLabelFromNullableRecognition(detectedLocations[5]),
-      "Tableu3": getLabelFromNullableRecognition(detectedLocations[6]),
-      "Tableu4": getLabelFromNullableRecognition(detectedLocations[7]),
-      "Tableu5": getLabelFromNullableRecognition(detectedLocations[8]),
-      "Tableu6": getLabelFromNullableRecognition(detectedLocations[9]),
-      "Tableu7": getLabelFromNullableRecognition(detectedLocations[10]),
+      "deck": _getLabelFromNullableRecognition(detectedLocations[11]),
+      "foundation1": _getLabelFromNullableRecognition(detectedLocations[0]),
+      "foundation2": _getLabelFromNullableRecognition(detectedLocations[1]),
+      "foundation3": _getLabelFromNullableRecognition(detectedLocations[2]),
+      "foundation4": _getLabelFromNullableRecognition(detectedLocations[3]),
+      "Tableu1": _getLabelFromNullableRecognition(detectedLocations[4]),
+      "Tableu2": _getLabelFromNullableRecognition(detectedLocations[5]),
+      "Tableu3": _getLabelFromNullableRecognition(detectedLocations[6]),
+      "Tableu4": _getLabelFromNullableRecognition(detectedLocations[7]),
+      "Tableu5": _getLabelFromNullableRecognition(detectedLocations[8]),
+      "Tableu6": _getLabelFromNullableRecognition(detectedLocations[9]),
+      "Tableu7": _getLabelFromNullableRecognition(detectedLocations[10]),
     };
     String json = jsonEncode(mapToJson);
     return json;
@@ -111,27 +108,27 @@ class CardLocalizerFixedBoard {
     print(smallestCard.location.top);
     for (int i = 0; i < 3; i++) {
       //get the cards for the row
-      detectedRowCards = getRowRecogntions(allCards, i);
+      detectedRowCards = _getRowRecogntions(allCards, i);
       print("row " + i.toString() + "\n");
       print(detectedRowCards);
       //get empty spaces for the row
-      rowEmptySpaces = getEmptySlotsForRow(emptySlots, i);
+      rowEmptySpaces = _getEmptySlotsForRow(emptySlots, i);
       //remove from overall list
-      allCards = removeListFromList(allCards, detectedRowCards);
-      emptySlots = removeGapListFromGapList(emptySlots, rowEmptySpaces);
+      allCards = _removeListFromList(allCards, detectedRowCards);
+      emptySlots = _removeGapListFromGapList(emptySlots, rowEmptySpaces);
       //finish card list with its empty spaces represented as null
-      rowWithSpaces = completeRowType1(detectedRowCards, rowEmptySpaces);
+      rowWithSpaces = _completeRowType1(detectedRowCards, rowEmptySpaces);
       //add all to complete list
       for (Recognition? card in rowWithSpaces) {
         detectedLocations.add(card);
       }
     }
-    detectedLocationsWithoutNull = removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
+    detectedLocationsWithoutNull = _removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
   }
 
   //takes a list of cards and list of spaces and creates a list of cards and null signifying missing spaces
   //uses the array that contains locations for the empty spaces.
-  List<Recognition?> completeRowType1(List<Recognition> rowCards, List<Tuple2<double, double>> emptySpacesCards) {
+  List<Recognition?> _completeRowType1(List<Recognition> rowCards, List<Tuple2<double, double>> emptySpacesCards) {
     if (rowCards.isEmpty) {
       //no cards in row
       return [null, null, null, null];
@@ -172,27 +169,27 @@ class CardLocalizerFixedBoard {
       List<Tuple2<double, double>> gapsLeft = emptySpacesCards;
 
       //check if there are gaps before the first card, add them to final list and remove the them from possible gapsLeft list
-      List<Tuple2<double, double>> gapsBeforeFirstCard = amountOfgapsBeforeCard(rowCards[0], gapsLeft);
+      List<Tuple2<double, double>> gapsBeforeFirstCard = _amountOfgapsBeforeCard(rowCards[0], gapsLeft);
       if (gapsBeforeFirstCard.isNotEmpty) {
-        addThisManyNullsToList(finalRow, gapsBeforeFirstCard.length);
-        gapsLeft = removeGapListFromGapList(gapsLeft, gapsBeforeFirstCard);
+        _addThisManyNullsToList(finalRow, gapsBeforeFirstCard.length);
+        gapsLeft = _removeGapListFromGapList(gapsLeft, gapsBeforeFirstCard);
       }
 
       //check gaps between cards
       List<Tuple2<double, double>> gapsBetweenCards;
       for (int i = 0; i < rowCards.length - 1; i++) {
         finalRow.add(rowCards[i]);
-        gapsBetweenCards = amountOfgapsBetweenTheseTwoCards(rowCards[i], rowCards[i + 1], gapsLeft);
+        gapsBetweenCards = _amountOfgapsBetweenTheseTwoCards(rowCards[i], rowCards[i + 1], gapsLeft);
         if (gapsBetweenCards.isNotEmpty) {
-          addThisManyNullsToList(finalRow, gapsBeforeFirstCard.length);
-          gapsLeft = removeGapListFromGapList(gapsLeft, gapsBetweenCards);
+          _addThisManyNullsToList(finalRow, gapsBeforeFirstCard.length);
+          gapsLeft = _removeGapListFromGapList(gapsLeft, gapsBetweenCards);
         }
       }
 
       //gaps after cards
       finalRow.add(rowCards[rowCards.length - 1]);
       if (gapsLeft.isNotEmpty) {
-        addThisManyNullsToList(finalRow, gapsLeft.length);
+        _addThisManyNullsToList(finalRow, gapsLeft.length);
         gapsLeft = [];
       }
       return finalRow;
@@ -200,17 +197,17 @@ class CardLocalizerFixedBoard {
       List<Tuple2<double, double>> gapsLeft = emptySpacesCards;
 
       //gaps before the only card
-      List<Tuple2<double, double>> gapsBeforeCard = amountOfgapsBeforeCard(rowCards[0], gapsLeft);
+      List<Tuple2<double, double>> gapsBeforeCard = _amountOfgapsBeforeCard(rowCards[0], gapsLeft);
       if (gapsBeforeCard.isNotEmpty) {
-        addThisManyNullsToList(finalRow, gapsBeforeCard.length);
-        gapsLeft = removeGapListFromGapList(gapsLeft, gapsBeforeCard);
+        _addThisManyNullsToList(finalRow, gapsBeforeCard.length);
+        gapsLeft = _removeGapListFromGapList(gapsLeft, gapsBeforeCard);
       }
 
       //add card
       finalRow.add(rowCards[0]);
 
       //gaps after the only card, add the rest
-      addThisManyNullsToList(finalRow, gapsLeft.length);
+      _addThisManyNullsToList(finalRow, gapsLeft.length);
       gapsLeft = [];
 
       return finalRow;
@@ -221,7 +218,7 @@ class CardLocalizerFixedBoard {
   }
 
   //version that uses recognitions instead of cards
-  List<Recognition?> completeRowType2(List<Recognition> rowCards) {
+  List<Recognition?> _completeRowType2(List<Recognition> rowCards) {
     if (rowCards.isEmpty) {
       //no cards in row
       return [null, null, null, null];
@@ -379,15 +376,15 @@ class CardLocalizerFixedBoard {
     print(smallestCard.location.top);
     for (int i = 0; i < 3; i++) {
       //get the cards for the row
-      detectedRowCards = getRowRecogntions(allCards, i);
+      detectedRowCards = _getRowRecogntions(allCards, i);
       print("row " + i.toString() + "\n");
       print(detectedRowCards);
       //remove from overall list
-      allCards = removeListFromList(allCards, detectedRowCards);
+      allCards = _removeListFromList(allCards, detectedRowCards);
       print("cards after removal");
       print(allCards);
       //finish card list with its empty spaces represented as null
-      rowWithSpaces = completeRowType2(detectedRowCards);
+      rowWithSpaces = _completeRowType2(detectedRowCards);
       print("row with spaces " + i.toString() + "\n");
       print(rowWithSpaces);
       //add all to complete list
@@ -395,11 +392,11 @@ class CardLocalizerFixedBoard {
         detectedLocations.add(card);
       }
     }
-    detectedLocationsWithoutNull = removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
+    detectedLocationsWithoutNull = _removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
   }
 ////////////////////////////////////////////////////////////////////////////////////////
 
-  List<Tuple2<double, double>> removeGapListFromGapList(List<Tuple2<double, double>> gapList1, List<Tuple2<double, double>> gapList2) {
+  List<Tuple2<double, double>> _removeGapListFromGapList(List<Tuple2<double, double>> gapList1, List<Tuple2<double, double>> gapList2) {
     List<Tuple2<double, double>> gapListToReturn = [];
     for (int i = 0; i < gapList1.length; i++) {
       if (!(gapList2.contains(gapList1[i]))) {
@@ -409,13 +406,13 @@ class CardLocalizerFixedBoard {
     return gapListToReturn;
   }
 
-  void addThisManyNullsToList(List<Recognition?> cards, int num) {
+  void _addThisManyNullsToList(List<Recognition?> cards, int num) {
     for (int i = 0; i < num; i++) {
       cards.add(null);
     }
   }
 
-  List<Tuple2<double, double>> amountOfgapsBetweenTheseTwoCards(Recognition card1, Recognition card2, List<Tuple2<double, double>> possibleGaps) {
+  List<Tuple2<double, double>> _amountOfgapsBetweenTheseTwoCards(Recognition card1, Recognition card2, List<Tuple2<double, double>> possibleGaps) {
     List<Tuple2<double, double>> actualGaps = [];
 
     for (Tuple2<double, double> gap in possibleGaps) {
@@ -437,7 +434,7 @@ class CardLocalizerFixedBoard {
     return actualGaps;
   }
 
-  List<Tuple2<double, double>> amountOfgapsBeforeCard(Recognition card, List<Tuple2<double, double>> possibleGaps) {
+  List<Tuple2<double, double>> _amountOfgapsBeforeCard(Recognition card, List<Tuple2<double, double>> possibleGaps) {
     List<Tuple2<double, double>> actualGaps = [];
 
     for (Tuple2<double, double> gap in possibleGaps) {
@@ -448,7 +445,7 @@ class CardLocalizerFixedBoard {
     return actualGaps;
   }
 
-  List<Recognition> getRowRecogntions(List<Recognition> cards, int rowNum) {
+  List<Recognition> _getRowRecogntions(List<Recognition> cards, int rowNum) {
     //first row is foundations and within 1 card height
     //third row is 1-4 tableus and within 2 card height
     //first row is 5-7 tableus and deck and within 3 card height
@@ -464,7 +461,7 @@ class CardLocalizerFixedBoard {
     return cardsToReturn;
   }
 
-  List<Tuple2<double, double>> getEmptySlotsForRow(List<Tuple2<double, double>> emptySlots, int rowNum) {
+  List<Tuple2<double, double>> _getEmptySlotsForRow(List<Tuple2<double, double>> emptySlots, int rowNum) {
     List<Tuple2<double, double>> emptySlotsToReturn = [];
     for (Tuple2<double, double> emptySlot in emptySlots) {
       if ((emptySlot.item2 >= (cardHeight * rowNum)) && (emptySlot.item2 <= (cardHeight * rowNum + 1))) {
@@ -528,13 +525,13 @@ class CardLocalizerFixedBoard {
   }
 */
 
-  Tuple2<double, double> findAverageHeightWidthOfcard() {
+  Tuple2<double, double> _findAverageHeightWidthOfcard() {
     List<Tuple2<double, double>> sizes = [];
     List<Recognition> cardsThatHaveGottenTheirHeightWidth = [];
 
     for (Recognition detection in detections) {
-      if (!CardIsInList(cardsThatHaveGottenTheirHeightWidth, detection)) {
-        sizes.add(findHeightAndWidthOfCard(detection));
+      if (!_cardIsInList(cardsThatHaveGottenTheirHeightWidth, detection)) {
+        sizes.add(_findHeightAndWidthOfCard(detection));
       }
     }
 
@@ -599,7 +596,7 @@ class CardLocalizerFixedBoard {
     return smallestHeight;
   }
 
-  bool CardIsInList(List<Recognition> cards, Recognition card) {
+  bool _cardIsInList(List<Recognition> cards, Recognition card) {
     bool itIsThere = false;
     for (Recognition detection in cards) {
       if (card.label == detection.label) {
@@ -650,7 +647,7 @@ class CardLocalizerFixedBoard {
   // }
 
   //works with 2 corners
-  Tuple2<double, double> findHeightAndWidthOfCard(Recognition recognition) {
+  Tuple2<double, double> _findHeightAndWidthOfCard(Recognition recognition) {
     double height = 0;
     double width = 0;
     List<Recognition> corners = [];
@@ -699,7 +696,7 @@ class CardLocalizerFixedBoard {
 
   /// Creates one [Recognition] for each recognized label, based on an average location of all labels of that kind.
   ///
-  List<Recognition> filterRecognitions(List<Recognition> recognitions) {
+  List<Recognition> _filterRecognitions(List<Recognition> recognitions) {
     Map<String, List<Recognition>> sortedRecognitions = Map<String, List<Recognition>>();
 
     // Map all the recognitions made, into groups
@@ -748,7 +745,7 @@ class CardLocalizerFixedBoard {
 
   //detectedLocation list without nulls
 
-  List<Recognition> removeNullsFromRecognitionList(List<Recognition?> detectedLocations) {
+  List<Recognition> _removeNullsFromRecognitionList(List<Recognition?> detectedLocations) {
     List<Recognition> recognitionListWithoutNull = [];
 
     for (Recognition? recognition in detectedLocations) {

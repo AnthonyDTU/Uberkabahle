@@ -1,7 +1,8 @@
-package src;
+//package src;
+package com.example.uberkabahle;
 
-import src.Interfaces.Move;
-import src.Interfaces.Table;
+//import src.Interfaces.Move;
+//import src.Interfaces.Table;
 
 import java.util.ArrayList;
 import java.util.List;

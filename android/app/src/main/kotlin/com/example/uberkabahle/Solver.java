@@ -1,6 +1,6 @@
-package src.Interfaces;
-
-import src.Match;
+//package src.Interfaces;
+package com.example.uberkabahle;
+//import src.Match;
 
 public interface Solver {
 
