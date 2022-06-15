@@ -1,16 +1,13 @@
 # uberkabahle
 
-A new Flutter project.
+This is the App, which represents out project in the DTU course CDIO.
 
-## Getting Started
+## Getting Starte
+## (Only on Windows)
 
-This project is a starting point for a Flutter application.
+Before running the app, it is important to do a few things:
+1. Run the install.bat script.
+2. Delete the pubspec.lock file, and run 'flutter pub get'.
+3. Import the two models card_aug_v1_best-416.tflite and card_aug_v1_best-512.tflite. These are too large to be placed in this repository.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Afterwards, the project should be ready to run.
