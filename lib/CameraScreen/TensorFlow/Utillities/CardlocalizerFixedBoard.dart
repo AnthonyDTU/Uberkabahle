@@ -46,10 +46,21 @@ class CardLocalizerFixedBoard {
     return detectedLocationsWithoutNull;
   }
 
+  bool isRecogInList(List<Recognition> list1, Recognition recog) {
+    bool isItHere = false;
+    for (Recognition recognition in list1) {
+      if (recognition.label == recog.label) {
+        isItHere = true;
+        break;
+      }
+    }
+    return isItHere;
+  }
+
   List<Recognition> _removeListFromList(List<Recognition> list1, List<Recognition> list2) {
     List<Recognition> finalList = [];
     for (Recognition recognition in list1) {
-      if (!list2.contains(recognition)) {
+      if (!isRecogInList(list2, recognition)) {
         finalList.add(recognition);
       }
     }
@@ -127,28 +138,38 @@ class CardLocalizerFixedBoard {
 
     Recognition smallestCard = allCards.reduce((value, element) => value.location.top < element.location.top ? value : element);
     print("whole list");
-    print(allCards);
+    detectedLocationsPrint(allCards);
     print(smallestCard.location.top);
     for (int i = 0; i < 3; i++) {
       //get the cards for the row
       detectedRowCards = _getRowRecogntions(allCards, i);
       print("row " + i.toString() + "\n");
-      print(detectedRowCards);
+      detectedLocationsPrint(detectedRowCards);
       //remove from overall list
       allCards = _removeListFromList(allCards, detectedRowCards);
-      print("cards after removal");
-      print(allCards);
+      print("rest of cards after removal");
+      detectedLocationsPrint(allCards);
       //finish card list with its empty spaces represented as null
       rowWithSpaces = _completeRowType2(detectedRowCards);
       print("row with spaces " + i.toString() + "\n");
-      print(rowWithSpaces);
+      detectedLocationsPrint(rowWithSpaces);
       //add all to complete list
       for (Recognition? card in rowWithSpaces) {
         detectedLocations.add(card);
       }
     }
     detectedLocationsWithoutNull = _removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
+    print("final list");
+    detectedLocationsPrint(detectedLocationsWithoutNull);
   }
+
+  void detectedLocationsPrint(List<Recognition?> list) {
+    for (var recognition in list) {
+      print("[ " + _getLabelFromNullableRecognition(recognition) + " ]");
+    }
+  }
+
+  void _removeRecognitionListFromRecognitionList() {}
 
   //takes a list of cards and list of spaces and creates a list of cards and null signifying missing spaces
   //uses the array that contains locations for the empty spaces.
@@ -429,9 +450,14 @@ class CardLocalizerFixedBoard {
     //third row is 1-4 tableus and within 2 card height
     //first row is 5-7 tableus and deck and within 3 card height
 
+    double screenPart = imageHeight / 3;
+
+    print("third of screen: " + screenPart.toString());
+    print("card height: " + cardHeight.toString());
+
     List<Recognition> cardsToReturn = [];
-    for (Recognition card in centeredCoordinates) {
-      if ((card.location.top >= (cardHeight * rowNum) - wiggleroom) && (card.location.top <= (cardHeight * (rowNum + 1)) + wiggleroom)) {
+    for (Recognition card in cards) {
+      if ((card.location.top >= (screenPart * rowNum) - wiggleroom) && (card.location.top <= (screenPart * (rowNum + 1)) + wiggleroom)) {
         cardsToReturn.add(card);
       }
     }
@@ -452,9 +478,18 @@ class CardLocalizerFixedBoard {
     List<Size> sizes = [];
     List<Recognition> cardsThatHaveGottenTheirHeightWidth = [];
 
+    //there are no cards
+    if (detections.isEmpty) {
+      return Size(0, 0);
+    }
+
+    //otherwise continue
+    int symbolCornerAmount = _amountOfSymbolCorners(detections); //find amount of corners and change strategya accordingly
+
     for (Recognition detection in detections) {
       if (!_cardIsInList(cardsThatHaveGottenTheirHeightWidth, detection)) {
-        sizes.add(_findHeightAndWidthOfCard(detection));
+        sizes.add(_findHeightAndWidthOfCard(detection, symbolCornerAmount));
+        cardsThatHaveGottenTheirHeightWidth.add(detection);
       }
     }
 
@@ -466,22 +501,36 @@ class CardLocalizerFixedBoard {
       }
     }
 
-    sizes = currentSizeList;
-    //remove outlier that is double the size of the average
-    currentSizeList = [];
-    double averageHeight = sizes.fold(0.0, (previousValue, element) => (previousValue as double) + element.height) / sizes.length;
-    double averageWidth = sizes.fold(0.0, (previousValue, element) => (previousValue as double) + element.width) / sizes.length;
-    for (Size size in sizes) {
-      if (!(size.height > averageHeight * 2) && !(size.width > averageWidth * 2)) {
-        currentSizeList.add(size);
+    if (symbolCornerAmount == 2) {
+      double averageHeight = sizes.fold(0.0, (previousValue, element) => (previousValue as double) + element.height) / sizes.length;
+      double averageWidth = sizes.fold(0.0, (previousValue, element) => (previousValue as double) + element.width) / sizes.length;
+      sizes = currentSizeList;
+      currentSizeList = [];
+      //remove outlier that is double the size of the average
+      for (Size size in sizes) {
+        if (!(size.height > averageHeight * 2) && !(size.width > averageWidth * 2)) {
+          currentSizeList.add(size);
+        }
       }
-    }
-    sizes = currentSizeList;
-    //remove outlier that is half the size of the average
-    currentSizeList = [];
-    for (Size size in sizes) {
-      if (!(size.height < averageHeight / 2) && !(size.width < averageWidth / 2)) {
-        currentSizeList.add(size);
+      sizes = currentSizeList;
+      currentSizeList = [];
+      //remove outlier that is half the size of the average
+      for (Size size in sizes) {
+        if (!(size.height < averageHeight / 2) && !(size.width < averageWidth / 2)) {
+          currentSizeList.add(size);
+        }
+      }
+    } else {
+      sizes = currentSizeList;
+      double smallestHeightInList = _smallestHeight(sizes);
+      double smallestWidthInList = _smallestWidth(sizes);
+      currentSizeList = [];
+      //remove outlier that is double the size of the smallest
+      currentSizeList = [];
+      for (Size size in sizes) {
+        if (!(size.height > smallestHeightInList * 2) && !(size.width > smallestWidthInList * 2)) {
+          currentSizeList.add(size);
+        }
       }
     }
 
@@ -499,6 +548,50 @@ class CardLocalizerFixedBoard {
     return Size(width, height);
   }
 
+  //used to find the maximum amount of corners to find out the type of card //Either 2 or 4
+  int _amountOfSymbolCorners(List<Recognition> recognitions) {
+    Map<String, List<Recognition>> sortedRecognitions = Map<String, List<Recognition>>();
+
+    // Map all the recognitions made, into groups
+    for (var recognition in recognitions) {
+      if (sortedRecognitions.containsKey(recognition.label)) {
+        sortedRecognitions[recognition.label]!.add(recognition);
+      } else {
+        sortedRecognitions.putIfAbsent(recognition.label, () => []);
+        sortedRecognitions[recognition.label]!.add(recognition);
+      }
+    }
+
+    bool hasFourCorners = false;
+    for (var key in sortedRecognitions.keys) {
+      if (sortedRecognitions[key]!.length >= 4) {
+        hasFourCorners = true;
+        break;
+      }
+    }
+    return hasFourCorners ? 4 : 2;
+  }
+
+  double _smallestWidth(List<Size> sizes) {
+    double smallestWidth = sizes[0].width;
+    for (Size size in sizes) {
+      if (size.width < smallestWidth) {
+        smallestWidth = size.width;
+      }
+    }
+    return smallestWidth;
+  }
+
+  double _smallestHeight(List<Size> sizes) {
+    double smallestHeight = sizes[0].height;
+    for (Size size in sizes) {
+      if (size.height < smallestHeight) {
+        smallestHeight = size.height;
+      }
+    }
+    return smallestHeight;
+  }
+
   bool _cardIsInList(List<Recognition> cards, Recognition card) {
     bool itIsThere = false;
     for (Recognition detection in cards) {
@@ -511,7 +604,7 @@ class CardLocalizerFixedBoard {
   }
 
   //works with 2 corners
-  Size _findHeightAndWidthOfCard(Recognition recognition) {
+  Size _findHeightAndWidthOfCard(Recognition recognition, int symbolCornerAmount) {
     double maxHeight = 0;
     double maxWidth = 0;
     List<Recognition> corners = [];
@@ -522,7 +615,7 @@ class CardLocalizerFixedBoard {
       }
     }
 
-    if (corners.length < 2) {
+    if ((symbolCornerAmount == 2 && corners.length < 2) || (symbolCornerAmount == 4 && corners.length < 3)) {
       return Size(0, 0);
     }
 

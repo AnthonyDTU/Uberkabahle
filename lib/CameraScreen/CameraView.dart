@@ -160,6 +160,7 @@ class CameraViewState extends State<CameraView> {
             detections: recognitions,
           );
           cardLocalizer.findLocationsForCardsType2();
+          print(cardLocalizer.createJsonStringFromResult());
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => AdjustView(
