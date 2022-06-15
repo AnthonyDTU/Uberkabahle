@@ -15,7 +15,6 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import android.content.Intent;
-import Communicator.java;
 
 public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "BackendChannel";
@@ -24,42 +23,29 @@ public class MainActivity extends FlutterActivity {
 
         super.configureFlutterEngine(flutterEngine);
         GeneratedPluginRegistrant.registerWith(flutterEngine);
-	Communicator comm;
+	    Communicator comm = new Communicator();
 	
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler(
             (call, result) -> {
                 if (call.method.equals("initTable")){
-                    comm = new Communicator();
-                    string data = call.argument("data");
+
+                    String data = call.argument("data");
                     comm.initStartTable(data);
-                    
-                    
-                    
-                    result.success(test.addTwoNumbers(call.argument("a"), call.argument("b")));
+                    result.success(true);
                 }
                 else if (call.method.equals("updateTable")){
-                    string data = call.argument("data");
+                    String data = call.argument("data");
                     
                     comm.updateTable(data);
+                    result.success(true);
                 }
                 else if (call.method.equals("getNextMove")){
                     //call comm.getNextMove, which returns an int array
-                
+                    result.success(comm.getNextMove());
                 }
                 else {
                     result.notImplemented();
                 }
             });
     }
-
-
-    private String sendString(){
-        String stringToSend = "Hello from Java";
-        return stringToSend;
-    }
-
-    private void showHelloFromFlutter(String argFromFlutter){
-        Toast.makeText(this, argFromFlutter, Toast.LENGTH_SHORT).show();
-    }
-
 }

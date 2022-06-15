@@ -1,8 +1,4 @@
-//package src.Interfaces;
 package com.example.uberkabahle;
-
-//import src.Card;
-//import src.Match;
 
 public interface Move {
 

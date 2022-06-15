@@ -1,8 +1,5 @@
-//package src;
 package com.example.uberkabahle;
 
-//import src.Interfaces.Solver;
-//import src.Interfaces.Table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
