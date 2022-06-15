@@ -2,8 +2,7 @@
 
 This is the App, which represents out project in the DTU course CDIO.
 
-## Getting Starte
-## (Only on Windows)
+## Getting Started (Only on Windows)
 
 Before running the app, it is important to do a few things:
 1. Run the install.bat script.
