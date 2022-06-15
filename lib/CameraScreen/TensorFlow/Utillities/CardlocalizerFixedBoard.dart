@@ -4,36 +4,43 @@ import 'package:tuple/tuple.dart';
 import 'dart:math';
 import 'dart:convert';
 
-//simplified location
-class Card {
-  double x;
-  double y;
-  String label;
-  Card(this.x, this.y, this.label);
+//small class used as signifier for size of a card
+class Size {
+  final double height;
+  final double width;
+  Size({required this.height, required this.width});
+}
+
+class Coordinate {
+  final double x;
+  final double y;
+  Coordinate({required this.x, required this.y});
 }
 
 class CardLocalizerFixedBoard {
-  late int imageWidth;
-  late int imageHeight;
-  late List<Recognition> detections;
-  double cardHeight = 1920; //TODO
-  double cardWidth = 1080; //TODO
-  double wiggleroom = 10; //TODO
+  final int imageWidth;
+  final int imageHeight;
+  final List<Recognition> detections;
+  double cardHeight = 0;
+  double cardWidth = 0;
+  double wiggleroom = 20; //extends the detection range of each row
 
   List<Recognition> centeredCoordinates = []; //center coordinate of each detected card
-  List<Tuple2<double, double>> emptySpaces = []; //for use in findLocationsForCardsType1
+  List<Coordinate> emptySpaces = []; //for use in findLocationsForCardsType1
   List<Recognition?> detectedLocations = []; //with spaces signified as null
-  List<Recognition> detectedLocationsWithoutNull = []; //with spaces signified as recognitions with label E
+  List<Recognition> detectedLocationsWithoutNull = []; //with spaces signified as recognitions with label e
 
   CardLocalizerFixedBoard({required this.imageHeight, required this.imageWidth, required this.detections}) {
-    Tuple2<double, double> heightwidth = _findAverageHeightWidthOfcard();
-    cardHeight = heightwidth.item1;
-    cardWidth = heightwidth.item2;
+    Size cardSize = _findAverageHeightWidthOfcard();
+    cardHeight = cardSize.width;
+    cardWidth = cardSize.height;
     centeredCoordinates = _filterRecognitions(detections);
   }
 
   set spaceList(List<Tuple2<double, double>> emptySpaces) {
-    this.emptySpaces = List<Tuple2<double, double>>.from(emptySpaces);
+    for (Tuple2<double, double> emptySpace in emptySpaces) {
+      this.emptySpaces.add(Coordinate(x: emptySpace.item1, y: emptySpace.item2));
+    }
   }
 
   List<Recognition?> get resultAsList {
@@ -54,21 +61,11 @@ class CardLocalizerFixedBoard {
     return finalList;
   }
 
-  Recognition getRecognitionWithHighestConfidence(List<Recognition> detections) {
-    Recognition highestConfidenceRecognition = detections[0];
-    for (Recognition recognition in detections) {
-      if (recognition.confidence > highestConfidenceRecognition.confidence) {
-        highestConfidenceRecognition = recognition;
-      }
-    }
-    return highestConfidenceRecognition;
-  }
-
   String _getLabelFromNullableRecognition(Recognition? recognition) {
     if (recognition != null) {
       return recognition.label;
     } else {
-      return "E";
+      return "e";
     }
   }
 
@@ -91,13 +88,13 @@ class CardLocalizerFixedBoard {
     return json;
   }
 
-  //uses the array that detects empty spaces
+  //uses the array with detections of empty spaces
   void findLocationsForCardsType1() {
     List<Recognition> allCards = centeredCoordinates;
-    List<Tuple2<double, double>> emptySlots = emptySpaces;
+    List<Coordinate> emptySlots = emptySpaces;
 
     List<Recognition> detectedRowCards;
-    List<Tuple2<double, double>> rowEmptySpaces;
+    List<Coordinate> rowEmptySpaces;
     List<Recognition?> rowWithSpaces;
     print("all cards \n");
     print(allCards);
@@ -126,9 +123,41 @@ class CardLocalizerFixedBoard {
     detectedLocationsWithoutNull = _removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
   }
 
+  //Doesnt use the list that contains empty spaces
+  void findLocationsForCardsType2() {
+    List<Recognition> allCards = centeredCoordinates;
+
+    List<Recognition> detectedRowCards;
+    List<Recognition?> rowWithSpaces;
+
+    Recognition smallestCard = allCards.reduce((value, element) => value.location.top < element.location.top ? value : element);
+    print("whole list");
+    print(allCards);
+    print(smallestCard.location.top);
+    for (int i = 0; i < 3; i++) {
+      //get the cards for the row
+      detectedRowCards = _getRowRecogntions(allCards, i);
+      print("row " + i.toString() + "\n");
+      print(detectedRowCards);
+      //remove from overall list
+      allCards = _removeListFromList(allCards, detectedRowCards);
+      print("cards after removal");
+      print(allCards);
+      //finish card list with its empty spaces represented as null
+      rowWithSpaces = _completeRowType2(detectedRowCards);
+      print("row with spaces " + i.toString() + "\n");
+      print(rowWithSpaces);
+      //add all to complete list
+      for (Recognition? card in rowWithSpaces) {
+        detectedLocations.add(card);
+      }
+    }
+    detectedLocationsWithoutNull = _removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
+  }
+
   //takes a list of cards and list of spaces and creates a list of cards and null signifying missing spaces
   //uses the array that contains locations for the empty spaces.
-  List<Recognition?> _completeRowType1(List<Recognition> rowCards, List<Tuple2<double, double>> emptySpacesCards) {
+  List<Recognition?> _completeRowType1(List<Recognition> rowCards, List<Coordinate> emptySpacesCards) {
     if (rowCards.isEmpty) {
       //no cards in row
       return [null, null, null, null];
@@ -145,14 +174,14 @@ class CardLocalizerFixedBoard {
       finalRow = rowCards;
 
       //if the empty space is before the first element insert at start
-      if (emptySpacesCards[0].item1 < rowCards[0].location.left) {
+      if (emptySpacesCards[0].x < rowCards[0].location.left) {
         finalRow.insert(0, null);
         return finalRow;
       }
       //otherwise look for gaps inbetween
       int index = -1;
       for (int i = 0; i < (rowCards.length - 1); i++) {
-        if (rowCards[i].location.left <= emptySpacesCards[0].item1 && rowCards[i + 1].location.left >= emptySpacesCards[0].item1) {
+        if (rowCards[i].location.left <= emptySpacesCards[0].x && rowCards[i + 1].location.left >= emptySpacesCards[0].x) {
           index = i;
           break;
         }
@@ -166,17 +195,17 @@ class CardLocalizerFixedBoard {
       }
       return finalRow;
     } else if (rowCards.length == 2 && emptySpacesCards.length == 2) {
-      List<Tuple2<double, double>> gapsLeft = emptySpacesCards;
+      List<Coordinate> gapsLeft = emptySpacesCards;
 
       //check if there are gaps before the first card, add them to final list and remove the them from possible gapsLeft list
-      List<Tuple2<double, double>> gapsBeforeFirstCard = _amountOfgapsBeforeCard(rowCards[0], gapsLeft);
+      List<Coordinate> gapsBeforeFirstCard = _amountOfgapsBeforeCard(rowCards[0], gapsLeft);
       if (gapsBeforeFirstCard.isNotEmpty) {
         _addThisManyNullsToList(finalRow, gapsBeforeFirstCard.length);
         gapsLeft = _removeGapListFromGapList(gapsLeft, gapsBeforeFirstCard);
       }
 
       //check gaps between cards
-      List<Tuple2<double, double>> gapsBetweenCards;
+      List<Coordinate> gapsBetweenCards;
       for (int i = 0; i < rowCards.length - 1; i++) {
         finalRow.add(rowCards[i]);
         gapsBetweenCards = _amountOfgapsBetweenTheseTwoCards(rowCards[i], rowCards[i + 1], gapsLeft);
@@ -194,10 +223,10 @@ class CardLocalizerFixedBoard {
       }
       return finalRow;
     } else if (rowCards.length == 1 && emptySpacesCards.length == 3) {
-      List<Tuple2<double, double>> gapsLeft = emptySpacesCards;
+      List<Coordinate> gapsLeft = emptySpacesCards;
 
       //gaps before the only card
-      List<Tuple2<double, double>> gapsBeforeCard = _amountOfgapsBeforeCard(rowCards[0], gapsLeft);
+      List<Coordinate> gapsBeforeCard = _amountOfgapsBeforeCard(rowCards[0], gapsLeft);
       if (gapsBeforeCard.isNotEmpty) {
         _addThisManyNullsToList(finalRow, gapsBeforeCard.length);
         gapsLeft = _removeGapListFromGapList(gapsLeft, gapsBeforeCard);
@@ -217,7 +246,7 @@ class CardLocalizerFixedBoard {
     }
   }
 
-  //version that uses recognitions instead of cards
+  //This version find the spacing of the row without a list of empty locations
   List<Recognition?> _completeRowType2(List<Recognition> rowCards) {
     if (rowCards.isEmpty) {
       //no cards in row
@@ -362,42 +391,8 @@ class CardLocalizerFixedBoard {
     }
   }
 
-  //Doesnt use the array that contains empty spaces
-  //
-  void findLocationsForCardsType2() {
-    List<Recognition> allCards = centeredCoordinates;
-
-    List<Recognition> detectedRowCards;
-    List<Recognition?> rowWithSpaces;
-
-    Recognition smallestCard = allCards.reduce((value, element) => value.location.top < element.location.top ? value : element);
-    print("whole list");
-    print(allCards);
-    print(smallestCard.location.top);
-    for (int i = 0; i < 3; i++) {
-      //get the cards for the row
-      detectedRowCards = _getRowRecogntions(allCards, i);
-      print("row " + i.toString() + "\n");
-      print(detectedRowCards);
-      //remove from overall list
-      allCards = _removeListFromList(allCards, detectedRowCards);
-      print("cards after removal");
-      print(allCards);
-      //finish card list with its empty spaces represented as null
-      rowWithSpaces = _completeRowType2(detectedRowCards);
-      print("row with spaces " + i.toString() + "\n");
-      print(rowWithSpaces);
-      //add all to complete list
-      for (Recognition? card in rowWithSpaces) {
-        detectedLocations.add(card);
-      }
-    }
-    detectedLocationsWithoutNull = _removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
-  }
-////////////////////////////////////////////////////////////////////////////////////////
-
-  List<Tuple2<double, double>> _removeGapListFromGapList(List<Tuple2<double, double>> gapList1, List<Tuple2<double, double>> gapList2) {
-    List<Tuple2<double, double>> gapListToReturn = [];
+  List<Coordinate> _removeGapListFromGapList(List<Coordinate> gapList1, List<Coordinate> gapList2) {
+    List<Coordinate> gapListToReturn = [];
     for (int i = 0; i < gapList1.length; i++) {
       if (!(gapList2.contains(gapList1[i]))) {
         gapListToReturn.add(gapList1[i]);
@@ -412,33 +407,22 @@ class CardLocalizerFixedBoard {
     }
   }
 
-  List<Tuple2<double, double>> _amountOfgapsBetweenTheseTwoCards(Recognition card1, Recognition card2, List<Tuple2<double, double>> possibleGaps) {
-    List<Tuple2<double, double>> actualGaps = [];
+  List<Coordinate> _amountOfgapsBetweenTheseTwoCards(Recognition card1, Recognition card2, List<Coordinate> possibleGaps) {
+    List<Coordinate> actualGaps = [];
 
-    for (Tuple2<double, double> gap in possibleGaps) {
-      if (card1.location.left <= gap.item1 && card2.location.left >= gap.item1) {
+    for (Coordinate gap in possibleGaps) {
+      if (card1.location.left <= gap.x && card2.location.left >= gap.x) {
         actualGaps.add(gap);
       }
     }
     return actualGaps;
   }
 
-  List<Tuple2<double, double>> amountOfgapsAfterCard(Card card, List<Tuple2<double, double>> possibleGaps) {
-    List<Tuple2<double, double>> actualGaps = [];
+  List<Coordinate> _amountOfgapsBeforeCard(Recognition card, List<Coordinate> possibleGaps) {
+    List<Coordinate> actualGaps = [];
 
-    for (Tuple2<double, double> gap in possibleGaps) {
-      if (card.x <= gap.item1) {
-        actualGaps.add(gap);
-      }
-    }
-    return actualGaps;
-  }
-
-  List<Tuple2<double, double>> _amountOfgapsBeforeCard(Recognition card, List<Tuple2<double, double>> possibleGaps) {
-    List<Tuple2<double, double>> actualGaps = [];
-
-    for (Tuple2<double, double> gap in possibleGaps) {
-      if (card.location.left >= gap.item1) {
+    for (Coordinate gap in possibleGaps) {
+      if (card.location.left >= gap.x) {
         actualGaps.add(gap);
       }
     }
@@ -450,8 +434,6 @@ class CardLocalizerFixedBoard {
     //third row is 1-4 tableus and within 2 card height
     //first row is 5-7 tableus and deck and within 3 card height
 
-    double wiggleroom = 20;
-
     List<Recognition> cardsToReturn = [];
     for (Recognition card in centeredCoordinates) {
       if ((card.location.top >= (cardHeight * rowNum) - wiggleroom) && (card.location.top <= (cardHeight * (rowNum + 1)) + wiggleroom)) {
@@ -461,72 +443,18 @@ class CardLocalizerFixedBoard {
     return cardsToReturn;
   }
 
-  List<Tuple2<double, double>> _getEmptySlotsForRow(List<Tuple2<double, double>> emptySlots, int rowNum) {
-    List<Tuple2<double, double>> emptySlotsToReturn = [];
-    for (Tuple2<double, double> emptySlot in emptySlots) {
-      if ((emptySlot.item2 >= (cardHeight * rowNum)) && (emptySlot.item2 <= (cardHeight * rowNum + 1))) {
+  List<Coordinate> _getEmptySlotsForRow(List<Coordinate> emptySlots, int rowNum) {
+    List<Coordinate> emptySlotsToReturn = [];
+    for (Coordinate emptySlot in emptySlots) {
+      if ((emptySlot.y >= (cardHeight * rowNum)) && (emptySlot.y <= (cardHeight * rowNum + 1))) {
         emptySlotsToReturn.add(emptySlot);
       }
     }
     return emptySlotsToReturn;
   }
 
-  List<Recognition> getRecognitionsOfThisType(Recognition recognition) {
-    List<Recognition> typeOfCardList = [];
-
-    for (Recognition detection in detections) {
-      if (detection.label == recognition.label) {
-        typeOfCardList.add(detection);
-      }
-    }
-    return typeOfCardList;
-  }
-/*//works with 4 corner cards
-  Tuple2<double, double> findAverageHeightWidthOfcard() {
-    List<Tuple2<double, double>> sizes = [];
-    List<Recognition> cardsThatHaveGottenTheirHeightWidth = [];
-
-    for (Recognition detection in detections) {
-      if (!CardIsInList(cardsThatHaveGottenTheirHeightWidth, detection)) {
-        sizes.add(findHeightAndWidthOfCard(detection));
-      }
-    }
-
-    //remove outliers 0
-    List<Tuple2<double, double>> currentSizeList = [];
-    for (Tuple2<double, double> size in sizes) {
-      if (size.item1 != 0 && size.item2 != 0) {
-        currentSizeList.add(size);
-      }
-    }
-    sizes = currentSizeList;
-
-    //remove outlier that is double the size of the smallest
-    currentSizeList = [];
-    double smallestHeightInList = smallestHeight(sizes);
-    double smallestWidthInList = smallestWidth(sizes);
-    for (Tuple2<double, double> size in sizes) {
-      if (!(size.item1 > smallestHeightInList * 2) && !(size.item2 > smallestWidthInList * 2)) {
-        currentSizeList.add(size);
-      }
-    }
-    sizes = currentSizeList;
-    int amountOfItems = sizes.length;
-    double height = 0;
-    double width = 0;
-    for (Tuple2<double, double> size in sizes) {
-      height = height + size.item1;
-      width = width + size.item2;
-    }
-    height = height / amountOfItems;
-    width = width / amountOfItems;
-
-    return Tuple2<double, double>(height, width);
-  }
-*/
-
-  Tuple2<double, double> _findAverageHeightWidthOfcard() {
-    List<Tuple2<double, double>> sizes = [];
+  Size _findAverageHeightWidthOfcard() {
+    List<Size> sizes = [];
     List<Recognition> cardsThatHaveGottenTheirHeightWidth = [];
 
     for (Recognition detection in detections) {
@@ -536,9 +464,9 @@ class CardLocalizerFixedBoard {
     }
 
     //remove outliers 0
-    List<Tuple2<double, double>> currentSizeList = [];
-    for (Tuple2<double, double> size in sizes) {
-      if (size.item1 != 0 && size.item2 != 0) {
+    List<Size> currentSizeList = [];
+    for (Size size in sizes) {
+      if (size.height != 0 && size.width != 0) {
         currentSizeList.add(size);
       }
     }
@@ -546,18 +474,18 @@ class CardLocalizerFixedBoard {
     sizes = currentSizeList;
     //remove outlier that is double the size of the average
     currentSizeList = [];
-    double averageHeight = sizes.fold(0.0, (previousValue, element) => (previousValue as double) + element.item1) / sizes.length;
-    double averageWidth = sizes.fold(0.0, (previousValue, element) => (previousValue as double) + element.item2) / sizes.length;
-    for (Tuple2<double, double> size in sizes) {
-      if (!(size.item1 > averageHeight * 2) && !(size.item2 > averageWidth * 2)) {
+    double averageHeight = sizes.fold(0.0, (previousValue, element) => (previousValue as double) + element.height) / sizes.length;
+    double averageWidth = sizes.fold(0.0, (previousValue, element) => (previousValue as double) + element.width) / sizes.length;
+    for (Size size in sizes) {
+      if (!(size.height > averageHeight * 2) && !(size.width > averageWidth * 2)) {
         currentSizeList.add(size);
       }
     }
     sizes = currentSizeList;
     //remove outlier that is half the size of the average
     currentSizeList = [];
-    for (Tuple2<double, double> size in sizes) {
-      if (!(size.item1 < averageHeight / 2) && !(size.item2 < averageWidth / 2)) {
+    for (Size size in sizes) {
+      if (!(size.height < averageHeight / 2) && !(size.width < averageWidth / 2)) {
         currentSizeList.add(size);
       }
     }
@@ -566,34 +494,14 @@ class CardLocalizerFixedBoard {
     int amountOfItems = sizes.length;
     double height = 0;
     double width = 0;
-    for (Tuple2<double, double> size in sizes) {
-      height = height + size.item1;
-      width = width + size.item2;
+    for (Size size in sizes) {
+      height = height + size.height;
+      width = width + size.width;
     }
     height = height / amountOfItems;
     width = width / amountOfItems;
 
-    return Tuple2<double, double>(height, width);
-  }
-
-  double smallestWidth(List<Tuple2<double, double>> sizes) {
-    double smallestWidth = sizes[0].item2;
-    for (Tuple2<double, double> size in sizes) {
-      if (size.item2 < smallestWidth) {
-        smallestWidth = size.item2;
-      }
-    }
-    return smallestWidth;
-  }
-
-  double smallestHeight(List<Tuple2<double, double>> sizes) {
-    double smallestHeight = sizes[0].item1;
-    for (Tuple2<double, double> size in sizes) {
-      if (size.item1 < smallestHeight) {
-        smallestHeight = size.item1;
-      }
-    }
-    return smallestHeight;
+    return Size(height: height, width: width);
   }
 
   bool _cardIsInList(List<Recognition> cards, Recognition card) {
@@ -607,49 +515,10 @@ class CardLocalizerFixedBoard {
     return itIsThere;
   }
 
-  // Tuple2<double, double> findHeightAndWidthOfCard(Recognition recognition) {
-  //   double height = 0;
-  //   double width = 0;
-  //   List<Recognition> corners = [];
-
-  //   for (Recognition detection in detections) {
-  //     if (recognition.label == detection.label) {
-  //       corners.add(detection);
-  //     }
-  //   }
-
-  //   if (corners.length <= 2) {
-  //     return Tuple2<double, double>(0, 0);
-  //   }
-
-  //   double currentHeight;
-  //   //find height, biggest difference in y
-  //   for (Recognition corner1 in corners) {
-  //     for (Recognition corner2 in corners) {
-  //       currentHeight = (corner1.location.top - corner2.location.bottom).abs();
-  //       if (currentHeight > height) {
-  //         height = currentHeight;
-  //       }
-  //     }
-  //   }
-
-  //   double currentWidth;
-  //   //find width, biggest difference in x
-  //   for (Recognition corner1 in corners) {
-  //     for (Recognition corner2 in corners) {
-  //       currentWidth = (corner1.location.left - corner2.location.right).abs();
-  //       if (currentWidth > width) {
-  //         width = currentWidth;
-  //       }
-  //     }
-  //   }
-  //   return Tuple2<double, double>(height, width);
-  // }
-
   //works with 2 corners
-  Tuple2<double, double> _findHeightAndWidthOfCard(Recognition recognition) {
-    double height = 0;
-    double width = 0;
+  Size _findHeightAndWidthOfCard(Recognition recognition) {
+    double maxHeight = 0;
+    double maxWidth = 0;
     List<Recognition> corners = [];
 
     for (Recognition detection in detections) {
@@ -659,7 +528,7 @@ class CardLocalizerFixedBoard {
     }
 
     if (corners.length < 2) {
-      return Tuple2<double, double>(0, 0);
+      return Size(height: 0, width: 0);
     }
 
     double currentHeight;
@@ -667,8 +536,8 @@ class CardLocalizerFixedBoard {
     for (Recognition corner1 in corners) {
       for (Recognition corner2 in corners) {
         currentHeight = (corner1.location.top - corner2.location.bottom).abs();
-        if (currentHeight > height) {
-          height = currentHeight;
+        if (currentHeight > maxHeight) {
+          maxHeight = currentHeight;
         }
       }
     }
@@ -678,20 +547,12 @@ class CardLocalizerFixedBoard {
     for (Recognition corner1 in corners) {
       for (Recognition corner2 in corners) {
         currentWidth = (corner1.location.left - corner2.location.right).abs();
-        if (currentWidth > width) {
-          width = currentWidth;
+        if (currentWidth > maxWidth) {
+          maxWidth = currentWidth;
         }
       }
     }
-    return Tuple2<double, double>(height, width);
-  }
-
-  List<Card> recognitionListToCardList(List<Recognition> recognitionList) {
-    List<Card> cardList = [];
-    for (int i = 0; i < recognitionList.length; i++) {
-      cardList.add(Card(recognitionList[i].location.left, recognitionList[i].location.top, recognitionList[i].label));
-    }
-    return cardList;
+    return Size(height: maxHeight, width: maxWidth);
   }
 
   /// Creates one [Recognition] for each recognized label, based on an average location of all labels of that kind.
@@ -743,8 +604,7 @@ class CardLocalizerFixedBoard {
     return filteredRecognitions;
   }
 
-  //detectedLocation list without nulls
-
+  //detectedLocation list without nulls to placate nullsafety, empty spaces are repressenteed as recognition objects with label e
   List<Recognition> _removeNullsFromRecognitionList(List<Recognition?> detectedLocations) {
     List<Recognition> recognitionListWithoutNull = [];
 
@@ -752,7 +612,7 @@ class CardLocalizerFixedBoard {
       if (recognition != null) {
         recognitionListWithoutNull.add(recognition);
       } else {
-        recognitionListWithoutNull.add(Recognition(label: "E", confidence: 0, location: Rect.fromLTWH(0, 0, 0, 0)));
+        recognitionListWithoutNull.add(Recognition(label: "e", confidence: 0, location: Rect.fromLTWH(0, 0, 0, 0)));
       }
     }
     return recognitionListWithoutNull;
