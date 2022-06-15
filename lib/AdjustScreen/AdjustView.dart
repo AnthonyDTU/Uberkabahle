@@ -23,7 +23,7 @@ class _AdjustViewState extends State<AdjustView> {
   final File imageFile;
 
   _AdjustViewState({required this.imageFile, required this.options, required this.sortedRecognitions, Key? key}) {
-    options.add("E");
+    options.add("e");
   }
 
   void verifyLayoutButtonPressed() {
