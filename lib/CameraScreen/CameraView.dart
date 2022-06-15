@@ -166,7 +166,8 @@ class CameraViewState extends State<CameraView> {
               builder: (context) => AdjustView(
                 imageFile: imageFile,
                 options: _classifier.labels,
-                sortedRecognitions: cardLocalizer.resultAsListNoNull,
+                sortedRecognitions: localizer.filterRecognitions(recognitions),
+                //sortedRecognitions: cardLocalizer.resultAsListNoNull,
               ),
             ),
           );

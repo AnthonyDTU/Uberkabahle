@@ -16,6 +16,8 @@ class AppSettings {
   static const String modelFile_512 = "card_aug_v1_best-512.tflite";
   static const String labelFile = "card_aug_v1.names";
 
+  static const int processedImageSize = 512;
+
   static const double confidenceThreshold = 0.5;
   static const double NMSOverlayThreshold = 0.6;
 

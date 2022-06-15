@@ -20,10 +20,12 @@ class AdjustView extends StatefulWidget {
 class _AdjustViewState extends State<AdjustView> {
   late List<Recognition> sortedRecognitions;
   final List<String> options;
+  late List<String> newOptions = [];
   final File imageFile;
 
   _AdjustViewState({required this.imageFile, required this.options, required this.sortedRecognitions, Key? key}) {
-    options.add("e");
+    newOptions.addAll(options);
+    newOptions.add("e");
   }
 
   void verifyLayoutButtonPressed() {
@@ -70,7 +72,7 @@ class _AdjustViewState extends State<AdjustView> {
     return Stack(
       children: sortedRecognitions
           .map((recognition) => CardAdjuster(
-                options: options,
+                options: newOptions,
                 recognition: recognition,
               ))
           .toList(),

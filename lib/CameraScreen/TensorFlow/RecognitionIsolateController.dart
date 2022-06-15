@@ -1,6 +1,5 @@
 import 'dart:isolate';
 import 'package:tflite_flutter/tflite_flutter.dart';
-import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import 'package:uberkabahle/CameraScreen/TensorFlow/Recognition.dart';
 import 'Classifier.dart';
 import 'package:image/image.dart' as imageLib;
