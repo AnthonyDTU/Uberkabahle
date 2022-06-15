@@ -264,6 +264,9 @@ class CardLocalizerFixedBoard {
 
   //This version find the spacing of the row without a list of empty locations
   List<Recognition?> _completeRowType2(List<Recognition> rowCards) {
+    double oneCardGapDistance = cardWidth * 1;
+    double twoCardGapDistance = cardWidth * 2;
+
     if (rowCards.isEmpty) {
       //no cards in row
       return [null, null, null, null];
@@ -284,7 +287,7 @@ class CardLocalizerFixedBoard {
       double currentDistanceBetweenCards;
       for (int i = 0; i < (rowCards.length - 1); i++) {
         currentDistanceBetweenCards = (rowCards[i].location.left - rowCards[i + 1].location.left).abs();
-        if (currentDistanceBetweenCards > cardWidth * 1.5) {
+        if (currentDistanceBetweenCards > oneCardGapDistance) {
           //there is a gap
           index = i;
           break;
@@ -322,11 +325,11 @@ class CardLocalizerFixedBoard {
       /**/
       double distaceBetweenCards = (rowCards[0].location.left - rowCards[1].location.left).abs();
 
-      if (distaceBetweenCards > (cardWidth * 2.5)) {
+      if (distaceBetweenCards > twoCardGapDistance) {
         finalRow.add(null);
         finalRow.add(null);
         gapsLeft = 0;
-      } else if (distaceBetweenCards > (cardWidth * 1.5)) {
+      } else if (distaceBetweenCards > oneCardGapDistance) {
         finalRow.add(null);
         gapsLeft = 1;
       }
@@ -355,8 +358,10 @@ class CardLocalizerFixedBoard {
         } else if (sideMargin < 0) {
           //bigger to the right
           finalRow.add(null);
+          finalRow.add(null);
         } else if (sideMargin > 0) {
           //bigger to the left
+          finalRow.insert(0, null);
           finalRow.insert(0, null);
         }
         gapsLeft = 0;
@@ -374,7 +379,7 @@ class CardLocalizerFixedBoard {
       finalRow.add(rowCards[0]);
       //if negative, then right distance is bigger, meaning 2 or more spaces there
       if (difference < 0) {
-        if (difference.abs() > cardWidth * 2.5) {
+        if (difference.abs() > twoCardGapDistance) {
           //all 3 gaps are to the right
           finalRow.add(null);
           finalRow.add(null);
@@ -388,7 +393,7 @@ class CardLocalizerFixedBoard {
         gapsLeft = 0;
       } else {
         //if postive, then left distance is bigger, meaning 2 or more spaces there
-        if (difference.abs() > cardWidth * 2.5) {
+        if (difference.abs() > twoCardGapDistance) {
           //all 3 gaps are to the left
           finalRow.insert(0, null);
           finalRow.insert(0, null);
@@ -661,6 +666,36 @@ class CardLocalizerFixedBoard {
     List<Recognition> filteredRecognitions = [];
 
     List<String> recognizedLabels = sortedRecognitions.keys.toList();
+
+    //remove detections that are too far from other with same label, ie it shouldnt be too far from all other detections and the list to be removed from should be a minimum of 4 corners as otherwise we would remove too many corners
+
+    //make a copy of map we will make changes to
+    Map<String, List<Recognition>> copyOfMap = Map<String, List<Recognition>>.from(sortedRecognitions);
+
+    bool distanceExceeded = true;
+    for (String key in recognizedLabels) {
+      if (sortedRecognitions.length >= 4) {
+        for (Recognition recognition1 in sortedRecognitions[key]!) {
+          for (Recognition recognition2 in sortedRecognitions[key]!) {
+            if (recognition1.location.left > (recognition2.location.left + cardWidth * 2) ||
+                recognition1.location.left < (recognition2.location.left - cardWidth * 2) ||
+                recognition1.location.top < (recognition2.location.top - cardHeight * 2) ||
+                recognition1.location.top > (recognition2.location.top + cardHeight * 2)) {
+              distanceExceeded = true;
+            } else {
+              distanceExceeded = false; //if just 1 is not too far away we are looking at wrong element
+              break;
+            }
+          }
+          if (distanceExceeded) {
+            //remove from map
+            copyOfMap[key]!.remove(recognition1);
+          }
+        }
+      }
+    }
+    sortedRecognitions = copyOfMap;
+
     recognizedLabels.forEach((label) {
       // Check that atleast two recognitions of this label has been made
       if (sortedRecognitions[label]!.length >= 2) {
