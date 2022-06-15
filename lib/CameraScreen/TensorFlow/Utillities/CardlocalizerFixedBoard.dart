@@ -5,11 +5,6 @@ import 'dart:math';
 import 'dart:convert';
 
 //small class used as signifier for size of a card
-class Size {
-  final double height;
-  final double width;
-  Size({required this.height, required this.width});
-}
 
 class Coordinate {
   final double x;
@@ -501,7 +496,7 @@ class CardLocalizerFixedBoard {
     height = height / amountOfItems;
     width = width / amountOfItems;
 
-    return Size(height: height, width: width);
+    return Size(width, height);
   }
 
   bool _cardIsInList(List<Recognition> cards, Recognition card) {
@@ -528,7 +523,7 @@ class CardLocalizerFixedBoard {
     }
 
     if (corners.length < 2) {
-      return Size(height: 0, width: 0);
+      return Size(0, 0);
     }
 
     double currentHeight;
@@ -552,7 +547,7 @@ class CardLocalizerFixedBoard {
         }
       }
     }
-    return Size(height: maxHeight, width: maxWidth);
+    return Size(maxWidth, maxHeight);
   }
 
   /// Creates one [Recognition] for each recognized label, based on an average location of all labels of that kind.
