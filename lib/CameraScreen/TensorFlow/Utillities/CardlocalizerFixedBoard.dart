@@ -169,8 +169,6 @@ class CardLocalizerFixedBoard {
     }
   }
 
-  void _removeRecognitionListFromRecognitionList() {}
-
   //takes a list of cards and list of spaces and creates a list of cards and null signifying missing spaces
   //uses the array that contains locations for the empty spaces.
   List<Recognition?> _completeRowType1(List<Recognition> rowCards, List<Coordinate> emptySpacesCards) {
