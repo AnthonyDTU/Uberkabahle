@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:uberkabahle/CameraScreen/TensorFlow/Recognition.dart';
 import 'package:uberkabahle/MoveScreen/AlgoritmController/AlgoritmController.dart';
@@ -19,7 +20,7 @@ class _MoveViewState extends State<MoveView> {
   final File imageFile;
   final List<Recognition> sortedRecognitions;
   late SuggestedMove suggestedMove;
-  late List<SuggestedMove> suggestedMoves;
+  late List<SuggestedMove> suggestedMoves = [];
   bool movesDetermined = false;
   int moveIndex = 0;
 
@@ -46,6 +47,14 @@ class _MoveViewState extends State<MoveView> {
     }
   }
 
+  void goToPreviousMove() {
+    if (moveIndex > 0) {
+      setState(() {
+        moveIndex--;
+      });
+    }
+  }
+
   void runAlgorithm() async {
     AlgorithmController algorithmController = AlgorithmController();
     suggestedMoves = await algorithmController.determinNextMove(sortedRecognitions);
@@ -65,7 +74,32 @@ class _MoveViewState extends State<MoveView> {
               alignment: Alignment.center,
               child: Image.file(imageFile),
             ),
-            (movesDetermined) ? MoveIndicator(suggestedMove: suggestedMoves[moveIndex], nextMoveHandler: goToNextMove) : const CircularProgressIndicator(),
+            (movesDetermined)
+                ? Stack(
+                    children: [
+                      MoveIndicator(suggestedMove: suggestedMoves[moveIndex], nextMoveHandler: goToNextMove),
+                      Container(
+                        alignment: Alignment.bottomLeft,
+                        margin: const EdgeInsets.all(20),
+                        child: IconButton(
+                          icon: const Icon(Icons.redo_rounded),
+                          onPressed: goToPreviousMove,
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.bottomCenter,
+                        margin: const EdgeInsets.all(20),
+                        child: Text(
+                          "Move ${moveIndex + 1} of ${suggestedMoves.length}",
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  )
+                : BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
             Container(
               alignment: Alignment.topLeft,
               margin: const EdgeInsets.all(20),

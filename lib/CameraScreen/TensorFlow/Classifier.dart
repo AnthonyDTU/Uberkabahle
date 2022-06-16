@@ -176,7 +176,7 @@ class Classifier {
     _interpreter.runForMultipleInputs([inputImage.buffer], _output);
 
     // Map and filter the reults
-    List<Recognition> recognitions = createRecognitionsFromOutput(Size(inputImage.width.toDouble(), inputImage.height.toDouble()));
+    List<Recognition> recognitions = createRecognitionsFromOutput(Size(image.width.toDouble(), image.height.toDouble()));
     recognitions = _runNMS(recognitions);
 
     // Debug
@@ -215,9 +215,11 @@ class Classifier {
       }
 
       // Get the label (card number) assosiated with the maximum score
-      String label = "";
+      var label;
       if (labelIndex != -1 && labelIndex < 52) {
         label = _labels.elementAt(labelIndex);
+      } else {
+        label = null;
       }
 
       // Makes sure the confidence is above the
@@ -232,7 +234,7 @@ class Classifier {
         Rect transformedRect = _imageProcessor.inverseTransformRect(rectAti, inputImageSize.height.toInt(), inputImageSize.width.toInt());
 
         recognitions.add(
-          Recognition(label: label!, confidence: maxClassScore, location: transformedRect),
+          Recognition(label: label, confidence: maxClassScore, location: transformedRect),
         );
       }
     }
