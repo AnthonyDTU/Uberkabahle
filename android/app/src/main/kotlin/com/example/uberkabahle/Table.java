@@ -1,6 +1,5 @@
 
-
-import Card;
+package com.example.uberkabahle;
 import java.util.List;
 
 public interface Table {

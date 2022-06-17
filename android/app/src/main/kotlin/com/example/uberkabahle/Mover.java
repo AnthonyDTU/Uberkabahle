@@ -1,6 +1,5 @@
 
-import Move;
-import Table;
+package com.example.uberkabahle;
 
 import java.util.ArrayList;
 import java.util.List;

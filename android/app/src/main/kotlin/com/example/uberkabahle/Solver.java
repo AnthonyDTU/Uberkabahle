@@ -1,5 +1,5 @@
 
-import Match;
+package com.example.uberkabahle;
 
 public interface Solver {
 

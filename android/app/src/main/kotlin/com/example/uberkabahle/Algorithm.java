@@ -1,11 +1,11 @@
 
+package com.example.uberkabahle;
 
-import Solver;
-import Table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
 
 public class Algorithm implements Solver {
 

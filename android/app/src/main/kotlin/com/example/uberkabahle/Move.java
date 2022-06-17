@@ -1,8 +1,5 @@
 
-
-import Card;
-import Match;
-
+package com.example.uberkabahle;
 public interface Move {
 
     void turnOverNewCard_PlayerDeck(Card newCard);

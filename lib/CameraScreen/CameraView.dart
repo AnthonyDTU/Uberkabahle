@@ -39,6 +39,8 @@ class CameraViewState extends State<CameraView> {
   bool _cameraInitialized = false;
   bool _isRecognizing = false;
 
+  bool isFirstMove = true;
+
   ResolutionPreset imageResolution = ResolutionPreset.veryHigh;
 
   int numberOfMoves = 0;
@@ -166,11 +168,13 @@ class CameraViewState extends State<CameraView> {
               builder: (context) => AdjustView(
                 imageFile: imageFile,
                 options: _classifier.labels,
-                sortedRecognitions: localizer.filterRecognitions(recognitions),
-                //sortedRecognitions: cardLocalizer.resultAsListNoNull,
+                //sortedRecognitions: localizer.filterRecognitions(recognitions),
+                sortedRecognitions: cardLocalizer.resultAsListNoNull,
+                isFirstMove: isFirstMove,
               ),
             ),
           );
+          isFirstMove = false;
         }
       }
     } catch (e) {

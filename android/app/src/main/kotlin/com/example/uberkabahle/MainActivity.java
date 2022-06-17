@@ -28,12 +28,13 @@ public class MainActivity extends FlutterActivity {
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler(
             (call, result) -> {
                 if (call.method.equals("initTable")){
-
+                    // 7 cards
                     String data = call.argument("data");
                     comm.initStartTable(data);
                     result.success(true);
                 }
                 else if (call.method.equals("updateTable")){
+                    // 8 cards
                     String data = call.argument("data");
                     
                     comm.updateTable(data);
@@ -41,7 +42,13 @@ public class MainActivity extends FlutterActivity {
                 }
                 else if (call.method.equals("getNextMove")){
                     //call comm.getNextMove, which returns an int array
-                    result.success(comm.getNextMove());
+
+                    String[] moves = comm.getNextMove();
+                    StringBuilder returnString = new StringBuilder();
+                    for (String move: moves) {
+                        returnString.append(move).append(';');
+                    }
+                    result.success(returnString.toString());
                 }
                 else {
                     result.notImplemented();

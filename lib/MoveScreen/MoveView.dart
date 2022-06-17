@@ -10,21 +10,24 @@ import '../CameraScreen/Widgets/ReturnButton.dart';
 class MoveView extends StatefulWidget {
   final File imageFile;
   final List<Recognition> sortedRecognitions;
-  const MoveView({required this.imageFile, required this.sortedRecognitions, Key? key}) : super(key: key);
+  final bool isFirstMove;
+  const MoveView({required this.imageFile, required this.sortedRecognitions, required this.isFirstMove, Key? key}) : super(key: key);
 
   @override
-  State<MoveView> createState() => _MoveViewState(imageFile: imageFile, sortedRecognitions: sortedRecognitions);
+  State<MoveView> createState() => _MoveViewState(imageFile: imageFile, sortedRecognitions: sortedRecognitions, isFirstMove: isFirstMove);
 }
 
 class _MoveViewState extends State<MoveView> {
   final File imageFile;
   final List<Recognition> sortedRecognitions;
+  final bool isFirstMove;
   late SuggestedMove suggestedMove;
   late List<SuggestedMove> suggestedMoves = [];
+
   bool movesDetermined = false;
   int moveIndex = 0;
 
-  _MoveViewState({required this.imageFile, required this.sortedRecognitions});
+  _MoveViewState({required this.imageFile, required this.sortedRecognitions, required this.isFirstMove});
 
   void navigateToCameraView() {
     Navigator.pop(context);
@@ -57,7 +60,12 @@ class _MoveViewState extends State<MoveView> {
 
   void runAlgorithm() async {
     AlgorithmController algorithmController = AlgorithmController();
-    suggestedMoves = await algorithmController.determinNextMove(sortedRecognitions);
+
+    if (isFirstMove) {
+      suggestedMoves = await algorithmController.determineFirstMove(sortedRecognitions);
+    } else {
+      suggestedMoves = await algorithmController.determineNextMove(sortedRecognitions);
+    }
 
     setState(() {
       movesDetermined = true;
