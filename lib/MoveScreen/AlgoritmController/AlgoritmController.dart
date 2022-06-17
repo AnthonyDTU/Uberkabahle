@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
@@ -12,14 +13,6 @@ class AlgorithmController {
   Future<List<SuggestedMove>> determineFirstMove(List<Recognition> sortedRecognitions) async {
     String cardConfigurationMessage = "";
     for (int index = 4; index < sortedRecognitions.length - 1; index++) {
-      // String convertedLabel = sortedRecognitions[index].label;
-      // convertedLabel = convertedLabel.replaceAll("K", "13");
-      // convertedLabel = convertedLabel.replaceAll("Q", "12");
-      // convertedLabel = convertedLabel.replaceAll("J", "11");
-      // convertedLabel = convertedLabel.replaceAll("A", "1");
-      // convertedLabel = convertedLabel.replaceAll("D", "R");
-      // convertedLabel = convertedLabel.replaceAll("C", "K");
-      // String newLabel = convertedLabel.substring(convertedLabel.length - 1) + convertedLabel.substring(0, convertedLabel.length - 1);
       String label = translateLabelToDanish(sortedRecognitions[index].label);
       cardConfigurationMessage += (index != sortedRecognitions.length - 2) ? "$label," : "$label";
     }
@@ -40,19 +33,40 @@ class AlgorithmController {
       cardConfigurationMessage += (index != sortedRecognitions.length - 1) ? "$label," : "$label";
     }
     bool status = await setRecognizedCards(cardConfigurationMessage);
-    String suggestedMove = await getNextMove();
+
+    if (status == true) {
+      String suggestedMove = await getNextMove();
+      List<String> suggestedMoves = suggestedMove.split(';');
+      for (String move in suggestedMoves) {
+        List<String> moveComponents = move.split(',');
+
+        SuggestedMove newMove = SuggestedMove(moveCard, moveComponents[0], toCard, moveComponents[1], flipStack, solved)
+      }
+    }
+
     return buildDebugMoves(sortedRecognitions);
   }
 
-  String translateLabelToDanish(String data) {
-    data = data.replaceAll("K", "13");
-    data = data.replaceAll("Q", "12");
-    data = data.replaceAll("J", "11");
-    data = data.replaceAll("A", "1");
-    data = data.replaceAll("D", "R");
-    data = data.replaceAll("C", "K");
+  String translateLabelToDanish(String label) {
+    label = label.replaceAll("K", "13");
+    label = label.replaceAll("Q", "12");
+    label = label.replaceAll("J", "11");
+    label = label.replaceAll("A", "1");
+    label = label.replaceAll("D", "R");
+    label = label.replaceAll("C", "K");
 
-    return data.substring(data.length - 1) + data.substring(0, data.length - 1);
+    return label.substring(label.length - 1) + label.substring(0, label.length - 1);
+  }
+
+  String translateLabelToEnglish(String label){
+    label = label.replaceAll("13", "K");
+    label = label.replaceAll("12", "Q");
+    label = label.replaceAll("11", "J");
+    label = label.replaceAll("1", "A");
+    label = label.replaceAll("R", "D");
+    label = label.replaceAll("K", "C");
+
+    return  label.substring(1, label.length - 1) + label.substring(0, 1);
   }
 
   Future<String> getNextMove() async {
