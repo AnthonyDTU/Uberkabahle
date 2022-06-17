@@ -688,6 +688,7 @@ class CardLocalizerFixedBoard {
           if (distanceExceeded) {
             //remove from map
             copyOfMap[key]!.remove(recognition1);
+            break;
           }
         }
       }
