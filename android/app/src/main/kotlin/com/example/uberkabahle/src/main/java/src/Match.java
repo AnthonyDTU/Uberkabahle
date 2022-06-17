@@ -1,5 +1,5 @@
+package com.example.uberkabahle.src.main.java.src;
 
-package com.example.uberkabahle;
 public class Match {
 
     int fromPile;
@@ -9,7 +9,32 @@ public class Match {
     boolean complex = false;
     int complexIndex;
     int complexFinalFoundationPile;
-    Card nextPlayerCard;
+    public Card nextPlayerCard;
+
+
+    public boolean isComplex() {
+        return complex;
+    }
+
+    public void setComplex(boolean complex) {
+        this.complex = complex;
+    }
+
+    public int getComplexIndex() {
+        return complexIndex;
+    }
+
+    public void setComplexIndex(int complexIndex) {
+        this.complexIndex = complexIndex;
+    }
+
+    public Card getNextPlayerCard() {
+        return nextPlayerCard;
+    }
+
+    public void setNextPlayerCard(Card nextPlayerCard) {
+        this.nextPlayerCard = nextPlayerCard;
+    }
 
     boolean lastCardInPile = false;
 

@@ -1,5 +1,9 @@
+package com.example.uberkabahle.src.main.java.src.Interfaces;
 
-package com.example.uberkabahle;
+
+import com.example.uberkabahle.src.main.java.src.Card;
+import com.example.uberkabahle.src.main.java.src.Match;
+
 public interface Move {
 
     void turnOverNewCard_PlayerDeck(Card newCard);

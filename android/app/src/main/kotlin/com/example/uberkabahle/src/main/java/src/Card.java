@@ -1,5 +1,4 @@
-
-package com.example.uberkabahle;
+package com.example.uberkabahle.src.main.java.src;
 
 public class Card {
 
@@ -32,6 +31,8 @@ public class Card {
         else
             color = Colors.RED.ordinal();
     }
+
+
 
     public Card(int type, int color, int value, boolean faceUp, int belongToPile) {
         this.type = type;
@@ -103,6 +104,5 @@ public class Card {
     public void setValue(int value) {
         this.value = value;
     }
-
 
 }
