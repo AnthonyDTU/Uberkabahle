@@ -1,13 +1,27 @@
+package com.example.uberkabahle.src.main.java.src;
 
-package com.example.uberkabahle;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
+import com.example.uberkabahle.src.main.java.src.Interfaces.Solver;
+import com.example.uberkabahle.src.main.java.src.Interfaces.Table;
+import java.util.*;
 
 public class Algorithm implements Solver {
+
+
+    /*
+    * IDE TIL STOCK ALGORITME
+    *
+    * - Undgå at komme i loop, hvor man ikke kan bruge de kort man får.
+    *   Dette kan undgås ved, at (faceUp + FaceDown) % 3    !=   0
+    *
+    * - Før hver gang man trækker fra stock til foundation eller tablou, tjek om (faceUp + FaceDown - 1) % 3  =  0
+    * - Hvis denne bliver 0 næste gang, kan man gennemgå hele bunken - måske
+    *
+    * */
+
+    //TODO Tjek om bunken bliver vendt rigtigt
+
+
 
     private int cardFromPile;// = -10;
     private int cardToPile;// = -10;
@@ -23,7 +37,7 @@ public class Algorithm implements Solver {
 
     Table table;
 
-    Algorithm(Table table){
+    public Algorithm(Table table){
         this.table = table;
     }
 
@@ -38,6 +52,12 @@ public class Algorithm implements Solver {
          * -Start over, if no swaps is done, set the boolean to false, and the loop is broken.
          * */
         boolean swapped = true;
+        for (int i = 0 ; i < listToSort.size() ; i++){
+            if (listToSort.get(i).isEmpty()){
+                listToSort.remove(i);
+                i--;
+            }
+        }
         while (swapped)
         {
             swapped = false;
@@ -46,7 +66,7 @@ public class Algorithm implements Solver {
             while (next < listToSort.size())
             {
                 if(listToSort.get(current).isEmpty() || listToSort.get(next).isEmpty()){current++; next++; continue;}
-                if(listToSort.get(current).get(0).getValue() > listToSort.get(next).get(0).getValue())
+                else if(listToSort.get(current).get(0).getValue() > listToSort.get(next).get(0).getValue())
                 {
                     Collections.swap(listToSort, current, next);
                     swapped = true;
@@ -156,7 +176,18 @@ public class Algorithm implements Solver {
             }
             else if(table.getPlayerDeck_FaceUp().size() == 1){
                 match.setNoNextInput(true);
+                match.setLastCardInPile(true);
             }
+//            else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() == 2){
+//                if (table.getPlayerDeck_FaceDown().get(1).isFaceUp()) {
+//                    match.setNoNextInput(true);
+//                }
+//            }
+//            else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() == 2){
+//                if (table.getPlayerDeck_FaceDown().get(1).isFaceUp()) {
+//                    match.setNoNextInput(true);
+//                }
+//            }
             return match;
         }
 

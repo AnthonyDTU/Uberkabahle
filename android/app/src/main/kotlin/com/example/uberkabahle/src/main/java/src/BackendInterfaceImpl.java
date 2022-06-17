@@ -1,7 +1,12 @@
-package com.example.uberkabahle;
-public class Communicator {
+package com.example.uberkabahle.src.main.java.src;
 
-    /*Table table;
+import com.example.uberkabahle.src.main.java.src.Interfaces.Move;
+import com.example.uberkabahle.src.main.java.src.Interfaces.Table;
+import com.example.uberkabahle.src.main.java.src.Interfaces.comm.BackendInterface;
+
+public class BackendInterfaceImpl implements BackendInterface {
+
+    Table table;
     Algorithm algorithm;
     Match match;
     Move move;
@@ -80,6 +85,6 @@ public class Communicator {
 
             return "No board difference";
         }
-    }*/
+    }
 }
 

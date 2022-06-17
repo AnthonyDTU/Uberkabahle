@@ -1,5 +1,8 @@
+package com.example.uberkabahle.src.main.java.src;
 
-package com.example.uberkabahle;
+
+import com.example.uberkabahle.src.main.java.src.Interfaces.Table;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,15 +173,24 @@ public class TableIO implements Table {
             piles.add(new ArrayList<>());
         }
 
-        int j = 7;
+        int j = 0;
         for (int n = 0; n < 7; n++){
-            for (int i = 0; i < j; i++) {
+            for (int i = 0; i < 1 + n; i++) {
                 Card card = new Card();
-                piles.get(i).add(card);
-                piles.get(i).get(n).setBelongToPile(i);
+                piles.get(n).add(card);
+                piles.get(n).get(i).setBelongToPile(n);
             }
-            j--;
+            j++;
         }
+//        int j = 7;
+//        for (int n = 0; n < 7; n++){
+//            for (int i = 0; i < j; i++) {
+//                Card card = new Card();
+//                piles.get(i).add(card);
+//                piles.get(i).get(n).setBelongToPile(i);
+//            }
+//            j--;
+//        }
         //Turn over the first card in all the 7 piles
         for (int i = 0 ; i < piles.size() ; i++)
         {
