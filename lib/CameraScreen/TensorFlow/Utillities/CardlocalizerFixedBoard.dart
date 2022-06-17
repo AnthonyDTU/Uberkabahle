@@ -131,11 +131,10 @@ class CardLocalizerFixedBoard {
 
   //Doesnt use the list that contains empty spaces
   void findLocationsForCardsType2() {
+    List<List<Recognition?>> rowList = [[], [], []];
     List<Recognition> allCards = centeredCoordinates;
 
     List<Recognition> detectedRowCards;
-    List<Recognition?> rowWithSpaces;
-
     Recognition smallestCard = allCards.reduce((value, element) => value.location.top < element.location.top ? value : element);
     print("whole list");
     detectedLocationsPrint(allCards);
@@ -150,17 +149,38 @@ class CardLocalizerFixedBoard {
       print("rest of cards after removal");
       detectedLocationsPrint(allCards);
       //finish card list with its empty spaces represented as null
-      rowWithSpaces = _completeRowType2(detectedRowCards);
+      rowList[i] = _completeRowType2(detectedRowCards);
       print("row with spaces " + i.toString() + "\n");
-      detectedLocationsPrint(rowWithSpaces);
-      //add all to complete list
-      for (Recognition? card in rowWithSpaces) {
-        detectedLocations.add(card);
+      detectedLocationsPrint(rowList[i]);
+    }
+
+    //if there are leftovers find a row with all e's and add them there
+    if (allCards.isNotEmpty && allCards.length <= 4) {
+      for (int i = 0; i < 3; i++) {
+        if (isRowEmpty(rowList[i])) {
+          rowList[i] = _completeRowType2(allCards);
+        }
       }
     }
+
+    //add all rows to overall List
+    for (int i = 0; i < 3; i++) {
+      detectedLocations.addAll(rowList[i]);
+    }
+
     detectedLocationsWithoutNull = _removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
     print("final list");
     detectedLocationsPrint(detectedLocationsWithoutNull);
+  }
+
+  bool isRowEmpty(List<Recognition?> row) {
+    bool empty = true;
+    for (int i = 0; i < 4; i++) {
+      if (row[i] != null) {
+        empty = false;
+      }
+    }
+    return empty;
   }
 
   void detectedLocationsPrint(List<Recognition?> list) {
@@ -457,11 +477,20 @@ class CardLocalizerFixedBoard {
 
     print("third of screen: " + screenPart.toString());
     print("card height: " + cardHeight.toString());
+    print("card width: " + cardWidth.toString());
 
     List<Recognition> cardsToReturn = [];
     for (Recognition card in cards) {
       if ((card.location.top >= (screenPart * rowNum) - wiggleroom) && (card.location.top <= (screenPart * (rowNum + 1)) + wiggleroom)) {
         cardsToReturn.add(card);
+      }
+    }
+
+    //trim end if too many card get recognized for row;
+    if (cardsToReturn.length > 4) {
+      cardsToReturn.sort((a, b) => a.location.top.compareTo(b.location.top));
+      while (cardsToReturn.length > 4) {
+        cardsToReturn.removeLast();
       }
     }
     return cardsToReturn;
@@ -700,6 +729,7 @@ class CardLocalizerFixedBoard {
       if (sortedRecognitions[label]!.length >= 2) {
         // Initialize calculation variables
         int count = 0;
+
         double averageY = 0;
         double averageX = 0;
         double confidence = 0;
@@ -716,6 +746,8 @@ class CardLocalizerFixedBoard {
         averageX /= count;
         averageY /= count;
         confidence /= count;
+
+        //method 2 of calculating average
 
         // Create new recognition symbolizing the average
         Recognition newRecognition = Recognition(label: label, confidence: confidence, location: Rect.fromLTWH(averageX, averageY, 0, 0));
