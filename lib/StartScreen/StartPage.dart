@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:uberkabahle/MoveScreen/AlgoritmController/AlgoritmController.dart';
 import 'package:uberkabahle/StartScreen/Widgets/StartButton.dart';
 import 'Widgets/TitleLabel.dart';
 import '../CameraScreen/CameraView.dart';
@@ -14,12 +15,8 @@ class StartPage extends StatefulWidget {
 }
 
 class _StartPageState extends State<StartPage> {
-  static const backendAlgorithm = MethodChannel('BackendChannel');
-
   void _startPressed() async {
-    // final int result = await backendAlgorithm.invokeMethod("add", {'a': 10, 'b': 20});
-    // String helloString = await backendAlgorithm.invokeMethod("get string", {"arg": "Test"});
-    // print(result.toString());
+    AlgorithmController.isFirstMove = true;
 
     Navigator.push(
       context,
