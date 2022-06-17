@@ -10,11 +10,12 @@ class AdjustView extends StatefulWidget {
   final List<Recognition> sortedRecognitions;
   final List<String> options;
   final File imageFile;
+  final bool isFirstMove;
 
-  const AdjustView({required this.imageFile, required this.options, required this.sortedRecognitions, Key? key}) : super(key: key);
+  const AdjustView({required this.imageFile, required this.options, required this.sortedRecognitions, required this.isFirstMove, Key? key}) : super(key: key);
 
   @override
-  State<AdjustView> createState() => _AdjustViewState(imageFile: imageFile, options: options, sortedRecognitions: sortedRecognitions);
+  State<AdjustView> createState() => _AdjustViewState(imageFile: imageFile, options: options, sortedRecognitions: sortedRecognitions, isFirstMove: isFirstMove);
 }
 
 class _AdjustViewState extends State<AdjustView> {
@@ -22,8 +23,9 @@ class _AdjustViewState extends State<AdjustView> {
   final List<String> options;
   late List<String> newOptions = [];
   final File imageFile;
+  final bool isFirstMove;
 
-  _AdjustViewState({required this.imageFile, required this.options, required this.sortedRecognitions, Key? key}) {
+  _AdjustViewState({required this.imageFile, required this.options, required this.sortedRecognitions, required this.isFirstMove, Key? key}) {
     newOptions.addAll(options);
     newOptions.add("e");
   }
@@ -35,6 +37,7 @@ class _AdjustViewState extends State<AdjustView> {
         builder: (context) => MoveView(
           sortedRecognitions: sortedRecognitions,
           imageFile: imageFile,
+          isFirstMove: isFirstMove,
         ),
       ),
     );
