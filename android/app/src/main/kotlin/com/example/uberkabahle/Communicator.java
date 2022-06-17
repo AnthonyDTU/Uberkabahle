@@ -1,4 +1,6 @@
-package com.example.uberkabahle;
+
+import Move;
+import Table;
 
 public class Communicator {
 
@@ -7,6 +9,8 @@ public class Communicator {
     Match match;
     Move move;
 
+    StringBuilder retMove = new StringBuilder();
+
     public void initStartTable(String cardsString){
         table = new TableIO();
         move = new Mover(table);
@@ -14,26 +18,26 @@ public class Communicator {
         table.initStartTable(cardsString);
     }
 
-    public String[] getNextMove(){
+    public String getNextMove(){
         match = algorithm.checkForAnyMatch();
 
-        String[] ret = new String[4];
-        ret[0] = "0";
-        ret[1] = "0";
-        ret[2] = "0";
-        ret[3] = "0";
-
         if (match.match){
-            ret[0] = String.valueOf(match.getFromPile());
-            ret[1] = String.valueOf(match.getToPile());
-            ret[2] = String.valueOf(match.complexIndex);
-            ret[3] = String.valueOf(match.getComplexFinalFoundationPile());
+            retMove.append(String.valueOf(match.getFromPile())).append(",");
+            retMove.append(String.valueOf(match.getToPile())).append(",");
+            retMove.append(String.valueOf(match.complexIndex)).append(",");
+            retMove.append(String.valueOf(match.getComplexFinalFoundationPile())).append(";");
+        }
+        if (match.noNextInput){
+            move.moveCard_OrPile(match);
+            getNextMove();
         }
 
-        return ret;
+
+        return String.valueOf(retMove);
     }
 
     public String updateTable(String cardsString){
+        retMove = new StringBuilder();
         if (match.noNextInput){
             return null;
         }
@@ -64,7 +68,7 @@ public class Communicator {
                     else {
                         Card tmpCard = table.getAllPiles().get(i).get(table.getAllPiles().get(i).size() - 1);
                         Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
-                        if (tmpCard.getValue() != tmpCard1.getValue() && tmpCard.getType() != tmpCard1.getType() &&
+                        if (tmpCard.getValue() != tmpCard1.getValue() || tmpCard.getType() != tmpCard1.getType() &&
                                 match.fromPile == tmpCard.getBelongToPile()){
                             cardDif = table.stringToCardConverter(cardSplit[i]);
                             cardDif.setFaceUp(true);
