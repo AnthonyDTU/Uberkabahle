@@ -6,8 +6,7 @@ class ReturnButton extends IconButton {
   @override
   final VoidCallback onPressed;
 
-  const ReturnButton({required this.onPressed})
-      : super(onPressed: onPressed, icon: const Icon(Icons.backspace));
+  const ReturnButton({required this.onPressed}) : super(onPressed: onPressed, icon: const Icon(Icons.backspace));
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +14,7 @@ class ReturnButton extends IconButton {
     if (defaultTargetPlatform == TargetPlatform.android) {
       return IconButton(
         onPressed: onPressed,
-        icon: const Icon(Icons.arrow_back),
+        icon: const Icon(Icons.arrow_back_rounded),
         color: Colors.grey,
       );
     }

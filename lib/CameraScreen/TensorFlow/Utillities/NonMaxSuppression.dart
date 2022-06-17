@@ -4,6 +4,13 @@ import 'package:uberkabahle/AppSettings.dart';
 import '../Recognition.dart';
 import 'package:collection/collection.dart';
 
+/// This class [NonMaxSuppression] is responsible for filtering out recognitions hits, which overlap too much
+/// which overlaps too much, using a techniqe called Non Max Supression.
+/// The implementation is almost straight from the example on object detection using Tensorflow lite, found on Github:
+/// https://github.com/TexMexMax/object_detection_flutter
+///
+/// Only real change is it has been moved to seperate class.
+///
 class NonMaxSuppression {
   List<Recognition> PerformNonMaxSuppression(List<Recognition> recognitions, List<String> labels) {
     List<Recognition> nmsList = <Recognition>[];

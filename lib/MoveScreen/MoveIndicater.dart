@@ -53,8 +53,8 @@ class MoveIndicator extends StatelessWidget {
                             height: 20,
                           ),
                           Text(
-                            "Column ${suggestedMove.fromColumn}",
-                            style: const TextStyle(fontSize: 20),
+                            "Tableau ${suggestedMove.fromColumn + 1}",
+                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -79,8 +79,8 @@ class MoveIndicator extends StatelessWidget {
                             height: 20,
                           ),
                           Text(
-                            "Column ${suggestedMove.toColumn}",
-                            style: const TextStyle(fontSize: 20),
+                            "Tableau ${suggestedMove.toColumn + 1}",
+                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
