@@ -1,5 +1,6 @@
-//package src;
-package com.example.uberkabahle;
+
+import Move;
+import Table;
 
 public class Communicator {
 
@@ -15,57 +16,71 @@ public class Communicator {
         table.initStartTable(cardsString);
     }
 
-    public int[] getNextMove(){
+    public String[] getNextMove(){
         match = algorithm.checkForAnyMatch();
 
-        int[] ret = new int[3];
+        String[] ret = new String[4];
+        ret[0] = "0";
+        ret[1] = "0";
+        ret[2] = "0";
+        ret[3] = "0";
 
         if (match.match){
-            move.moveCard_OrPile(match);
-            ret[0] = match.fromPile;
-            ret[1] = match.toPile;
-            ret[2] = match.complexIndex;
+            ret[0] = String.valueOf(match.getFromPile());
+            ret[1] = String.valueOf(match.getToPile());
+            ret[2] = String.valueOf(match.complexIndex);
+            ret[3] = String.valueOf(match.getComplexFinalFoundationPile());
         }
 
         return ret;
     }
 
     public String updateTable(String cardsString){
-        String[] cardSplit = cardsString.split(",");
-        Card cardDif;
+        if (match.noNextInput){
+            return null;
+        }
+        else {
+            String[] cardSplit = cardsString.split(",");
+            Card cardDif;
 
-        for (int i = 0; i < cardSplit.length; i++){
-            if (!cardSplit[i].equals("e")){
-                if (i == 7){
-                    Card tmpCard = null;
-                    if (!table.getPlayerDeck_FaceUp().isEmpty()){
-                        tmpCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+            for (int i = 0; i < cardSplit.length; i++){
+                if (!cardSplit[i].equals("e")){
+                    if (i == 7){
+                        Card tmpCard = null;
+                        if (!table.getPlayerDeck_FaceUp().isEmpty()){
+                            tmpCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+                            System.out.println(tmpCard.getValue());
+                        }
+                        Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
+                        System.out.println(tmpCard1.getValue());
+                        if (table.getPlayerDeck_FaceUp().isEmpty() || (tmpCard.getValue() != tmpCard1.getValue() ||
+                                tmpCard.getType() != tmpCard1.getType()) && match.fromPile == tmpCard.getBelongToPile()){
+                            cardDif = table.stringToCardConverter(cardSplit[i]);
+                            cardDif.setFaceUp(true);
+                            match.nextPlayerCard = cardDif;
+                            move.moveCard_OrPile(match);
+                            table.printTable();
+                            return String.valueOf(cardDif.getValue());
+                        }
                     }
-                    Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
-                    if (table.getPlayerDeck_FaceUp().isEmpty() || (tmpCard.getValue() != tmpCard1.getValue() &&
-                            tmpCard.getType() != tmpCard1.getType())){
-                        cardDif = table.stringToCardConverter(cardSplit[i]);
-                        match.nextPlayerCard = cardDif;
-                        move.insertNextCardFromInput(match);
-                        table.printTable();
-                        return String.valueOf(cardDif.getValue());
-                    }
-                }
-                else {
-                    Card tmpCard = table.getAllPiles().get(i).get(table.getAllPiles().get(i).size() - 1);
-                    Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
-                    if (tmpCard.getValue() != tmpCard1.getValue() && tmpCard.getType() != tmpCard1.getType()){
-                        cardDif = table.stringToCardConverter(cardSplit[i]);
-                        match.nextPlayerCard = cardDif;
-                        move.insertNextCardFromInput(match);
-                        table.printTable();
-                        return String.valueOf(cardDif.getValue());
+                    else {
+                        Card tmpCard = table.getAllPiles().get(i).get(table.getAllPiles().get(i).size() - 1);
+                        Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
+                        if (tmpCard.getValue() != tmpCard1.getValue() && tmpCard.getType() != tmpCard1.getType() &&
+                                match.fromPile == tmpCard.getBelongToPile()){
+                            cardDif = table.stringToCardConverter(cardSplit[i]);
+                            cardDif.setFaceUp(true);
+                            match.nextPlayerCard = cardDif;
+                            move.moveCard_OrPile(match);
+                            table.printTable();
+                            return String.valueOf(cardDif.getValue());
+                        }
                     }
                 }
             }
+
+            return "No board difference";
         }
-
-        return "No board difference";
     }
-
 }
+

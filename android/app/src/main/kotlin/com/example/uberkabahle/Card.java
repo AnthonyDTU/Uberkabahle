@@ -1,5 +1,4 @@
 
-package com.example.uberkabahle;
 
 public class Card {
 

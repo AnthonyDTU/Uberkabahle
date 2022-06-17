@@ -1,4 +1,7 @@
-package com.example.uberkabahle;
+
+
+import Card;
+import Match;
 
 public interface Move {
 
@@ -6,6 +9,8 @@ public interface Move {
     void moveComplexPile(int fromPile, int fromIndex, int toPile);
     void moveCard_OrPile(Match match);
 
-    void insertNextCardFromInput(Match match);
+    //void insertNextCardFromInput(Match match);
+
+    public boolean getIsStockPileIsEmpty();
 
 }

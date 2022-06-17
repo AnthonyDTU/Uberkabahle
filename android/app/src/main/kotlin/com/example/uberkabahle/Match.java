@@ -1,5 +1,5 @@
-//package src;
-package com.example.uberkabahle;
+
+
 public class Match {
 
     int fromPile;
@@ -14,6 +14,8 @@ public class Match {
     boolean lastCardInPile = false;
 
     boolean noNextInput = false;
+
+    boolean stockPileIsEmpty = false;
 
     //boolean nextPlayerDeckCardIsKnown;
 
@@ -93,5 +95,26 @@ public class Match {
         this.noNextInput = noNextInput;
     }
 
+    @Override
+    public String toString() {
+        return "Match{" +
+                "fromPile=" + fromPile +
+                ", toPile=" + toPile +
+                ", match=" + match +
+                ", complex=" + complex +
+                ", complexIndex=" + complexIndex +
+                ", complexFinalFoundationPile=" + complexFinalFoundationPile +
+                ", nextPlayerCard=" + nextPlayerCard +
+                ", lastCardInPile=" + lastCardInPile +
+                ", noNextInput=" + noNextInput +
+                '}';
+    }
 
+    public boolean isStockPileIsEmpty() {
+        return stockPileIsEmpty;
+    }
+
+    public void setStockPileIsEmpty(boolean stockPileIsEmpty) {
+        this.stockPileIsEmpty = stockPileIsEmpty;
+    }
 }

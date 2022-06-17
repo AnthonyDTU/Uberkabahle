@@ -1,5 +1,6 @@
-package com.example.uberkabahle;
 
+
+import Card;
 import java.util.List;
 
 public interface Table {
@@ -37,6 +38,7 @@ public interface Table {
     public List<Card> getPlayerDeck_FaceDown();
 
     public void setPlayerDeck_FaceDown(List<Card> playerDeck_FaceUp);
+
 
     //public int getPlayerDeckIndex();
 

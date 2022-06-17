@@ -1,8 +1,11 @@
-package com.example.uberkabahle;
 
+
+import Solver;
+import Table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Algorithm implements Solver {
 
@@ -68,63 +71,179 @@ public class Algorithm implements Solver {
     @Override
     public Match checkForAnyMatch() {
 
-        if(checkForMatch_TopPile()){
-            return new Match(cardFromPile, cardToPile, true, false);
+        if(checkForMatch_tablou_to_TopPile()){
+            Match match = new Match(cardFromPile, cardToPile, true, false);
+            if(table.getAllPiles().get(cardFromPile).size() < 2){
+                match.setNoNextInput(true);
+                return match;
+            }
+            if(table.getAllPiles().get(cardFromPile).get(table.getAllPiles().get(cardFromPile).size() - 2).isFaceUp()){
+                match.setNoNextInput(true);
+            }
+            return match;
         }
 
-        else if(checkForMatchBottomPiles()){
-            return new Match(cardFromPile, cardToPile, true, false);
+        else if(checkForComplexMatch()){
+            Match match = new Match(cardFromPile, cardToPile, true, true, cardFromComplexPileIndex, finalComplexPile);
+            int index = 0;
+
+            if(cardFromComplexPileIndex < 2){
+                match.setNoNextInput(true);
+                return match;
+            }
+            if (table.getAllPiles().get(cardFromPile).get(cardFromComplexPileIndex - 2).isFaceUp()){
+                match.setNoNextInput(true);
+            }
+            return match;
+        }
+
+        else if(checkForMatchBottomPiles()){    //TODO denne funktions skaber lidt problemer
+            int index = 0;
+            Match match = new Match(cardFromPile, cardToPile, true, false);
+            if(table.getAllPiles().get(cardFromPile).size() < 2){
+                match.setNoNextInput(true);
+                match.lastCardInPile = true;
+                return match;
+            }
+            else if(table.getAllPiles().get(cardFromPile).get(0).isFaceUp()){
+                match.setNoNextInput(true);
+                match.setLastCardInPile(true);
+            }
+            return match;
         }
 
         else if(checkForKingMatch_FromTablou_ToEmptyPile()){
             return new Match(cardFromPile, cardToPile, true, false);
         }
 
-        else if(checkForMatch_playerDeck()) {
-            return new Match(cardFromPile, cardToPile, true, false);
-        }
-
-
         else if(checkForKingMatch_FromStack_ToEmptyPile()){
-            return new Match(cardFromPile, cardToPile, true, false);
-        }
-//    public Match(int fromPile, int toPile, boolean match, boolean complex, int complexIndex, Card nextPlayerCard, int complexFinalFoundationPile) {
-        else if(checkForComplexMatch()){
-            return new Match(cardFromPile, cardToPile, true, true, cardFromComplexPileIndex, finalComplexPile);
-        }
-
-        else if(nextStockCardIsKnown()){
-            //System.out.println("next card is known!");
-            Match match = new Match(11, -1, false, false);
-            match.noNextInput = true;
-            if(table.getPlayerDeck_FaceDown().size() > 2){
-                for (int i = 0 ; i < 3 ; i++){
-                    table.getPlayerDeck_FaceUp().add(table.getPlayerDeck_FaceDown().get(0));
-                    table.getPlayerDeck_FaceDown().remove(0);
-                }
+            Match match = new Match(cardFromPile, cardToPile, true, false);
+            if(table.getPlayerDeck_FaceUp().size() == 1){
+                match.setLastCardInPile(true);
+                match.setNoNextInput(true);
+                return match;
             }
-            else if(table.getPlayerDeck_FaceDown().size() <= 2 && table.getPlayerDeck_FaceDown().size() != 0){
-                table.getPlayerDeck_FaceDown().addAll(table.getPlayerDeck_FaceUp());
-                while (table.getPlayerDeck_FaceUp().size() != 0) table.getPlayerDeck_FaceUp().remove(0);
-                //table.getPlayerDeck_FaceUp().clear();
-                for (int i = 0 ; i < 3 ; i++){
-                    table.getPlayerDeck_FaceUp().add(table.getPlayerDeck_FaceDown().get(0));
-                    table.getPlayerDeck_FaceDown().remove(0);
-                }
-            }
-            else {
-                table.getPlayerDeck_FaceDown().addAll(table.getPlayerDeck_FaceUp());
-                table.getPlayerDeck_FaceUp().clear();
-                for (int i = 0 ; i < 3 ; i++){
-                    table.getPlayerDeck_FaceUp().add(table.getPlayerDeck_FaceDown().get(0));
-                    table.getPlayerDeck_FaceDown().remove(0);
-                }
+            if(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 2).isFaceUp()){
+                match.setNoNextInput(true);
             }
             return match;
         }
-        else {
-            return new Match(11, -1, false, false);
+
+        else if(checkForMatch_playerDeck()) {
+            Match match = new Match(cardFromPile, cardToPile, true, false);
+            if(table.getPlayerDeck_FaceUp().size() > 1){
+                if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 2 ).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 0 && table.getPlayerDeck_FaceDown().size() > 2){
+                if (table.getPlayerDeck_FaceDown().get(2).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 0 && table.getPlayerDeck_FaceDown().size() == 2){
+                if (table.getPlayerDeck_FaceDown().get(1).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 0 && table.getPlayerDeck_FaceDown().size() == 1){
+                if (table.getPlayerDeck_FaceDown().get(0).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 0 && table.getPlayerDeck_FaceDown().size() == 0){
+                //TODO handle empty stock pile condition here
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 1){
+                match.setNoNextInput(true);
+            }
+            return match;
         }
+
+    //If nothing of above apply, then we need to turn three new cards from stock.
+        else {
+            Match match = new Match(11, -1, false, false);
+        //If we are at the end of the pile
+            if(table.getPlayerDeck_FaceUp().size() > 2 && table.getPlayerDeck_FaceDown().size() > 2){
+                if (table.getPlayerDeck_FaceDown().get(2).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if (table.getPlayerDeck_FaceUp().size() == 2 && table.getPlayerDeck_FaceDown().size() > 2){
+                if (table.getPlayerDeck_FaceDown().get(2).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() > 2){
+                if (table.getPlayerDeck_FaceUp().get(0).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 0 && table.getPlayerDeck_FaceDown().size() > 2){
+                if (table.getPlayerDeck_FaceDown().get(2).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() > 2 && table.getPlayerDeck_FaceDown().size() == 2){
+                if(table.getPlayerDeck_FaceUp().get(0).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 2 && table.getPlayerDeck_FaceDown().size() == 2){
+                if(table.getPlayerDeck_FaceUp().get(0).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() == 2){
+                match.setNoNextInput(true);
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 0 && table.getPlayerDeck_FaceDown().size() == 2){
+                if(table.getPlayerDeck_FaceDown().get(1).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() > 2 && table.getPlayerDeck_FaceDown().size() == 1){
+                if(table.getPlayerDeck_FaceUp().get(1).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 2 && table.getPlayerDeck_FaceDown().size() == 1){
+                if(table.getPlayerDeck_FaceUp().get(1).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() == 1){
+                match.setNoNextInput(true);
+            }
+            else if(table.getPlayerDeck_FaceUp().size() == 0 && table.getPlayerDeck_FaceDown().size() == 1){
+                if(table.getPlayerDeck_FaceDown().get(0).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() >= 3 && table.getPlayerDeck_FaceDown().size() == 0){
+                if(table.getPlayerDeck_FaceUp().get(2).isFaceUp()){
+                    match.setNoNextInput(true);
+                }
+            }
+            else if(table.getPlayerDeck_FaceUp().size() < 3 && table.getPlayerDeck_FaceDown().size() == 0){
+                match.setNoNextInput(true);
+            }
+            return match;
+        }
+    }
+
+    private boolean allStockCardAreKnown() {
+        for (int i = 0 ; i < table.getPlayerDeck_FaceUp().size() ; i++){
+            if (!table.getPlayerDeck_FaceUp().get(i).isFaceUp()){
+                return false;
+            }
+        }
+        for (int i = 0 ; i < table.getPlayerDeck_FaceDown().size() ; i++){
+            if (!table.getPlayerDeck_FaceDown().get(i).isFaceUp()){
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean nextStockCardIsKnown() {
@@ -136,7 +255,7 @@ public class Algorithm implements Solver {
         else if (table.getPlayerDeck_FaceDown().size() == 2) {
             return table.getPlayerDeck_FaceUp().get(0).isFaceUp();
         }
-        else if (table.getPlayerDeck_FaceDown().size() == 1) {
+        else if (table.getPlayerDeck_FaceDown().size() == 1 && table.getPlayerDeck_FaceUp().size() > 1) {
             return table.getPlayerDeck_FaceUp().get(1).isFaceUp();
         }
         else if (table.getPlayerDeck_FaceDown().size() == 0) {
@@ -243,6 +362,7 @@ public class Algorithm implements Solver {
                 if(sortedList.get(j).isEmpty()){continue;}
                 if (sortedList.get(0).isEmpty()){continue;}
                 if(sortedList.get(j).get(sortedList.get(j).size() - 1).getColor() == validColor && sortedList.get(j).get(sortedList.get(j).size() - 1).getValue() == validValue){
+
                     cardFromPile = sortedList.get(0).get(0).getBelongToPile();
                     cardToPile = sortedList.get(j).get(0).getBelongToPile();
                     return true;
@@ -333,7 +453,7 @@ public class Algorithm implements Solver {
         return false;
     }
 
-    private boolean checkForMatch_TopPile() {
+    private boolean checkForMatch_tablou_to_TopPile() {
         createSortedList_OfCards();
         //Check for simple match only at the top card in a pile
         while (!sortedList.isEmpty())
@@ -346,7 +466,6 @@ public class Algorithm implements Solver {
                 {
                     cardFromPile = sortedList.get(0).get(0).getBelongToPile();
                     cardToPile = 7 + j;
-                    //System.out.println("Hit in a top deck");
                     return true;
                 }
             }
@@ -410,9 +529,6 @@ public class Algorithm implements Solver {
                             cardFromComplexPileIndex = k + 1;
                             table.setComplexSplitIndex(cardFromComplexPileIndex);
                             complexMatch = true;
-//                            if(table.getAllPiles().get(j).get(k).isFaceUp()){
-//                                noNeedNextInput_algoritmClass = true;
-//                            }
                             return true;
                         }
                     }
