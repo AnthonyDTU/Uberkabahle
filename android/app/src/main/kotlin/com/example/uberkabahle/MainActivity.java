@@ -42,13 +42,7 @@ public class MainActivity extends FlutterActivity {
                 }
                 else if (call.method.equals("getNextMove")){
                     //call comm.getNextMove, which returns an int array
-
-                    String[] moves = comm.getNextMove();
-                    StringBuilder returnString = new StringBuilder();
-                    for (String move: moves) {
-                        returnString.append(move).append(';');
-                    }
-                    result.success(returnString.toString());
+                    result.success(comm.getNextMove());
                 }
                 else {
                     result.notImplemented();
