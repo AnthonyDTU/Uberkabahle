@@ -1,5 +1,4 @@
 package com.example.uberkabahle.src.main.java.src.Interfaces.comm;
-
 public interface BackendInterface {
     /**
      * @param cardsString 7 cards comma (,) separated from the start table of the 7 top cards in tableau.

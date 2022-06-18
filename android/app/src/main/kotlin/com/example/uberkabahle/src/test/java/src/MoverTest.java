@@ -1,4 +1,7 @@
+/*
 package com.example.uberkabahle.src.test.java.src;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.example.uberkabahle.src.main.java.src.Algorithm;
 import com.example.uberkabahle.src.main.java.src.Interfaces.Move;
@@ -6,11 +9,9 @@ import com.example.uberkabahle.src.main.java.src.Interfaces.Table;
 import com.example.uberkabahle.src.main.java.src.Match;
 import com.example.uberkabahle.src.main.java.src.Mover;
 import com.example.uberkabahle.src.main.java.src.TableIO;
+
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.locks.StampedLock;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
 
 class MoverTest {
 
@@ -321,7 +322,7 @@ class MoverTest {
         System.out.printf("");
     }
 }
-
+*/
 
 //package src;
 //

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
@@ -39,8 +38,6 @@ class AlgorithmController {
       List<String> suggestedMoves = suggestedMove.split(';');
       for (String move in suggestedMoves) {
         List<String> moveComponents = move.split(',');
-
-        SuggestedMove newMove = SuggestedMove(moveCard, moveComponents[0], toCard, moveComponents[1], flipStack, solved)
       }
     }
 
@@ -58,7 +55,7 @@ class AlgorithmController {
     return label.substring(label.length - 1) + label.substring(0, label.length - 1);
   }
 
-  String translateLabelToEnglish(String label){
+  String translateLabelToEnglish(String label) {
     label = label.replaceAll("13", "K");
     label = label.replaceAll("12", "Q");
     label = label.replaceAll("11", "J");
@@ -66,7 +63,7 @@ class AlgorithmController {
     label = label.replaceAll("R", "D");
     label = label.replaceAll("K", "C");
 
-    return  label.substring(1, label.length - 1) + label.substring(0, 1);
+    return label.substring(1, label.length - 1) + label.substring(0, 1);
   }
 
   Future<String> getNextMove() async {

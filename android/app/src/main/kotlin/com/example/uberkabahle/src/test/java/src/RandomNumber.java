@@ -1,3 +1,4 @@
+/*
 package src;
 
 import java.util.Random;
@@ -29,3 +30,4 @@ public class RandomNumber {
         return upperbound;
     }
 }
+*/
