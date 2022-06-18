@@ -103,7 +103,6 @@ public class Run {
             else if (match.fromPile == 11 && match.toPile >= 7 && match.match && match.noNextInput) {
                 System.out.println("Take the last card in the face up stock pile, and move it to tablou pile: " + match.toPile);
                 move.moveCard_OrPile(match);
-                //TODO evt placeres stoppere her, så man får ét move af gangen
             }
             //If we turn three new cards in the player deck and know the next card
             else if (match.fromPile == 11 && !match.match && match.noNextInput) {
@@ -113,13 +112,13 @@ public class Run {
             }
             //Match from tablou to foundation - no next input
             else if (match.fromPile < 7 && match.toPile > 6 && match.match && match.noNextInput && !match.lastCardInPile) {
-                System.out.println("Move match from tablou pile pile: " + match.fromPile + " to foundation pile: " + (match.toPile - 7));
+                System.out.println("Move match from tablou pile pile: " + match.fromPile + " to foundation pile: " + match.toPile);
                 System.out.println("That is the last card in the tablou pile number " + match.fromPile);
                 move.moveCard_OrPile(match);
             }
             //Match from tablou to foundation - next input
             else if (match.fromPile < 7 && match.toPile > 6 && match.match && !match.noNextInput && !match.lastCardInPile) {
-                System.out.println("Move match from tabou pile: " + match.fromPile + " to foundation pile: " + (match.toPile - 7));
+                System.out.println("Move match from tabou pile: " + match.fromPile + " to foundation pile: " + match.toPile);
                 System.out.println("Then turn over the face down card in pile: " + match.fromPile + " and enter the input.");
                 String input = scanner.next();
                 Card card = table.stringToCardConverter(input);

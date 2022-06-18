@@ -7,10 +7,10 @@ import com.example.uberkabahle.src.main.java.src.Match;
 import com.example.uberkabahle.src.main.java.src.Mover;
 import com.example.uberkabahle.src.main.java.src.TableIO;
 import org.junit.jupiter.api.Test;
+//import org.testng.annotations.Test;
 
-import java.util.concurrent.locks.StampedLock;
+import static org.testng.Assert.*;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class MoverTest {
 

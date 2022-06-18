@@ -9,19 +9,24 @@ import com.example.uberkabahle.src.main.java.src.Mover;
 import com.example.uberkabahle.src.main.java.src.TableIO;
 
 public class Simulation {
+
+    //Run the simulation from this main method
+    public static void main(String[] args) {
+        Simulation simulation = new Simulation(1000, 800, false);
+        TestResult testResult = simulation.runSimulation();
+        System.out.println(testResult.toString());
+    }
     int numberOfGames;
     int maximumNumberOfHandsInEachGame;
-
     int handsLost = 0;
     int handsWon = 0;
     boolean printTable;
-
-    public Simulation(int numberOfGames, int maximumNumberOfHandsInEachGame, boolean printTable) {
+    private Simulation(int numberOfGames, int maximumNumberOfHandsInEachGame, boolean printTable) {
         this.numberOfGames = numberOfGames;
         this.maximumNumberOfHandsInEachGame = maximumNumberOfHandsInEachGame;
         this.printTable = printTable;
     }
-    public TestResult runSimulation() {
+    private TestResult runSimulation() {
         for (int i = 0; i < numberOfGames; i++) {
             Table table = new TableIO();
             Algorithm algorithm = new Algorithm(table);
