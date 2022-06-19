@@ -9,7 +9,7 @@ import com.example.uberkabahle.src.main.java.src.Interfaces.Solver;
 import com.example.uberkabahle.src.main.java.src.Interfaces.Table;
 import java.util.*;
 
-public class Algorithm implements Solver {
+public class Algorithm implements Solver  {
 
 
     /*
@@ -203,6 +203,10 @@ public class Algorithm implements Solver {
 
     //If nothing of above apply, then we need to turn three new cards from stock.
         else {
+            //TODO implement stock % 3 = 1 condition
+//            if(isStockPile_ModThree_EqualsToOne()){
+//                checkMatchInStockPile();
+//            }
             Match match = new Match(11, -1, false, false);
         //If we are at the end of the pile
             if(table.getPlayerDeck_FaceUp().size() > 2 && table.getPlayerDeck_FaceDown().size() > 2){
@@ -276,7 +280,7 @@ public class Algorithm implements Solver {
                     roundsToReturn = stockPileSize/3;
                 }
                 currentRound++;
-                if(currentRound == roundsToReturn){
+                if(currentRound >= roundsToReturn && table.getPlayerDeck_FaceDown().size() == 0){
                     restrictionLevel = RestrictionLevel.LOW;
                 }
             }
@@ -285,9 +289,14 @@ public class Algorithm implements Solver {
                 roundsToReturn = 0;
                 restrictionLevel = RestrictionLevel.HIGH;
             }
+            if(table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size() <= 3){
+                restrictionLevel = RestrictionLevel.LOW;
+            }
             return match;
         }
     }
+
+
 
     private boolean allStockCardAreKnown() {
         for (int i = 0 ; i < table.getPlayerDeck_FaceUp().size() ; i++){
@@ -458,7 +467,8 @@ public class Algorithm implements Solver {
         }
 //Check for match tablou piles
         for (int i = 0; i < table.getAllPiles().size(); i++) {
-           // if(table.getTopCard_PlayerDeck().getValue() == 1) {break;}  //The algorithm don't want to place a two on a tablou pile, as it is then locked
+            //The algorithm don't want to place a two on a tablou pile, as it is then locked.
+            //We do however easy on this restriction, if the stock pile has run through once, and the stock modulus 3 = 0
             if(restrictionLevel == RestrictionLevel.HIGH) {
                 if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getValue() == 1) {
                     break;
@@ -612,6 +622,26 @@ public class Algorithm implements Solver {
     private boolean isStockPile_ModThree_EqualsToZero(){
         int totalCardsInFaceUp_AndFaceDown = table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size();
         return totalCardsInFaceUp_AndFaceDown % 3 == 0;
+    }
+
+    private boolean isStockPile_ModThree_EqualsToOne() {
+        int totalCardsInFaceUp_AndFaceDown = table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size();
+        return totalCardsInFaceUp_AndFaceDown % 3 == 1;
+    }
+
+    private boolean checkMatchInStockPile() {
+    //First clone the current state of the table.
+        List<Card> tempFaceUp = new ArrayList<>(table.getPlayerDeck_FaceUp());
+        List<Card> tempFaceDown = new ArrayList<>(table.getPlayerDeck_FaceDown());
+        List<List<Card>> tempTablou = new ArrayList<>(table.getAllPiles());
+        List<List<Card>> tempFoundation = new ArrayList<>(table.getFundamentPiles());
+        TableIO tempTable = new TableIO(tempTablou, tempFoundation, tempFaceUp, tempFaceDown);
+        Algorithm tempAlgorithm = new Algorithm(tempTable);
+        Mover tempMover = new Mover(tempTable);
+
+        int rounds = tempTable.getPlayerDeck_FaceDown().size() + tempTable.getPlayerDeck_FaceUp().size() / 3;
+
+        return false;
     }
 
     public RestrictionLevel getRestrictionState() {

@@ -12,9 +12,9 @@ public class Simulation {
 
     //Run the simulation from this main method
     public static void main(String[] args) {
-        Simulation simulation = new Simulation(1000, 800, false);
+        Simulation simulation = new Simulation(10000, 800, false);
         TestResult testResult = simulation.runSimulation();
-        System.out.println(testResult.toString());
+        System.out.println(testResult);
     }
     int numberOfGames;
     int maximumNumberOfHandsInEachGame;
@@ -43,7 +43,8 @@ public class Simulation {
                         System.out.println("After that, move the card at tablou pile " + match.getFromPile() + " to foundation pile " + match.getComplexFinalFoundationPile());
                     }
                     move.moveCard_OrPile(match);
-                } else if (match.isComplex() && !match.isNoNextInput()) {
+                }
+                else if (match.isComplex() && !match.isNoNextInput()) {
                     if (printTable) {
                         System.out.println("Complex match, first move from pile " + match.getFromPile() + " at index " + match.getComplexIndex() + " to tablou pile " + match.getToPile());
                         System.out.println("After that, move the card at tablou pile " + match.getFromPile() + " to foundation pile " + match.getComplexFinalFoundationPile());
@@ -57,7 +58,7 @@ public class Simulation {
                         table.printTable();
                     }
                 }
-                //No match - Turn card from player pile - next input
+                //No match - Turn card from player pile - next input - Not last card in faceUp
                 else if (match.getFromPile() == 11 && !match.isMatch() && !match.isNoNextInput() && !match.isLastCardInPile()) {
                     if (printTable) {
                         table.printTable();
