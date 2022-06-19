@@ -239,6 +239,10 @@ public class Mover implements Move {
                 table.getAllPiles().get(match.toPile).addAll(table.getAllPiles().get(match.fromPile));
                 table.getAllPiles().get(match.fromPile).clear();
             }
+            else if (match.fromPile >= 7 && match.fromPile < 11){
+                table.getAllPiles().get(match.toPile).add(table.getFundamentPiles().get(match.fromPile - 7).remove(table.getFundamentPiles().get(match.fromPile - 7).size() - 1));
+                table.getAllPiles().get(match.toPile).get(table.getAllPiles().get(match.toPile).size() - 1).setBelongToPile(match.toPile);
+            }
             //Stock to tablou
             //Stock to foundation
             else{

@@ -272,6 +272,9 @@ class RunSimulation {
                     }
                     move.moveCard_OrPile(match);
                 }
+                else if (match.getFromPile() >= 7 && match.getFromPile() != 11 && match.isMatch() && match.isNoNextInput()){
+                    move.moveCard_OrPile(match);
+                }
                 else {
                     System.out.printf("Meeeh");
                 }

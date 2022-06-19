@@ -142,6 +142,7 @@ public class Algorithm implements Solver {
             return match;
         }
 
+
         else if(checkForKingMatch_FromTablou_ToEmptyPile()){
             return new Match(cardFromPile, cardToPile, true, false);
         }
@@ -198,6 +199,12 @@ public class Algorithm implements Solver {
 //                    match.setNoNextInput(true);
 //                }
 //            }
+            return match;
+        }
+
+        else if (checkForFoundationToTableauMatch()){
+            Match match = new Match(cardFromPile, cardToPile, true, false);
+            match.setNoNextInput(true);
             return match;
         }
 
@@ -612,6 +619,47 @@ public class Algorithm implements Solver {
     private boolean isStockPile_ModThree_EqualsToZero(){
         int totalCardsInFaceUp_AndFaceDown = table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size();
         return totalCardsInFaceUp_AndFaceDown % 3 == 0;
+    }
+
+    private boolean checkForFoundationToTableauMatch(){
+        createSortedList_OfCards();
+
+        for (int i = 0; i < 4; i++){
+            Card tmpFundamentalCard = table.getFundamentPiles().get(i).get(table.getFundamentPiles().get(i).size() - 1);
+            for (int j = 0; j < 7; j++){
+                if (!table.getAllPiles().get(j).isEmpty()){
+                    Card tmpTableauCard = table.getAllPiles().get(j).get(table.getAllPiles().get(j).size() - 1);
+                    if (tmpFundamentalCard.getValue() == tmpTableauCard.getValue() - 1 && tmpFundamentalCard.getColor() != tmpTableauCard.getColor()){
+                        for (int g = 0; g < 7; g++){
+                            if (table.getAllPiles().get(g).size() > 1){
+                                Card secondTmpTableauCard = table.getAllPiles().get(g).get(table.getAllPiles().get(g).size() - 1);
+                                if (secondTmpTableauCard.getValue() == tmpTableauCard.getValue() - 2 && secondTmpTableauCard.getColor() == tmpTableauCard.getColor()){
+                                    if (table.getAllPiles().get(g).get(table.getAllPiles().get(g).size() - 1) != null && !table.getAllPiles().get(g).get(table.getAllPiles().get(g).size() - 2).isFaceUp()){
+                                        cardFromPile = i + 7;
+                                        cardToPile = j;
+                                        return true;
+                                    }
+                                }
+
+                                for (int h = 0; h < table.getAllPiles().get(g).size(); h++){
+                                    secondTmpTableauCard = table.getAllPiles().get(g).get(h);
+                                    if (secondTmpTableauCard.getValue() == tmpTableauCard.getValue() - 2 && secondTmpTableauCard.getColor() != tmpTableauCard.getColor()){
+                                        if (table.getAllPiles().get(g).get(h) != null && !table.getAllPiles().get(g).get(h).isFaceUp()){
+                                            cardFromPile = i + 7;
+                                            cardToPile = j;
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return false;
     }
 
     public RestrictionLevel getRestrictionState() {
