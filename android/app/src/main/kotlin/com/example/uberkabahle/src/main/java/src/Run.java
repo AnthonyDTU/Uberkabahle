@@ -61,7 +61,7 @@ public class Run {
                 card.setFaceUp(true);
                 match.nextPlayerCard = card;
                 move.moveCard_OrPile(match);
-                table.printTable();
+                //table.printTable();
             } else if (match.fromPile == 11 && !match.match && !match.noNextInput && !match.lastCardInPile) {
                 System.out.println("No match on the table, turn three cards from the stock pile over and enter the next card");
                 String input = scanner.next();
@@ -69,7 +69,7 @@ public class Run {
                 card.setFaceUp(true);
                 match.nextPlayerCard = card;
                 move.moveCard_OrPile(match);
-                table.printTable();
+                //table.printTable();
             }
             //Match from player pile to tablou - next input
             else if (match.fromPile == 11 && match.toPile < 7 && match.match && !match.noNextInput && !match.lastCardInPile) {
@@ -80,7 +80,7 @@ public class Run {
                 card.setFaceUp(true);
                 match.nextPlayerCard = card;
                 move.moveCard_OrPile(match);
-                table.printTable();
+                //table.printTable();
             }
             //Match from player pile to tablou - no next input
             else if (match.fromPile == 11 && match.toPile < 7 && match.match && match.noNextInput && !match.lastCardInPile) {
@@ -135,7 +135,7 @@ public class Run {
                 card.setFaceUp(true);
                 match.nextPlayerCard = card;
                 move.moveCard_OrPile(match);
-                table.printTable();
+                //table.printTable();
             }
             //Match from tablou to tablou - no next input
             else if (match.fromPile < 7 && match.toPile < 7 && match.match && match.lastCardInPile) {
