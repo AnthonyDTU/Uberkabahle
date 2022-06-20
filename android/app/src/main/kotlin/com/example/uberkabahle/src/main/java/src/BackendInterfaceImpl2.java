@@ -83,8 +83,10 @@ public class BackendInterfaceImpl2 implements BackendInterface {
                         Card tmpCard = null;
                         if (!table.getPlayerDeck_FaceUp().isEmpty()){
                             tmpCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+                            System.out.println("tmpCard Val: " + tmpCard.getValue() + "tmpCard type: " + tmpCard.getType());
                         }
                         Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
+                        System.out.println("tmpCard Val: " + tmpCard1.getValue() + "tmpCard type: " + tmpCard1.getType());
                         if (table.getPlayerDeck_FaceUp().isEmpty() || (tmpCard.getValue() != tmpCard1.getValue() ||
                                 tmpCard.getType() != tmpCard1.getType()) && match.fromPile == tmpCard.getBelongToPile()){
                             cardDif = table.stringToCardConverter(cardSplit[i]);
