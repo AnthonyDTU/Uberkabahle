@@ -13,6 +13,7 @@ public class BackendInterfaceImpl2 implements BackendInterface {
     StringBuilder retMove = new StringBuilder();
 
     public void initStartTable(String cardsString){
+        retMove = new StringBuilder();
         table = new TableIO();
         move = new Mover(table);
         algorithm = new Algorithm(table);

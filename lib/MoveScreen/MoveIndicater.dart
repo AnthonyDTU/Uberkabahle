@@ -47,7 +47,7 @@ class MoveIndicator extends StatelessWidget {
                       child: Column(
                         children: [
                           Image.asset(
-                            "assets/cards/${suggestedMove.moveCard.label}.png",
+                            "assets/cards/${suggestedMove.moveCard}.png",
                           ),
                           const SizedBox(
                             height: 20,
@@ -73,7 +73,7 @@ class MoveIndicator extends StatelessWidget {
                       child: Column(
                         children: [
                           Image.asset(
-                            "assets/cards/${suggestedMove.toCard.label}.png",
+                            "assets/cards/${suggestedMove.toCard}.png",
                           ),
                           const SizedBox(
                             height: 20,
