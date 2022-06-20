@@ -27,6 +27,10 @@ public class Algorithm implements Solver  {
 
     private int cardFromPile;// = -10;
     private int cardToPile;// = -10;
+
+    private Card fromCard;
+
+    private Card toCard;
     private int cardFromComplexPileIndex;
     private boolean complexMatch = false;
     private  boolean printTable;
@@ -102,7 +106,7 @@ public class Algorithm implements Solver  {
     public Match checkForAnyMatch() {
 
         if(checkForMatch_tablou_to_TopPile()){
-            Match match = new Match(cardFromPile, cardToPile, true, false);
+            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getAllPiles().get(cardFromPile).size() < 2){
                 match.setNoNextInput(true);
                 return match;
@@ -114,7 +118,7 @@ public class Algorithm implements Solver  {
         }
 
         else if(checkForComplexMatch()){
-            Match match = new Match(cardFromPile, cardToPile, true, true, cardFromComplexPileIndex, finalComplexPile);
+            Match match = new Match(cardFromPile, cardToPile, true, true, cardFromComplexPileIndex, finalComplexPile, fromCard, toCard);
             int index = 0;
 
             if(cardFromComplexPileIndex < 2){
@@ -129,7 +133,7 @@ public class Algorithm implements Solver  {
 
         else if(checkForMatchBottomPiles()){
             int index = 0;
-            Match match = new Match(cardFromPile, cardToPile, true, false);
+            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getAllPiles().get(cardFromPile).size() < 2){
                 match.setNoNextInput(true);
                 match.lastCardInPile = true;
@@ -143,11 +147,11 @@ public class Algorithm implements Solver  {
         }
 
         else if(checkForKingMatch_FromTablou_ToEmptyPile()){
-            return new Match(cardFromPile, cardToPile, true, false);
+            return new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
         }
 
         else if(checkForKingMatch_FromStack_ToEmptyPile()){
-            Match match = new Match(cardFromPile, cardToPile, true, false);
+            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getPlayerDeck_FaceUp().size() == 1){
                 match.setLastCardInPile(true);
                 match.setNoNextInput(true);
@@ -160,7 +164,7 @@ public class Algorithm implements Solver  {
         }
 
         else if(checkForMatch_playerDeck()) {
-            Match match = new Match(cardFromPile, cardToPile, true, false);
+            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getPlayerDeck_FaceUp().size() > 1){
                 if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 2 ).isFaceUp()){
                     match.setNoNextInput(true);
@@ -332,6 +336,9 @@ public class Algorithm implements Solver  {
                             if (findMatchForKing(king)) {
                                 cardFromPile = 11;
                                 cardToPile = i;
+
+                                fromCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+
                                 return true;
                             }
                         }
@@ -339,6 +346,9 @@ public class Algorithm implements Solver  {
                             restrictionLevel = RestrictionLevel.HIGH;
                             cardFromPile = 11;
                             cardToPile = i;
+
+                            fromCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+
                             return true;
                         }
                     }
@@ -397,6 +407,9 @@ public class Algorithm implements Solver  {
                             if(k == 0){continue;}
                             cardFromPile = j;
                             cardToPile = i;
+
+                            fromCard = table.getAllPiles().get(j).get(k);
+
                             return true;
                         }
                     }
@@ -430,6 +443,10 @@ public class Algorithm implements Solver  {
 
                     cardFromPile = sortedList.get(0).get(0).getBelongToPile();
                     cardToPile = sortedList.get(j).get(0).getBelongToPile();
+
+                    fromCard = sortedList.get(0).get(0);
+                    toCard = sortedList.get(j).get(0);
+
                     return true;
                 }
             }
@@ -446,6 +463,10 @@ public class Algorithm implements Solver  {
             if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getValue() == table.getTopCard_fromFundamentStack(i).getValue() + 1 && table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getType() == table.getTopCard_fromFundamentStack(i).getType()) {
                 cardFromPile = 11;
                 cardToPile = i + 7;
+
+                fromCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+                toCard = table.getTopCard_fromFundamentStack(i);
+
                 if(table.getPlayerDeck_FaceUp().size() > 1){
                     if(!table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 2).isFaceUp()){
                         //TODO implement noNextInput here
@@ -467,6 +488,10 @@ public class Algorithm implements Solver  {
             if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getValue() + 1 == table.getPile(i).get(table.getPile(i).size() - 1).getValue() && table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getColor() != table.getPile(i).get(table.getPile(i).size() - 1).getColor()) {
                 cardFromPile = 11;
                 cardToPile = i;
+
+                fromCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+                toCard = table.getPile(i).get(table.getPile(i).size() - 1);
+
                 return true;
             }
         }
@@ -536,6 +561,10 @@ public class Algorithm implements Solver  {
                 {
                     cardFromPile = sortedList.get(0).get(0).getBelongToPile();
                     cardToPile = 7 + j;
+
+                    fromCard = sortedList.get(0).get(0);
+                    toCard = table.getTopCard_fromFundamentStack(j);
+
                     return true;
                 }
             }
@@ -562,6 +591,7 @@ public class Algorithm implements Solver  {
             if (table.getPile(i).get(table.getPile(i).size() - 1).getValue() == validValue && table.getPile(i).get(table.getPile(i).size() - 1).getColor() == validColor)
             {
                 cardToPile = i;
+                toCard = table.getPile(i).get(table.getPile(i).size() - 1);
                 return true;
             }
         }
@@ -596,6 +626,8 @@ public class Algorithm implements Solver  {
                         {
                             finalComplexPile = i;
                             cardFromPile = j;
+                            //TODO this might be wrong
+                            fromCard = table.getPile(j).get(k);
                             cardFromComplexPileIndex = k + 1;
                             table.setComplexSplitIndex(cardFromComplexPileIndex);
                             complexMatch = true;

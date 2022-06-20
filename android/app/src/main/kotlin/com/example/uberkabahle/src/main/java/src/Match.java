@@ -4,6 +4,9 @@ public class Match {
 
     int fromPile;
     int toPile;
+    Card fromCard;
+
+    Card toCard;
     boolean match;
 
     boolean complex = false;
@@ -11,6 +14,26 @@ public class Match {
     int complexFinalFoundationPile;
     public Card nextPlayerCard;
 
+    boolean flipStack;
+
+    boolean solved;
+
+    public Match(int fromPile, int toPile, boolean match, boolean complex, Card fromCard, Card toCard) {
+        this.fromPile = fromPile;
+        this.toPile = toPile;
+        this.match = match;
+        this.complex = complex;
+        this.fromCard = fromCard;
+        this.toCard = toCard;
+    }
+
+    public Card getFromCard() {
+        return fromCard;
+    }
+
+    public Card getToCard() {
+        return toCard;
+    }
 
     public boolean isComplex() {
         return complex;
@@ -63,13 +86,15 @@ public class Match {
         this.complex = complex;
     }
 
-    public Match(int fromPile, int toPile, boolean match, boolean complex, int complexIndex, int complexFinalFoundationPile) {
+    public Match(int fromPile, int toPile, boolean match, boolean complex, int complexIndex, int complexFinalFoundationPile, Card fromCard, Card toCard) {
         this.fromPile = fromPile;
         this.toPile = toPile;
         this.match = match;
         this.complex = complex;
         this.complexIndex = complexIndex;
         this.complexFinalFoundationPile = complexFinalFoundationPile;
+        this.fromCard = fromCard;
+        this.toCard = toCard;
     }
 
     public int getFromPile() {
