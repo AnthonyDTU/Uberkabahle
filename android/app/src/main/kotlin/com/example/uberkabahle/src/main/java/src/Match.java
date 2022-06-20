@@ -18,6 +18,8 @@ public class Match {
 
     boolean solved;
 
+
+
     public Match(int fromPile, int toPile, boolean match, boolean complex, Card fromCard, Card toCard) {
         this.fromPile = fromPile;
         this.toPile = toPile;
@@ -25,6 +27,16 @@ public class Match {
         this.complex = complex;
         this.fromCard = fromCard;
         this.toCard = toCard;
+    }
+
+
+
+    public boolean isSolved() {
+        return solved;
+    }
+
+    public void setSolved(boolean solved) {
+        this.solved = solved;
     }
 
     public Card getFromCard() {

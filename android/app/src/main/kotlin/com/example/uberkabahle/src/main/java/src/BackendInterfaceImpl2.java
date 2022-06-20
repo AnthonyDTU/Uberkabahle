@@ -13,6 +13,7 @@ public class BackendInterfaceImpl2 implements BackendInterface {
     StringBuilder retMove = new StringBuilder();
 
     public void initStartTable(String cardsString){
+        retMove = new StringBuilder();
         table = new TableIO();
         move = new Mover(table);
         algorithm = new Algorithm(table);
@@ -31,12 +32,17 @@ public class BackendInterfaceImpl2 implements BackendInterface {
             //Piles from first implementation
             retMove.append(String.valueOf(match.getFromPile())).append(",");
             retMove.append(String.valueOf(match.getToPile())).append(",");
-            retMove.append(String.valueOf(match.complexIndex)).append(",");
-            retMove.append(String.valueOf(match.getComplexFinalFoundationPile())).append(";");
+            String isSolved = "0";
+            if (match.isSolved()){
+                isSolved = "1";
+            }
+            retMove.append(isSolved).append(",");
+            String solvable = "1";
+            retMove.append(solvable).append(";");
 
         }
         else {
-            retMove.append('0');
+            retMove.append('0').append(";");
         }
         if (match.noNextInput){
             move.moveCard_OrPile(match);
