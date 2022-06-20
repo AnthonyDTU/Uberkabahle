@@ -59,12 +59,12 @@ class AlgorithmController {
   }
 
   String translateLabelToEnglish(String label) {
+    label = label.replaceAll("R", "D");
+    label = label.replaceAll("K", "C");
     label = label.replaceAll("13", "K");
     label = label.replaceAll("12", "Q");
     label = label.replaceAll("11", "J");
     label = label.replaceAll("1", "A");
-    label = label.replaceAll("R", "D");
-    label = label.replaceAll("K", "C");
 
     return label.substring(1, label.length) + label.substring(0, 1);
   }

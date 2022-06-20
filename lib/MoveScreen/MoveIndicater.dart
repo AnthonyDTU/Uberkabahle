@@ -18,27 +18,31 @@ class MoveIndicator extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: (suggestedMove.flipStack)
                 ? [
-                    SizedBox(
-                      width: 150,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 150,
+                          child: Column(
                             children: [
                               Image.asset(
                                 "assets/cards/drawFromPile.png",
                               ),
-                              IconButton(
-                                onPressed: nextMoveHandler,
-                                icon: const Icon(
-                                  Icons.arrow_right_alt_rounded,
-                                  size: 80,
-                                ),
+                              const Text(
+                                "Flip Stack",
+                                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                        GestureDetector(
+                          onTap: nextMoveHandler,
+                          child: const Icon(
+                            Icons.arrow_right_alt_rounded,
+                            size: 80,
+                          ),
+                        ),
+                      ],
                     ),
                   ]
                 : [
@@ -52,10 +56,15 @@ class MoveIndicator extends StatelessWidget {
                           const SizedBox(
                             height: 20,
                           ),
-                          Text(
-                            "Tableau ${suggestedMove.fromColumn + 1}",
-                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                          ),
+                          (suggestedMove.fromColumn <= 6)
+                              ? Text(
+                                  "Tableau ${suggestedMove.fromColumn + 1}",
+                                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                )
+                              : Text(
+                                  (suggestedMove.fromColumn == 11) ? "Stack" : "Foundation ${suggestedMove.fromColumn - 6}",
+                                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                ),
                         ],
                       ),
                     ),
@@ -78,10 +87,15 @@ class MoveIndicator extends StatelessWidget {
                           const SizedBox(
                             height: 20,
                           ),
-                          Text(
-                            "Tableau ${suggestedMove.toColumn + 1}",
-                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                          ),
+                          (suggestedMove.toColumn <= 6)
+                              ? Text(
+                                  "Tableau ${suggestedMove.toColumn + 1}",
+                                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                )
+                              : Text(
+                                  "Foundation ${suggestedMove.toColumn - 6}",
+                                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                ),
                         ],
                       ),
                     ),
