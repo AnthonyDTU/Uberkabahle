@@ -8,14 +8,26 @@ import java.util.List;
 
 public class TableIO implements Table {
 
-    private final List<List<Card>> piles = new ArrayList<>();           //List to maintain the seven bottom decks
-    private final List<List<Card>> fundamentPiles = new ArrayList<>();        //List to maintain the four top decks.
+    public TableIO(List<List<Card>> piles, List<List<Card>> fundamentPiles, List<Card> playerDeck_FaceUp, List<Card> playerDeck_FaceDown) {
+        this.piles = piles;
+        this.fundamentPiles = fundamentPiles;
+        this.playerDeck_FaceUp = playerDeck_FaceUp;
+        this.playerDeck_FaceDown = playerDeck_FaceDown;
+    }
+
+    public TableIO() {
+    }
+
+    private List<List<Card>> piles = new ArrayList<>();           //List to maintain the seven bottom decks
+    private List<List<Card>> fundamentPiles = new ArrayList<>();        //List to maintain the four top decks.
 
     private List<Card> playerDeck_FaceUp = new ArrayList<>();
     private List<Card> playerDeck_FaceDown = new ArrayList<>();
 
     //private final ArrayList<Card> newDeck = new ArrayList<>();            //List used to instantiate all the cards
     private int complexSplitIndex;
+
+
 
     public void setComplexSplitIndex(int complexSplitIndex) {
         this.complexSplitIndex = complexSplitIndex;
@@ -264,8 +276,7 @@ public class TableIO implements Table {
 
     public void setPlayerDeck_FaceDown(List<Card> playerDeck_FaceDown) {
         this.playerDeck_FaceDown = playerDeck_FaceDown;
+
     }
-
-
 
 }

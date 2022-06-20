@@ -9,9 +9,12 @@ import com.example.uberkabahle.src.main.java.src.Interfaces.Table;
 import com.example.uberkabahle.src.main.java.src.Match;
 import com.example.uberkabahle.src.main.java.src.Mover;
 import com.example.uberkabahle.src.main.java.src.TableIO;
-
 import org.junit.jupiter.api.Test;
 import org.junit.Test;
+import org.junit.jupiter.api.Test;
+//import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 class MoverTest {
 

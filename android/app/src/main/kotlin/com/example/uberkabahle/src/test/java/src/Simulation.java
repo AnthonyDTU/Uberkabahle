@@ -8,6 +8,7 @@
 // import com.example.uberkabahle.src.main.java.src.Mover;
 // import com.example.uberkabahle.src.main.java.src.TableIO;
 
+
 // public class Simulation {
 //     int numberOfGames;
 //     int maximumNumberOfHandsInEachGame;
@@ -149,7 +150,6 @@
 //                 } else {
 //                     System.out.printf("Meeeh");
 //                 }
-
 //                 if (table.getFundamentPiles().get(0).size() == 14 && table.getFundamentPiles().get(1).size() == 14 &&
 //                         table.getFundamentPiles().get(2).size() == 14 && table.getFundamentPiles().get(3).size() == 14) {
 //                     handsWon++;

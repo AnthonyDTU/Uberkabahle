@@ -1,11 +1,15 @@
+//TODO Explain the algorithm
+//Restriction state explanation
+
+
 package com.example.uberkabahle.src.main.java.src;
 
-
+import com.example.uberkabahle.src.main.java.src.Interfaces.RestrictionLevel;
 import com.example.uberkabahle.src.main.java.src.Interfaces.Solver;
 import com.example.uberkabahle.src.main.java.src.Interfaces.Table;
 import java.util.*;
 
-public class Algorithm implements Solver {
+public class Algorithm implements Solver  {
 
 
     /*
@@ -21,10 +25,12 @@ public class Algorithm implements Solver {
 
     //TODO Tjek om bunken bliver vendt rigtigt
 
-
-
     private int cardFromPile;// = -10;
     private int cardToPile;// = -10;
+
+    private Card fromCard;
+
+    private Card toCard;
     private int cardFromComplexPileIndex;
     private boolean complexMatch = false;
     private  boolean printTable;
@@ -32,10 +38,18 @@ public class Algorithm implements Solver {
     private boolean firstTurn = true;
     //private boolean noNeedNextInput_algoritmClass = false;
     private int finalComplexPile;
+
+    private int stockPileSize = 0;
+    private int roundsToReturn = 0;
+    private int currentRound = 0;
+
+    private boolean enterModThreeState = false;
+
     List<List<Card>> tempPile = new ArrayList<>();
     List<List<Card>> sortedList = new ArrayList<>();
-
     Table table;
+
+    RestrictionLevel restrictionLevel = RestrictionLevel.HIGH;
 
     public Algorithm(Table table){
         this.table = table;
@@ -92,7 +106,7 @@ public class Algorithm implements Solver {
     public Match checkForAnyMatch() {
 
         if(checkForMatch_tablou_to_TopPile()){
-            Match match = new Match(cardFromPile, cardToPile, true, false);
+            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getAllPiles().get(cardFromPile).size() < 2){
                 match.setNoNextInput(true);
                 return match;
@@ -104,7 +118,7 @@ public class Algorithm implements Solver {
         }
 
         else if(checkForComplexMatch()){
-            Match match = new Match(cardFromPile, cardToPile, true, true, cardFromComplexPileIndex, finalComplexPile);
+            Match match = new Match(cardFromPile, cardToPile, true, true, cardFromComplexPileIndex, finalComplexPile, fromCard, toCard);
             int index = 0;
 
             if(cardFromComplexPileIndex < 2){
@@ -117,9 +131,9 @@ public class Algorithm implements Solver {
             return match;
         }
 
-        else if(checkForMatchBottomPiles()){    //TODO denne funktions skaber lidt problemer
+        else if(checkForMatchBottomPiles()){
             int index = 0;
-            Match match = new Match(cardFromPile, cardToPile, true, false);
+            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getAllPiles().get(cardFromPile).size() < 2){
                 match.setNoNextInput(true);
                 match.lastCardInPile = true;
@@ -133,11 +147,11 @@ public class Algorithm implements Solver {
         }
 
         else if(checkForKingMatch_FromTablou_ToEmptyPile()){
-            return new Match(cardFromPile, cardToPile, true, false);
+            return new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
         }
 
         else if(checkForKingMatch_FromStack_ToEmptyPile()){
-            Match match = new Match(cardFromPile, cardToPile, true, false);
+            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getPlayerDeck_FaceUp().size() == 1){
                 match.setLastCardInPile(true);
                 match.setNoNextInput(true);
@@ -150,7 +164,7 @@ public class Algorithm implements Solver {
         }
 
         else if(checkForMatch_playerDeck()) {
-            Match match = new Match(cardFromPile, cardToPile, true, false);
+            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getPlayerDeck_FaceUp().size() > 1){
                 if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 2 ).isFaceUp()){
                     match.setNoNextInput(true);
@@ -178,21 +192,17 @@ public class Algorithm implements Solver {
                 match.setNoNextInput(true);
                 match.setLastCardInPile(true);
             }
-//            else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() == 2){
-//                if (table.getPlayerDeck_FaceDown().get(1).isFaceUp()) {
-//                    match.setNoNextInput(true);
-//                }
-//            }
-//            else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() == 2){
-//                if (table.getPlayerDeck_FaceDown().get(1).isFaceUp()) {
-//                    match.setNoNextInput(true);
-//                }
-//            }
             return match;
         }
 
     //If nothing of above apply, then we need to turn three new cards from stock.
         else {
+            //TODO implement stock % 3 = 1 condition
+//            if(isStockPile_ModThree_EqualsToOne()){
+//                if(isAllCardsKnown()) {
+//                    checkMatchInStockPile();
+//                }
+//            }
             Match match = new Match(11, -1, false, false);
         //If we are at the end of the pile
             if(table.getPlayerDeck_FaceUp().size() > 2 && table.getPlayerDeck_FaceDown().size() > 2){
@@ -206,9 +216,7 @@ public class Algorithm implements Solver {
                 }
             }
             else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() > 2){
-                if (table.getPlayerDeck_FaceUp().get(0).isFaceUp()){
-                    match.setNoNextInput(true);
-                }
+                match.setNoNextInput(true);
             }
             else if(table.getPlayerDeck_FaceUp().size() == 0 && table.getPlayerDeck_FaceDown().size() > 2){
                 if (table.getPlayerDeck_FaceDown().get(2).isFaceUp()){
@@ -258,6 +266,26 @@ public class Algorithm implements Solver {
             }
             else if(table.getPlayerDeck_FaceUp().size() < 3 && table.getPlayerDeck_FaceDown().size() == 0){
                 match.setNoNextInput(true);
+                match.setMatch(false);
+            }
+
+            if (isStockPile_ModThree_EqualsToZero()){
+                if (roundsToReturn == 0){
+                    stockPileSize = table.getPlayerDeck_FaceUp().size() + table.getPlayerDeck_FaceDown().size();
+                    roundsToReturn = stockPileSize/3 + table.getPlayerDeck_FaceDown().size()/3;
+                }
+                currentRound++;
+                if(currentRound >= roundsToReturn && table.getPlayerDeck_FaceDown().size() == 0){
+                    restrictionLevel = RestrictionLevel.LOW;
+                }
+            }
+            else {
+                currentRound = 0;
+                roundsToReturn = 0;
+                restrictionLevel = RestrictionLevel.HIGH;
+            }
+            if(table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size() <= 3){
+                restrictionLevel = RestrictionLevel.LOW;
             }
             return match;
         }
@@ -296,15 +324,31 @@ public class Algorithm implements Solver {
     }
 
     private boolean checkForKingMatch_FromStack_ToEmptyPile() {
+        //We try to match the king, with a already known card on the tablou or stock.
+        //If restriction level is low, then we move the king no matter what.
         if (!table.getPlayerDeck_FaceUp().isEmpty()) {
             if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getValue() == 12) {
                 Card king = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
                 //Find out if there is an empty pile
                 for (int i = 0; i < 7; i++) {
                     if (table.getAllPiles().get(i).isEmpty()) {
-                        if (findMatchForKing(king)) {
+                        if (restrictionLevel == RestrictionLevel.HIGH) {
+                            if (findMatchForKing(king)) {
+                                cardFromPile = 11;
+                                cardToPile = i;
+
+                                fromCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+
+                                return true;
+                            }
+                        }
+                        else{
+                            restrictionLevel = RestrictionLevel.HIGH;
                             cardFromPile = 11;
                             cardToPile = i;
+
+                            fromCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+
                             return true;
                         }
                     }
@@ -320,7 +364,7 @@ public class Algorithm implements Solver {
         if (king.getColor() == 0){
             validColor = 1;
         }
-        //Start by looking in the tablou pile for a match
+    //Start by looking in the tablou pile for a match
         for (int i = 0 ; i < 7 ; i++){
             for (int j = 0 ; j < table.getAllPiles().get(i).size() ; j++){
                 if (!table.getAllPiles().get(i).get(j).isFaceUp()){
@@ -334,7 +378,7 @@ public class Algorithm implements Solver {
                 }
             }
         }
-        //Now look in the stack if there is a match.
+    //Now look in the stack if there is a match.
         for (int i = 0 ; i < table.getPlayerDeck_FaceDown().size() ; i++){
             if(table.getPlayerDeck_FaceDown().get(i).getValue() == validValue && table.getPlayerDeck_FaceDown().get(i).getColor() == validColor){
                 return true;
@@ -363,6 +407,9 @@ public class Algorithm implements Solver {
                             if(k == 0){continue;}
                             cardFromPile = j;
                             cardToPile = i;
+
+                            fromCard = table.getAllPiles().get(j).get(k);
+
                             return true;
                         }
                     }
@@ -396,6 +443,10 @@ public class Algorithm implements Solver {
 
                     cardFromPile = sortedList.get(0).get(0).getBelongToPile();
                     cardToPile = sortedList.get(j).get(0).getBelongToPile();
+
+                    fromCard = sortedList.get(0).get(0);
+                    toCard = sortedList.get(j).get(0);
+
                     return true;
                 }
             }
@@ -412,6 +463,10 @@ public class Algorithm implements Solver {
             if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getValue() == table.getTopCard_fromFundamentStack(i).getValue() + 1 && table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getType() == table.getTopCard_fromFundamentStack(i).getType()) {
                 cardFromPile = 11;
                 cardToPile = i + 7;
+
+                fromCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+                toCard = table.getTopCard_fromFundamentStack(i);
+
                 if(table.getPlayerDeck_FaceUp().size() > 1){
                     if(!table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 2).isFaceUp()){
                         //TODO implement noNextInput here
@@ -422,12 +477,21 @@ public class Algorithm implements Solver {
         }
 //Check for match tablou piles
         for (int i = 0; i < table.getAllPiles().size(); i++) {
-           // if(table.getTopCard_PlayerDeck().getValue() == 1) {break;}  //The algorithm don't want to place a two on a tablou pile, as it is then locked
-            if(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getValue() == 1) {break;}
+            //The algorithm don't want to place a two on a tablou pile, as it is then locked.
+            //We do however easy on this restriction, if the stock pile has run through once, and the stock modulus 3 = 0
+            if(restrictionLevel == RestrictionLevel.HIGH) {
+                if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getValue() == 1) {
+                    break;
+                }
+            }
             if(table.getPile(i).size() == 0){continue;}
             if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getValue() + 1 == table.getPile(i).get(table.getPile(i).size() - 1).getValue() && table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getColor() != table.getPile(i).get(table.getPile(i).size() - 1).getColor()) {
                 cardFromPile = 11;
                 cardToPile = i;
+
+                fromCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+                toCard = table.getPile(i).get(table.getPile(i).size() - 1);
+
                 return true;
             }
         }
@@ -448,41 +512,41 @@ public class Algorithm implements Solver {
         return false;
     }
 
-    private boolean kingHasMatch(Card king) {   //TODO maybe improve this
-        int validValue = 11;
-        int validColor = 0;
-
-        if(king.getColor() == 0)
-        {
-            validColor = 1;
-        }
-
-        for (int i = 0 ; i < table.getAllPiles().size() ; i++)
-        {
-            if(table.getBottomFaceUpCard_FromPile(i).getColor() == validColor && table.getBottomFaceUpCard_FromPile(i).getValue() == validValue)
-            {
-                return true;
-            }
-        }
-        for (int i = 0 ; i < table.getPlayerDeck_FaceUp().size() ; i++){
-            if(!table.getPlayerDeck_FaceUp().get(i).isFaceUp()){continue;}
-            if(table.getPlayerDeck_FaceUp().get(i).getValue() == validValue && table.getPlayerDeck_FaceUp().get(i).getColor() == validColor){return true;}
-        }
-        for (int i = 0 ; i < table.getPlayerDeck_FaceDown().size() ; i++){
-            if(!table.getPlayerDeck_FaceDown().get(i).isFaceUp()){continue;}
-            if(table.getPlayerDeck_FaceDown().get(i).getValue() == validValue && table.getPlayerDeck_FaceDown().get(i).getColor() == validColor){return true;}
-        }
-        return false;
-    }
-
-    private boolean checkForAnyEmptyPile() {
-        for (int i = 0 ; i < 7 ; i++) {
-            if (table.getAllPiles().get(i).size() == 0) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    private boolean kingHasMatch(Card king) {   //TODO maybe improve this
+//        int validValue = 11;
+//        int validColor = 0;
+//
+//        if(king.getColor() == 0)
+//        {
+//            validColor = 1;
+//        }
+//
+//        for (int i = 0 ; i < table.getAllPiles().size() ; i++)
+//        {
+//            if(table.getBottomFaceUpCard_FromPile(i).getColor() == validColor && table.getBottomFaceUpCard_FromPile(i).getValue() == validValue)
+//            {
+//                return true;
+//            }
+//        }
+//        for (int i = 0 ; i < table.getPlayerDeck_FaceUp().size() ; i++){
+//            if(!table.getPlayerDeck_FaceUp().get(i).isFaceUp()){continue;}
+//            if(table.getPlayerDeck_FaceUp().get(i).getValue() == validValue && table.getPlayerDeck_FaceUp().get(i).getColor() == validColor){return true;}
+//        }
+//        for (int i = 0 ; i < table.getPlayerDeck_FaceDown().size() ; i++){
+//            if(!table.getPlayerDeck_FaceDown().get(i).isFaceUp()){continue;}
+//            if(table.getPlayerDeck_FaceDown().get(i).getValue() == validValue && table.getPlayerDeck_FaceDown().get(i).getColor() == validColor){return true;}
+//        }
+//        return false;
+//    }
+//
+//    private boolean checkForAnyEmptyPile() {
+//        for (int i = 0 ; i < 7 ; i++) {
+//            if (table.getAllPiles().get(i).size() == 0) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     private boolean checkForMatch_tablou_to_TopPile() {
         createSortedList_OfCards();
@@ -497,6 +561,10 @@ public class Algorithm implements Solver {
                 {
                     cardFromPile = sortedList.get(0).get(0).getBelongToPile();
                     cardToPile = 7 + j;
+
+                    fromCard = sortedList.get(0).get(0);
+                    toCard = table.getTopCard_fromFundamentStack(j);
+
                     return true;
                 }
             }
@@ -523,6 +591,7 @@ public class Algorithm implements Solver {
             if (table.getPile(i).get(table.getPile(i).size() - 1).getValue() == validValue && table.getPile(i).get(table.getPile(i).size() - 1).getColor() == validColor)
             {
                 cardToPile = i;
+                toCard = table.getPile(i).get(table.getPile(i).size() - 1);
                 return true;
             }
         }
@@ -557,6 +626,8 @@ public class Algorithm implements Solver {
                         {
                             finalComplexPile = i;
                             cardFromPile = j;
+                            //TODO this might be wrong
+                            fromCard = table.getPile(j).get(k);
                             cardFromComplexPileIndex = k + 1;
                             table.setComplexSplitIndex(cardFromComplexPileIndex);
                             complexMatch = true;
@@ -567,5 +638,48 @@ public class Algorithm implements Solver {
             }
         }
         return false;
+    }
+
+    private boolean isStockPile_ModThree_EqualsToZero(){
+        int totalCardsInFaceUp_AndFaceDown = table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size();
+        return totalCardsInFaceUp_AndFaceDown % 3 == 0;
+    }
+
+    private boolean isStockPile_ModThree_EqualsToOne() {
+        int totalCardsInFaceUp_AndFaceDown = table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size();
+        return totalCardsInFaceUp_AndFaceDown % 3 == 1;
+    }
+
+    private boolean isAllCardsKnown() {
+        List<Card> tempFaceUp = new ArrayList<>(table.getPlayerDeck_FaceUp());
+        List<Card> tempFaceDown = new ArrayList<>(table.getPlayerDeck_FaceDown());
+
+        return false;
+
+    }
+
+//    private boolean checkMatchInStockPile() {
+//    //First clone the current state of the table.
+//        List<Card> tempFaceUp = new ArrayList<>(table.getPlayerDeck_FaceUp());
+//        List<Card> tempFaceDown = new ArrayList<>(table.getPlayerDeck_FaceDown());
+//        List<List<Card>> tempTablou = new ArrayList<>(table.getAllPiles());
+//        List<List<Card>> tempFoundation = new ArrayList<>(table.getFundamentPiles());
+//        TableIO tempTable = new TableIO(tempTablou, tempFoundation, tempFaceUp, tempFaceDown);
+//        Algorithm tempAlgorithm = new Algorithm(tempTable);
+//        Mover tempMover = new Mover(tempTable);
+//        Match match;
+//        int rounds = (tempTable.getPlayerDeck_FaceDown().size() + tempTable.getPlayerDeck_FaceUp().size() / 3) + table.getPlayerDeck_FaceDown().size()/3;
+//    //Check the next moves, if the card is moved from stock to the table
+//        match = tempAlgorithm.checkForAnyMatch();
+//        tempMover.moveCard_OrPile(match);
+////        if(tempTable.getPlayerDeck_FaceUp().get(tempTable.getPlayerDeck_FaceUp().size() - 1).isFaceUp()){
+////
+////        }
+//
+//        return false;
+//    }
+
+    public RestrictionLevel getRestrictionState() {
+        return restrictionLevel;
     }
 }

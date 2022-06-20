@@ -1,11 +1,9 @@
-
-
 package com.example.uberkabahle;
 
 import android.os.Bundle;
 
-
-import com.example.uberkabahle.src.main.java.src.BackendInterfaceImpl;
+import com.example.uberkabahle.src.main.java.src.BackendInterfaceImpl1;
+import com.example.uberkabahle.src.main.java.src.BackendInterfaceImpl2;
 import com.example.uberkabahle.src.main.java.src.Interfaces.comm.BackendInterface;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -27,7 +25,7 @@ public class MainActivity extends FlutterActivity {
 
         super.configureFlutterEngine(flutterEngine);
         GeneratedPluginRegistrant.registerWith(flutterEngine);
-	    BackendInterface comm = new BackendInterfaceImpl();
+	    BackendInterface comm = new BackendInterfaceImpl2();
 	
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler(
             (call, result) -> {

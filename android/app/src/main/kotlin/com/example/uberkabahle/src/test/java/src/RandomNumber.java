@@ -1,5 +1,6 @@
 /*
 package src;
+package com.example.uberkabahle.src.test.java.src;
 
 import java.util.Random;
 

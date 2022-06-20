@@ -2,6 +2,7 @@ package com.example.uberkabahle.src.main.java.src;
 
 import com.example.uberkabahle.src.main.java.src.Interfaces.Move;
 import com.example.uberkabahle.src.main.java.src.Interfaces.Table;
+import com.example.uberkabahle.src.main.java.src.Interfaces.comm.BackendInterface;
 
 import java.util.Scanner;
 
@@ -9,12 +10,12 @@ public class Run {
 
     public static void main(String[] args) {
 
+        //This is just a silly comment!
 
 
-
-        /*//JONAS [
-        BackendInterfaceImpl backendInterfaceImpl = new BackendInterfaceImpl();
-        backendInterfaceImpl.initStartTable("H13,R8,H12,R5,K10,S4,R1");
+        //JONAS [
+        BackendInterface backendInterfaceImpl = new BackendInterfaceImpl2();
+        backendInterfaceImpl.initStartTable("R9,R7,H2,H10,K10,H3,H7");
 
 
         Scanner scanner =  new Scanner(System.in);
@@ -32,9 +33,9 @@ public class Run {
                 backendInterfaceImpl.updateTable(cardsString);
             }
         }
-        //JONAS ]*/
+        //JONAS ]
 
-
+        /*
         Scanner scanner = new Scanner(System.in);
         Table table = new TableIO();
         Algorithm algorithm = new Algorithm(table);
@@ -103,7 +104,6 @@ public class Run {
             else if (match.fromPile == 11 && match.toPile >= 7 && match.match && match.noNextInput) {
                 System.out.println("Take the last card in the face up stock pile, and move it to tablou pile: " + match.toPile);
                 move.moveCard_OrPile(match);
-                //TODO evt placeres stoppere her, så man får ét move af gangen
             }
             //If we turn three new cards in the player deck and know the next card
             else if (match.fromPile == 11 && !match.match && match.noNextInput) {
@@ -113,13 +113,13 @@ public class Run {
             }
             //Match from tablou to foundation - no next input
             else if (match.fromPile < 7 && match.toPile > 6 && match.match && match.noNextInput && !match.lastCardInPile) {
-                System.out.println("Move match from tablou pile pile: " + match.fromPile + " to foundation pile: " + (match.toPile - 7));
+                System.out.println("Move match from tablou pile pile: " + match.fromPile + " to foundation pile: " + match.toPile);
                 System.out.println("That is the last card in the tablou pile number " + match.fromPile);
                 move.moveCard_OrPile(match);
             }
             //Match from tablou to foundation - next input
             else if (match.fromPile < 7 && match.toPile > 6 && match.match && !match.noNextInput && !match.lastCardInPile) {
-                System.out.println("Move match from tabou pile: " + match.fromPile + " to foundation pile: " + (match.toPile - 7));
+                System.out.println("Move match from tabou pile: " + match.fromPile + " to foundation pile: " + match.toPile);
                 System.out.println("Then turn over the face down card in pile: " + match.fromPile + " and enter the input.");
                 String input = scanner.next();
                 Card card = table.stringToCardConverter(input);
@@ -153,6 +153,8 @@ public class Run {
 //            //table.printTable();
 //            System.out.println("Meeeh");
         }
+
+         */
     }
 }
 

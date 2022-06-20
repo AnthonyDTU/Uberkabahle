@@ -67,7 +67,7 @@ public class RandomCards {
 
     public String getNextCard(){
         if(cards.isEmpty()){
-            System.out.println("");
+            return null;
         }
         String getCard = cards.get(0);
         cards.remove(0);
