@@ -71,15 +71,18 @@ class AlgorithmController {
 
   Future<String> getNextMove() async {
     String response = await backendAlgorithm.invokeMethod("getNextMove") as String;
+    print("Just recieved $response from algoritm\n");
     return response;
   }
 
   Future<bool> setRecognizedCards(String cardConfigurationMessage) async {
+    print("Just sent $cardConfigurationMessage to algorithm\n");
     bool status = await backendAlgorithm.invokeMethod("updateTable", {"data": cardConfigurationMessage});
     return status;
   }
 
   Future<bool> initializeTableConfiguration(String cardConfigurationMessage) async {
+    print("Just initialized algortihm with $cardConfigurationMessage\n");
     bool status = await backendAlgorithm.invokeMethod("initTable", {"data": cardConfigurationMessage});
     return status;
   }
