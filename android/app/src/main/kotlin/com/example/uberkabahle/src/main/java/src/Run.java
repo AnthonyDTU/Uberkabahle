@@ -169,12 +169,6 @@ public class Run {
             } else {
                 System.out.println("Meeeh");
             }
-
-
-//            //If nothing applies, turn over three cards in stock, if possible
-//            else {move.moveCard_OrPile(match); table.printTable();}
-//            //table.printTable();
-//            System.out.println("Meeeh");
         }
     }
 }
