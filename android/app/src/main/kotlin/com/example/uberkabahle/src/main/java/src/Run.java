@@ -62,7 +62,31 @@ public class Run {
                 match.nextPlayerCard = card;
                 move.moveCard_OrPile(match);
                 //table.printTable();
-            } else if (match.fromPile == 11 && !match.match && !match.noNextInput && !match.lastCardInPile) {
+
+            }
+            //Match from foundation to tablou - no next input
+            else if(match.isMatch() && match.getFromPile() > 6 && match.isNoNextInput()){
+
+                System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
+                System.out.println("After that move the card from talon to tablo " + match.getToPile());
+                move.moveCard_OrPile(match);
+            }
+
+            //Match from foundation to tablou - next input
+            else if(match.isMatch() && match.getFromPile() > 6 && !match.isNoNextInput()){
+
+                System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
+                System.out.println("After that move the card from talon to tablo " + match.getToPile());
+                System.out.println("Enter next card in stock");
+
+                String input = scanner.next();
+                Card card = table.stringToCardConverter(input);
+                card.setFaceUp(true);
+                match.nextPlayerCard = card;
+                move.moveCard_OrPile(match);
+            }
+
+            else if (match.fromPile == 11 && !match.match && !match.noNextInput && !match.lastCardInPile) {
                 System.out.println("No match on the table, turn three cards from the stock pile over and enter the next card");
                 String input = scanner.next();
                 Card card = table.stringToCardConverter(input);

@@ -130,6 +130,8 @@ public class Simulation {
                         table.printTable();
                         System.out.println("Move from stock to tablou pile: " + match.getToPile());
                     }
+                    match.nextPlayerCard = table.stringToCardConverter(randomCards.getNextCard());
+                    match.nextPlayerCard.setFaceUp(true);
                     move.moveCard_OrPile(match);
                 }
                 //Match from stock to tablou - no next input
