@@ -64,7 +64,9 @@ class AlgorithmController {
     label = label.replaceAll("13", "K");
     label = label.replaceAll("12", "Q");
     label = label.replaceAll("11", "J");
-    label = label.replaceAll("1", "A");
+    if (!label.contains("10")) {
+      label = label.replaceAll("1", "A");
+    }
 
     return label.substring(1, label.length) + label.substring(0, 1);
   }

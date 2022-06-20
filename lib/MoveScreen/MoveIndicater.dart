@@ -30,7 +30,7 @@ class MoveIndicator extends StatelessWidget {
                               ),
                               const Text(
                                 "Flip Stack",
-                                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -104,29 +104,5 @@ class MoveIndicator extends StatelessWidget {
         ],
       ),
     );
-
-    // // For placing on top of relevant pile:
-    // // *************************************
-    // return Positioned(
-    //   left: (moveCard) ? 100 : 300,
-    //   top: 200,
-    //   width: 150,
-
-    //   // left: card.renderLocation.left,
-    //   // top: card.renderLocation.top,
-    //   // width: card.renderLocation.width,
-    //   // height: card.renderLocation.height,
-    //   child: Column(
-    //     children: [
-    //       Image.asset(
-    //         "assets/cards/${card.label}.png",
-    //       ),
-    //       Text(
-    //         "Column $columnIndex",
-    //         style: TextStyle(fontSize: 20),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }

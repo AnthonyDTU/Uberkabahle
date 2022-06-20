@@ -1,43 +1,69 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:uberkabahle/CameraScreen/TensorFlow/Recognition.dart';
 
 class CardAdjuster extends StatefulWidget {
   final List<String> options;
+  final String location;
   final Recognition recognition;
-  const CardAdjuster({required this.options, required this.recognition, Key? key}) : super(key: key);
+  const CardAdjuster({required this.options, required this.location, required this.recognition, Key? key}) : super(key: key);
 
   @override
-  State<CardAdjuster> createState() => _CardAdjusterState(options: options, recognition: recognition);
+  State<CardAdjuster> createState() => _CardAdjusterState(options: options, locatioan: location, recognition: recognition);
 }
 
 class _CardAdjusterState extends State<CardAdjuster> {
-  late List<String> options;
-  late Recognition recognition;
+  final List<String> options;
+  final String locatioan;
+  final Recognition recognition;
 
-  _CardAdjusterState({required this.options, required this.recognition});
+  _CardAdjusterState({required this.options, required this.locatioan, required this.recognition});
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: recognition.renderLocation.left,
-      top: recognition.renderLocation.top,
-      // width: 100,
-      // height: 40,
-      // Postition Here
-      // ...
-      // ...
-      child: DropdownButton(
-        value: recognition.label,
-        items: options.map(buildMenuItem).toList(),
-        onChanged: (value) => setState(() => recognition.label = value as String),
+      left: recognition.renderLocation.left - 30,
+      top: recognition.renderLocation.top - 30,
+      child: Container(
+        decoration: BoxDecoration(
+          backgroundBlendMode: BlendMode.darken,
+          color: Colors.grey.withOpacity(0.75),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              locatioan,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 13, 95, 163),
+              ),
+            ),
+            DropdownButton(
+              value: recognition.label,
+              items: options.map(buildMenuItem).toList(),
+              onChanged: (value) => setState(() => recognition.label = value as String),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   DropdownMenuItem<String> buildMenuItem(String text) => DropdownMenuItem(
-      value: text,
-      child: Text(
-        text,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-      ));
+        value: text,
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 13, 95, 163),
+          ),
+        ),
+      );
 }

@@ -1,5 +1,4 @@
-import 'package:uberkabahle/CameraScreen/TensorFlow/Recognition.dart';
-
+/// Class for holding a move.
 class SuggestedMove {
   String moveCard;
   String toCard;
