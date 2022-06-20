@@ -12,7 +12,7 @@ public class Simulation {
 
     //Run the simulation from this main method
     public static void main(String[] args) {
-        Simulation simulation = new Simulation(10000, 800, false);
+        Simulation simulation = new Simulation(1000, 800, false);
         TestResult testResult = simulation.runSimulation();
         System.out.println(testResult);
     }
@@ -48,7 +48,7 @@ public class Simulation {
                     if (printTable) {
                         System.out.println("Complex match, first move from pile " + match.getFromPile() + " at index " + match.getComplexIndex() + " to tablou pile " + match.getToPile());
                         System.out.println("After that, move the card at tablou pile " + match.getFromPile() + " to foundation pile " + match.getComplexFinalFoundationPile());
-                        System.out.println("Last trun over the facedown card in tablou " + match.getFromPile() + " and enter value:");
+                        System.out.println("Last turn over the facedown card in tablou " + match.getFromPile() + " and enter value:");
                     }
 
                     match.nextPlayerCard = table.stringToCardConverter(randomCards.getNextCard());
@@ -76,11 +76,11 @@ public class Simulation {
                     move.moveCard_OrPile(match);
                     //System.out.printf("The next card you turn over is known and is: " + table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1));
                 }
-                //Match from player pile to tablou - next input
+                //Match from stock pile to tablou - next input
                 else if (match.getFromPile() == 11 && match.getToPile() < 7 && match.isMatch() && !match.isNoNextInput() && !match.isLastCardInPile()) {
                     if (printTable) {
                         table.printTable();
-                        System.out.println("move from " + match.getFromPile() + " to " + match.getToPile());
+                        System.out.println("move from " + match.getFromPile() + " to tableau" + match.getToPile());
                     }
                     match.nextPlayerCard = table.stringToCardConverter(randomCards.getNextCard());
                     match.nextPlayerCard.setFaceUp(true);
@@ -90,7 +90,7 @@ public class Simulation {
                 else if (match.getFromPile() == 11 && match.getToPile() >= 7 && match.isMatch() && !match.isNoNextInput() && !match.isLastCardInPile()) {
                     if (printTable) {
                         table.printTable();
-                        System.out.println("move from " + match.getFromPile() + " to " + match.getToPile());
+                        System.out.println("move from stock to foundation pile: " + match.getToPile());
                     }
                     match.nextPlayerCard = table.stringToCardConverter(randomCards.getNextCard());
                     match.nextPlayerCard.setFaceUp(true);
@@ -99,7 +99,7 @@ public class Simulation {
                 //Match from stock to foundation - no next input
                 else if (match.getFromPile() == 11 && match.getToPile() > 6 && match.isMatch() && match.isNoNextInput()) {
                     if (printTable) {
-                        System.out.println("move from " + match.getFromPile() + " to " + match.getToPile());
+                        System.out.println("move from stock to foundation" + match.getToPile());
                     }
                     move.moveCard_OrPile(match);
                 }
