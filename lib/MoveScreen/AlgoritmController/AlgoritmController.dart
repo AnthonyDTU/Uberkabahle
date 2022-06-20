@@ -17,10 +17,13 @@ class AlgorithmController {
     }
 
     bool status = await initializeTableConfiguration(cardConfigurationMessage);
-    String suggestedMove = await getNextMove();
 
     if (status == true) {
+      String suggestedMoves = await getNextMove();
       isFirstMove = false;
+      return buildMoves(suggestedMoves);
+    } else {
+      return [];
     }
     return buildDebugMoves(sortedRecognitions);
   }
@@ -34,11 +37,11 @@ class AlgorithmController {
     bool status = await setRecognizedCards(cardConfigurationMessage);
 
     if (status == true) {
-      String suggestedMove = await getNextMove();
-      List<String> suggestedMoves = suggestedMove.split(';');
-      for (String move in suggestedMoves) {
-        List<String> moveComponents = move.split(',');
-      }
+      String suggestedMoves = await getNextMove();
+      isFirstMove = false;
+      return buildMoves(suggestedMoves);
+    } else {
+      return [];
     }
 
     return buildDebugMoves(sortedRecognitions);
@@ -63,7 +66,7 @@ class AlgorithmController {
     label = label.replaceAll("R", "D");
     label = label.replaceAll("K", "C");
 
-    return label.substring(1, label.length - 1) + label.substring(0, 1);
+    return label.substring(1, label.length) + label.substring(0, 1);
   }
 
   Future<String> getNextMove() async {
@@ -81,18 +84,38 @@ class AlgorithmController {
     return status;
   }
 
+  List<SuggestedMove> buildMoves(String moves) {
+    List<SuggestedMove> suggestedMoves = [];
+    List<String> rawMoves = moves.split(';');
+    rawMoves.removeLast();
+    for (String move in rawMoves) {
+      if (move == "0") {
+        suggestedMoves.add(SuggestedMove("", 0, "", 0, true, false));
+      } else {
+        List<String> moveComponents = move.split(',');
+        String moveCard = translateLabelToEnglish(moveComponents[0]);
+        String toCard = translateLabelToEnglish(moveComponents[1]);
+        int fromColumn = int.parse(moveComponents[2]);
+        int toColumn = int.parse(moveComponents[3]);
+        bool flipStack = false;
+        bool solved = moveComponents[5] == "1";
+        suggestedMoves.add(SuggestedMove(moveCard, fromColumn, toCard, toColumn, flipStack, solved));
+      }
+    }
+    return suggestedMoves;
+  }
+
   List<SuggestedMove> buildDebugMoves(List<Recognition> sortedRecognitions) {
     List<SuggestedMove> suggestedMoves = [];
     if (sortedRecognitions.length > 1) {
-      suggestedMoves.add(SuggestedMove(sortedRecognitions[0], 0, sortedRecognitions[0], 1, false, false));
-      suggestedMoves.add(SuggestedMove(sortedRecognitions[0], 0, sortedRecognitions[1], 1, false, false));
-      suggestedMoves.add(SuggestedMove(sortedRecognitions[1], 0, sortedRecognitions[0], 1, false, false));
-      suggestedMoves.add(SuggestedMove(sortedRecognitions[1], 0, sortedRecognitions[1], 1, false, false));
+      suggestedMoves.add(SuggestedMove(sortedRecognitions[0].label, 0, sortedRecognitions[0].label, 1, false, false));
+      suggestedMoves.add(SuggestedMove(sortedRecognitions[0].label, 0, sortedRecognitions[1].label, 1, false, false));
+      suggestedMoves.add(SuggestedMove(sortedRecognitions[1].label, 0, sortedRecognitions[0].label, 1, false, false));
+      suggestedMoves.add(SuggestedMove(sortedRecognitions[1].label, 0, sortedRecognitions[1].label, 1, false, false));
     } else if (sortedRecognitions.length == 1) {
-      suggestedMoves.add(SuggestedMove(sortedRecognitions[0], 0, sortedRecognitions[0], 1, false, false));
+      suggestedMoves.add(SuggestedMove(sortedRecognitions[0].label, 0, sortedRecognitions[0].label, 1, false, false));
     } else {
-      suggestedMoves.add(SuggestedMove(
-          Recognition(label: "5C", confidence: 0, location: Rect.zero), 0, Recognition(label: "5C", confidence: 0, location: Rect.zero), 1, false, false));
+      suggestedMoves.add(SuggestedMove("5C", 0, "5C", 1, false, false));
     }
     return suggestedMoves;
   }

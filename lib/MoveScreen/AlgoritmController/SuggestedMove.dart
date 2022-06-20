@@ -1,8 +1,8 @@
 import 'package:uberkabahle/CameraScreen/TensorFlow/Recognition.dart';
 
 class SuggestedMove {
-  Recognition moveCard;
-  Recognition toCard;
+  String moveCard;
+  String toCard;
   int fromColumn;
   int toColumn;
   bool flipStack;
