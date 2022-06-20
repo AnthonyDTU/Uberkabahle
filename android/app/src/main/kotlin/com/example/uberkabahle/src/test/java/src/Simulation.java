@@ -58,7 +58,28 @@ public class Simulation {
                         table.printTable();
                     }
                 }
-                //No match - Turn card from player pile - next input - Not last card in faceUp
+
+            //Match from foundation to tablou - no next input
+                else if(match.isMatch() && match.getFromPile() > 6 && match.isNoNextInput()){
+                    if(printTable) {
+                        System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
+                        System.out.println("After that move the card from talon to tablo " + match.getToPile());
+                    }
+                    move.moveCard_OrPile(match);
+                }
+
+            //Match from foundation to tablou - next input
+                else if(match.isMatch() && match.getFromPile() > 6 && !match.isNoNextInput()){
+                    if(printTable) {
+                        System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
+                        System.out.println("After that move the card from talon to tablo " + match.getToPile());
+                    }
+                    match.nextPlayerCard = table.stringToCardConverter(randomCards.getNextCard());
+                    match.nextPlayerCard.setFaceUp(true);
+                    move.moveCard_OrPile(match);
+                }
+
+            //No match - Turn card from player pile - next input - Not last card in faceUp
                 else if (match.getFromPile() == 11 && !match.isMatch() && !match.isNoNextInput() && !match.isLastCardInPile()) {
                     if (printTable) {
                         table.printTable();

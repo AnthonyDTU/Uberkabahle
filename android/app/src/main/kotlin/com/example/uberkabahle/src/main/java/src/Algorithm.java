@@ -126,6 +126,12 @@ public class Algorithm implements Solver  {
 
         else if(checkFor_foundation_ToTablou_ToFreeStock()){
             Match match = new Match(cardFromPile, cardToPile, true, false);
+            if(table.getPlayerDeck_FaceUp().size() < 2){
+                match.setNoNextInput(true);
+            }
+            else if(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() -2).isFaceUp()){
+                match.setNoNextInput(true);
+            }
             return match;
         }
 
@@ -302,10 +308,17 @@ public class Algorithm implements Solver  {
     }
 
     private boolean checkFor_foundation_ToTablou_ToFreeStock() {
-        //TODO implement rest
 
         int matchValueTablou = -1;
         int matchColorTablou = 0;
+
+        if (table.getPlayerDeck_FaceUp().isEmpty()){
+            return false;
+        }
+
+        if(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).getValue() == 0){
+            return false;
+        }
 
         for (int i = 0 ; i < 4 ; i++) {
             if (table.getFundamentPiles().get(i).isEmpty() || table.getPlayerDeck_FaceUp().isEmpty()) {
@@ -321,7 +334,7 @@ public class Algorithm implements Solver  {
                     if(table.getAllPiles().get(j).isEmpty()){continue;}
                     if (table.getAllPiles().get(j).get(table.getAllPiles().get(j).size() - 1).getColor() == matchColorTablou
                             && table.getAllPiles().get(j).get(table.getAllPiles().get(j).size() - 1).getValue() == matchValueTablou) {
-                        cardFromPile = i;
+                        cardFromPile = i + 7;
                         cardToPile = j;
                         return true;
                     }

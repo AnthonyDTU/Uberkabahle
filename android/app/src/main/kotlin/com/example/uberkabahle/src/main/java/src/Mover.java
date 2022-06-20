@@ -29,7 +29,7 @@ public class Mover implements Move {
     @Override
     public void moveCard_OrPile(Match match) {
 
-    //If there is a complex match
+//If there is a complex match - no next input
         if (match.complex && (match.noNextInput || match.lastCardInPile)) {
             //First step tablou to tablou
             List<Card> cardsToMove = new ArrayList<>();
@@ -52,7 +52,7 @@ public class Mover implements Move {
             int type = table.getFundamentPiles().get(match.complexFinalFoundationPile).get(table.getFundamentPiles().get(match.complexFinalFoundationPile).size() - 1).getType();
         }
         else if(match.complex){
-            //First step tablou to tablou
+//If there is a complex match - next input
             List<Card> cardsToMove = new ArrayList<>();
 
             for (int i = match.complexIndex ; i < table.getAllPiles().get(match.fromPile).size(); i++) {
@@ -72,6 +72,38 @@ public class Mover implements Move {
             match.nextPlayerCard.setBelongToPile(match.fromPile);
             table.getAllPiles().get(match.fromPile).remove(table.getAllPiles().get(match.fromPile).size() - 1);
             table.getAllPiles().get(match.fromPile).add(match.nextPlayerCard);
+        }
+
+//If there is a match, from foundation to tablou - no next input
+        else if(match.match && match.fromPile > 6 && match.fromPile < 11 && match.noNextInput){
+        //Copy from foundation to tablou
+            table.getAllPiles().get(match.toPile).add(table.getFundamentPiles().get(match.fromPile - 7).get(table.getFundamentPiles().get(match.fromPile - 7).size() - 1));
+            table.getAllPiles().get(match.toPile).get(table.getAllPiles().get(match.toPile).size() - 1).setBelongToPile(match.toPile);
+        //Delete from foundation
+            table.getFundamentPiles().get(match.fromPile - 7).remove(table.getFundamentPiles().get(match.fromPile - 7).size() - 1);
+        //Move from player deck to tablou
+            table.getAllPiles().get(match.toPile).add(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1));
+            table.getAllPiles().get(match.toPile).get(table.getAllPiles().get(match.toPile).size() - 1).setBelongToPile(match.toPile);
+        //Delete from player deck.
+            table.getPlayerDeck_FaceUp().remove(table.getPlayerDeck_FaceUp().size() - 1);
+        }
+
+//If there is a match, from foundation to tablou - next input
+        else if(match.match && match.fromPile > 6 && match.fromPile < 11){
+        //Copy from foundation to tablou
+            table.getAllPiles().get(match.toPile).add(table.getFundamentPiles().get(match.fromPile - 7).get(table.getFundamentPiles().get(match.fromPile - 7).size() - 1));
+            table.getAllPiles().get(match.toPile).get(table.getAllPiles().get(match.toPile).size() - 1).setBelongToPile(match.toPile);
+        //Delete from foundation
+            table.getFundamentPiles().get(match.fromPile - 7).remove(table.getFundamentPiles().get(match.fromPile - 7).size() - 1);
+        //Move from player deck to tablou
+            table.getAllPiles().get(match.toPile).add(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1));
+            table.getAllPiles().get(match.toPile).get(table.getAllPiles().get(match.toPile).size() - 1).setBelongToPile(match.toPile);
+            //Delete from player deck.
+            table.getPlayerDeck_FaceUp().remove(table.getPlayerDeck_FaceUp().size() - 1);
+            table.getPlayerDeck_FaceUp().remove(table.getPlayerDeck_FaceUp().size() - 1);
+        //Add input to stock.
+            match.nextPlayerCard.setBelongToPile(11);
+            table.getPlayerDeck_FaceUp().add(match.nextPlayerCard);
         }
 
 //IF THERE IS NO MATCH, AND WE NEED 3 NEW CARDS - WITH INPUT
@@ -142,12 +174,11 @@ public class Mover implements Move {
                 table.getPlayerDeck_FaceDown().clear();
             }
             else if (table.getPlayerDeck_FaceDown().size() == 0 && table.getPlayerDeck_FaceUp().size() == 0){
-  //              System.out.println("Stock pile empty");
                 //TODO implement this
             }
 
         }
-    //If there is a match and the next input is attached
+//If there is a match and the next input is attached
         else if (match.match && !match.noNextInput) {
             //If match from stock pile
             if (match.fromPile == 11) {

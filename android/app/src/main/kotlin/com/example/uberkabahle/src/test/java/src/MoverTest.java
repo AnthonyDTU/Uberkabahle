@@ -15,6 +15,26 @@ import static org.testng.Assert.*;
 class MoverTest {
 
     @Test
+    void foundationToTablou(){
+        Table table = new TableIO();
+        Algorithm algorithm = new Algorithm(table);
+        Move move = new Mover(table);
+        Match match;
+        table.initStartTable("H13,H5,K13,R13,R13,H13,R13");
+        table.getFundamentPiles().get(0).add(table.stringToCardConverter("K2"));
+        table.getFundamentPiles().get(0).add(table.stringToCardConverter("K3"));
+        table.getFundamentPiles().get(0).add(table.stringToCardConverter("K4"));
+        table.getPlayerDeck_FaceUp().add(table.stringToCardConverter("H3"));
+        match = algorithm.checkForAnyMatch();
+        assertTrue(match.isMatch(), "Assert that match is found");
+        assertTrue(match.getFromPile() > 6, "Assert that the match is from foundation to tablou");
+        move.moveCard_OrPile(match);
+        System.out.printf("");
+
+
+    }
+
+    @Test
     void StockToTablou(){
         Table table = new TableIO();
         Algorithm algorithm = new Algorithm(table);
