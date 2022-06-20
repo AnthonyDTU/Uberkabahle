@@ -97,9 +97,12 @@ public class BackendInterfaceImpl2 implements BackendInterface {
                         }
                     }
                     else {
-                        Card tmpCard = table.getAllPiles().get(i).get(table.getAllPiles().get(i).size() - 1);
+                        Card tmpCard = null;
+                        if (table.getAllPiles().get(i).size() > 0){
+                            tmpCard = table.getAllPiles().get(i).get(table.getAllPiles().get(i).size() - 1);
+                        }
                         Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
-                        if ((tmpCard.getValue() != tmpCard1.getValue() || tmpCard.getType() != tmpCard1.getType()) &&
+                        if (tmpCard != null && (tmpCard.getValue() != tmpCard1.getValue() || tmpCard.getType() != tmpCard1.getType()) &&
                                 match.fromPile == tmpCard.getBelongToPile()){
                             System.out.println("#### Tableau card difference detected ####");
                             cardDif = table.stringToCardConverter(cardSplit[i]);
