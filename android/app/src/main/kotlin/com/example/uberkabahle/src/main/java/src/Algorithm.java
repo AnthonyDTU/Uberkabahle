@@ -109,7 +109,20 @@ public class Algorithm implements Solver  {
 //            return match;
 //        }
 
-        if(checkForMatch_TablouToTablou()){
+        if(aceToFoundation()){
+            Match match = new Match(cardFromPile, cardToPile, true, false);
+            if(table.getAllPiles().get(cardFromPile).size() < 2){
+                match.setNoNextInput(true);
+                match.lastCardInPile = true;
+                return match;
+            }
+            else if(table.getAllPiles().get(cardFromPile).get(table.getAllPiles().get(cardFromPile).size() - 2).isFaceUp()){
+                match.setNoNextInput(true);
+            }
+            return match;
+        }
+
+        else if(checkForMatch_TablouToTablou()){
             int index = 0;
             Match match = new Match(cardFromPile, cardToPile, true, false);
             if(table.getAllPiles().get(cardFromPile).size() < 2){
@@ -306,6 +319,7 @@ public class Algorithm implements Solver  {
             return match;
         }
     }
+
 
     private boolean checkFor_foundation_ToTablou_ToFreeStock() {
 

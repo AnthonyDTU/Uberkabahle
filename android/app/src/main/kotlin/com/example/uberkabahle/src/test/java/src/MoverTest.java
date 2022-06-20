@@ -261,6 +261,28 @@ class MoverTest {
     }
 
     @Test
+    void tablou_foundation(){
+        Table table = new TableIO();
+        Algorithm algorithm = new Algorithm(table);
+        Move move = new Mover(table);
+        Match match;
+        table.initStartTable("H0,S0,R0,K0,H2,S2,R2");
+        match = algorithm.checkForAnyMatch();
+        assertTrue(match.isNoNextInput());
+        move.moveCard_OrPile(match);
+        match = algorithm.checkForAnyMatch();
+        assertFalse(match.isNoNextInput());
+        match.nextPlayerCard = table.stringToCardConverter("K13");
+        move.moveCard_OrPile(match);
+
+        match = algorithm.checkForAnyMatch();
+        match.nextPlayerCard = table.stringToCardConverter("K13");
+        move.moveCard_OrPile(match);
+
+
+    }
+
+    @Test
     void moveKing_fromStock_ToEmptyPile(){
         Table table = new TableIO();
         Algorithm algorithm = new Algorithm(table);

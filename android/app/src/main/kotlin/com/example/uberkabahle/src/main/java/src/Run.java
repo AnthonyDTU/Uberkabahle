@@ -135,13 +135,13 @@ public class Run {
                 System.out.printf("The card is already known: " + table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1));
             }
             //Match from tablou to foundation - no next input
-            else if (match.fromPile < 7 && match.toPile > 6 && match.match && match.noNextInput && !match.lastCardInPile) {
+            else if (match.fromPile < 7 && match.toPile > 6 && match.match && match.noNextInput) {
                 System.out.println("Move match from tablou pile pile: " + match.fromPile + " to foundation pile: " + match.toPile);
                 System.out.println("That is the last card in the tablou pile number " + match.fromPile);
                 move.moveCard_OrPile(match);
             }
             //Match from tablou to foundation - next input
-            else if (match.fromPile < 7 && match.toPile > 6 && match.match && !match.noNextInput && !match.lastCardInPile) {
+            else if (match.fromPile < 7 && match.toPile > 6 && match.match && !match.noNextInput) {
                 System.out.println("Move match from tabou pile: " + match.fromPile + " to foundation pile: " + match.toPile);
                 System.out.println("Then turn over the face down card in pile: " + match.fromPile + " and enter the input.");
                 String input = scanner.next();
