@@ -105,8 +105,13 @@ public class Algorithm implements Solver  {
     @Override
     public Match checkForAnyMatch() {
 
+
         if(checkForMatch_tablou_to_TopPile()){
             Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
+            if (isSolitaireSolved()){
+                match.setSolved(true);
+                return match;
+            }
             if(table.getAllPiles().get(cardFromPile).size() < 2){
                 match.setNoNextInput(true);
                 return match;
@@ -121,6 +126,11 @@ public class Algorithm implements Solver  {
             Match match = new Match(cardFromPile, cardToPile, true, true, cardFromComplexPileIndex, finalComplexPile, fromCard, toCard);
             int index = 0;
 
+            if (isSolitaireSolved()){
+                match.setSolved(true);
+                return match;
+            }
+
             if(cardFromComplexPileIndex < 2){
                 match.setNoNextInput(true);
                 return match;
@@ -134,6 +144,10 @@ public class Algorithm implements Solver  {
         else if(checkForMatchBottomPiles()){
             int index = 0;
             Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
+            if (isSolitaireSolved()){
+                match.setSolved(true);
+                return match;
+            }
             if(table.getAllPiles().get(cardFromPile).size() < 2){
                 match.setNoNextInput(true);
                 match.lastCardInPile = true;
@@ -147,11 +161,20 @@ public class Algorithm implements Solver  {
         }
 
         else if(checkForKingMatch_FromTablou_ToEmptyPile()){
-            return new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
+            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
+            if (isSolitaireSolved()){
+                match.setSolved(true);
+                return match;
+            }
+            return match;
         }
 
         else if(checkForKingMatch_FromStack_ToEmptyPile()){
             Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
+            if (isSolitaireSolved()){
+                match.setSolved(true);
+                return match;
+            }
             if(table.getPlayerDeck_FaceUp().size() == 1){
                 match.setLastCardInPile(true);
                 match.setNoNextInput(true);
@@ -165,6 +188,10 @@ public class Algorithm implements Solver  {
 
         else if(checkForMatch_playerDeck()) {
             Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
+            if (isSolitaireSolved()){
+                match.setSolved(true);
+                return match;
+            }
             if(table.getPlayerDeck_FaceUp().size() > 1){
                 if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 2 ).isFaceUp()){
                     match.setNoNextInput(true);
@@ -204,6 +231,10 @@ public class Algorithm implements Solver  {
 //                }
 //            }
             Match match = new Match(11, -1, false, false);
+            if (isSolitaireSolved()){
+                match.setSolved(true);
+                return match;
+            }
         //If we are at the end of the pile
             if(table.getPlayerDeck_FaceUp().size() > 2 && table.getPlayerDeck_FaceDown().size() > 2){
                 if (table.getPlayerDeck_FaceDown().get(2).isFaceUp()){
@@ -681,5 +712,17 @@ public class Algorithm implements Solver  {
 
     public RestrictionLevel getRestrictionState() {
         return restrictionLevel;
+    }
+
+    private boolean isSolitaireSolved(){
+        if (table.getFundamentPiles().get(0).size() == 13 &&
+                table.getFundamentPiles().get(1).size() == 13 &&
+                table.getFundamentPiles().get(2).size() == 13 &&
+                table.getFundamentPiles().get(3).size() == 13){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
