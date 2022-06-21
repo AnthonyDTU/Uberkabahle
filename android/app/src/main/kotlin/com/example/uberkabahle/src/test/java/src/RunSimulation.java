@@ -298,12 +298,14 @@ class RunSimulation {
     void findBestDeck() {
         ArrayList<String> decks = new ArrayList<>();
         String input = "H7,H6,H5,S8,S7,S6,S5,S4,R9,R8,R7,R6,R5,R4,R3,K10,K9,K8,K7,K6,K5,K4,K3,K2,R2,S3,S2,H4,H3,H2,K11,K12,K13,K1,R10,R11,R12,R13,R1,S9,S10,S11,S12,S13,S1,H8,H9,H10,H11,H12,H13,H1";
+        String input2 = "S7,H7,H5,S8,H6,S6,S5,S4,R9,R8,R7,R6,R5,R4,R3,K10,K9,K8,K7,K6,K5,K4,K3,K2,R2,S3,S2,H4,H3,H2,K11,K12,K13,K1,R10,R11,R12,R13,R1,S9,S10,S11,S12,S13,S1,H8,H9,H10,H11,H12,H13,H1";
         int elementInList = 0;
         boolean printTable = true;
 
         decks.add(input);
+        decks.add(input2);
 
-        ArrayList<String> possible = new ArrayList<>();
+        ArrayList<int[]> possible = new ArrayList<>();
         // The upper for loop. Starts by taking the input of element I and creating a starting table and an appropriate pile for each tableau row and card stock.
         // It then runs the game, finds out whether the deck is solvable and how many moves it can be solved in if it is solvable.
         for (int i  = 0; i < decks.size(); i++) {
@@ -563,7 +565,7 @@ class RunSimulation {
                     if (table.getFundamentPiles().get(0).size() == 14) pilesCompleted++;
                 }
                 if (pilesCompleted == 4) {
-                    possible.add("Deck number: " + i + " was completed in " + currentMovesTaken + " moves.");
+                    possible.add(new int[] {i, currentMovesTaken});
                     System.out.println("GAME WON! " + currentMovesTaken + " moves taken for this win.");
                     break;
                 }
@@ -581,8 +583,19 @@ class RunSimulation {
                 }
             }
         }
+        System.out.println("Sorted list of possible wins:");
         for (int i = 0; i < possible.size(); i++) {
-            System.out.println(possible.get(i));
+            for (int j = i+1; j < possible.size(); j++) {
+                if (possible.get(i)[1] > possible.get(j)[1]) {
+                    Collections.swap(possible, i, j);
+                    i = -1;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < possible.size(); i++) {
+            System.out.println("Deck: " + possible.get(i)[0] + " was won in: " + possible.get(i)[1] + " moves.");
         }
 
     }
