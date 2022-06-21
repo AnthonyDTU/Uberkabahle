@@ -2,6 +2,7 @@ package com.example.uberkabahle.src.main.java.src;
 
 import com.example.uberkabahle.src.main.java.src.Interfaces.Move;
 import com.example.uberkabahle.src.main.java.src.Interfaces.Table;
+import com.example.uberkabahle.src.main.java.src.Interfaces.comm.BackendInterface;
 
 import java.util.Scanner;
 
@@ -12,8 +13,8 @@ public class Run {
         //This is just a silly comment!
 
 
-        /*//JONAS [
-        BackendInterfaceImpl backendInterfaceImpl = new BackendInterfaceImpl();
+        //JONAS [
+        BackendInterface backendInterfaceImpl = new BackendInterfaceImpl2();
         backendInterfaceImpl.initStartTable("H13,R8,H12,R5,K10,S4,R1");
 
 
@@ -32,9 +33,9 @@ public class Run {
                 backendInterfaceImpl.updateTable(cardsString);
             }
         }
-        //JONAS ]*/
+        //JONAS ]
 
-
+        /*
         Scanner scanner = new Scanner(System.in);
         Table table = new TableIO();
         Algorithm algorithm = new Algorithm(table);
@@ -177,7 +178,7 @@ public class Run {
                 System.out.println("******************************* WE WON! CONGRATULATION!! *******************************");
                 System.out.println("****************************************************************************************");
             }
-        }
+        }*/
     }
 }
 
