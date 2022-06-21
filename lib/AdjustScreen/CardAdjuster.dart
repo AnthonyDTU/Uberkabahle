@@ -28,7 +28,7 @@ class _CardAdjusterState extends State<CardAdjuster> {
       child: Container(
         decoration: BoxDecoration(
           backgroundBlendMode: BlendMode.darken,
-          color: Colors.grey.withOpacity(0.75),
+          color: Colors.grey.withOpacity(0.80),
           borderRadius: const BorderRadius.all(
             Radius.circular(10),
           ),
@@ -36,13 +36,29 @@ class _CardAdjusterState extends State<CardAdjuster> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              locatioan,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 13, 95, 163),
-              ),
+            Stack(
+              children: [
+                Text(
+                  locatioan,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    //color: Color.fromARGB(255, 13, 95, 163),
+                    foreground: Paint()
+                      ..style = PaintingStyle.stroke
+                      ..strokeWidth = 1
+                      ..color = Colors.white,
+                  ),
+                ),
+                Text(
+                  locatioan,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 13, 95, 163),
+                  ),
+                ),
+              ],
             ),
             DropdownButton(
               value: recognition.label,
@@ -57,13 +73,29 @@ class _CardAdjusterState extends State<CardAdjuster> {
 
   DropdownMenuItem<String> buildMenuItem(String text) => DropdownMenuItem(
         value: text,
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 13, 95, 163),
-          ),
+        child: Stack(
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                //color: Color.fromARGB(255, 13, 95, 163),
+                foreground: Paint()
+                  ..style = PaintingStyle.stroke
+                  ..strokeWidth = 1
+                  ..color = Colors.white,
+              ),
+            ),
+            Text(
+              text,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 13, 95, 163),
+              ),
+            ),
+          ],
         ),
       );
 }
