@@ -364,6 +364,9 @@ class RunSimulation {
 
                 currentMovesTaken++;
                 match = algorithm.checkForAnyMatch();
+                if (currentMovesTaken == 51) {
+                    System.out.println("");
+                }
                 if (match.isComplex() && (match.isNoNextInput() || match.isLastCardInPile())) {
                     if (printTable) {
                         System.out.println("Complex match, first move from pile " + match.getFromPile() + " at index " + match.getComplexIndex() + " to tablou pile " + match.getToPile());
@@ -394,16 +397,17 @@ class RunSimulation {
                     }
                 }
                 //Match from foundation to tablou - no next input
-                else if(match.isMatch() && match.getFromPile() > 6 && match.isNoNextInput()){
+                else if(match.isMatch() && match.getFromPile() > 6  && match.getFromPile() != 11 && match.isNoNextInput()){
                     if(printTable) {
                         System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
                         System.out.println("After that move the card from talon to tablo " + match.getToPile());
                     }
+                    deckResults.get(8).remove(deckResults.get(8).size()-1);
                     move.moveCard_OrPile(match);
                 }
 
                 //Match from foundation to tablou - next input
-                else if(match.isMatch() && match.getFromPile() > 6 && !match.isNoNextInput()){
+                else if(match.isMatch() && match.getFromPile() > 6 && match.getFromPile() != 11 && !match.isNoNextInput()){
                     if(printTable) {
                         System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
                         System.out.println("After that move the card from talon to tablo " + match.getToPile());
@@ -446,7 +450,7 @@ class RunSimulation {
                     move.moveCard_OrPile(match);
                 }
                 //No match - Turn card from player pile - no next input
-                else if(match.getFromPile() == 11 && !match.isMatch() && match.isNoNextInput()) {
+                else if(match.getFromPile() == 11 && !match.isMatch() && match.isNoNextInput() && !match.isLastCardInPile()) {
                     if (printTable){
                         System.out.println("Turn over three new cards in the stock pile");
                     }
@@ -470,7 +474,7 @@ class RunSimulation {
                     //System.out.printf("The next card you turn over is known and is: " + table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1));
                 }
                 //Match from stock pile to tablou - next input
-            else if (match.getFromPile() == 11 && match.getToPile() < 7 && match.isMatch() && !match.isNoNextInput() && !match.isLastCardInPile()) {
+                else if (match.getFromPile() == 11 && match.getToPile() < 7 && match.isMatch() && !match.isNoNextInput() && !match.isLastCardInPile()) {
                     if (printTable) {
                         table.printTable();
                         System.out.println("move from " + match.getFromPile() + " to tableau" + match.getToPile());
