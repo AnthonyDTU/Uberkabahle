@@ -67,7 +67,7 @@ public class BackendInterfaceImpl2 implements BackendInterface {
 
             if (match.getFromPile() > 6 && match.getFromPile() < 11){
                 Card fromCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
-                Card toCard = match.getFromCard();
+                Card toCard = table.getFundamentPiles().get(match.getFromPile() - 7).get(table.getFundamentPiles().get(match.getFromPile() - 7).size() - 1);
 
                 retMove.append(getType(fromCard.getType())).append(fromCard.getValue() + 1).append(",");
                 retMove.append(getType(toCard.getType())).append(toCard.getValue() + 1).append(",");
