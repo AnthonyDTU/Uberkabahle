@@ -56,7 +56,7 @@ public class Algorithm implements Solver  {
             while (next < listToSort.size())
             {
                 if(listToSort.get(current).isEmpty() || listToSort.get(next).isEmpty()){current++; next++; continue;}
-                else if(listToSort.get(current).get(0).getValue() > listToSort.get(next).get(0).getValue())
+                else if(listToSort.get(current).get(listToSort.get(current).size() - 1).getValue() > listToSort.get(next).get(listToSort.get(next).size() - 1).getValue())
                 {
                     Collections.swap(listToSort, current, next);
                     swapped = true;
