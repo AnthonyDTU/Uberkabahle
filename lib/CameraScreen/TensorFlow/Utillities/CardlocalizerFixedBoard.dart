@@ -102,18 +102,18 @@ class CardLocalizerFixedBoard {
     List<Recognition> detectedRowCards;
     List<Coordinate> rowEmptySpaces;
     List<Recognition?> rowWithSpaces;
-    print("all cards \n");
-    print(allCards);
-    print("cardHeight \n");
-    print(cardHeight);
-    print("smallest card \n");
+    // print("all cards \n");
+    // print(allCards);
+    // print("cardHeight \n");
+    // print(cardHeight);
+    // print("smallest card \n");
     Recognition smallestCard = allCards.reduce((value, element) => value.location.top < element.location.top ? value : element);
     print(smallestCard.location.top);
     for (int i = 0; i < 3; i++) {
       //get the cards for the row
       detectedRowCards = _getRowRecogntions(allCards, i);
-      print("row " + i.toString() + "\n");
-      print(detectedRowCards);
+      // print("row " + i.toString() + "\n");
+      // print(detectedRowCards);
       //get empty spaces for the row
       rowEmptySpaces = _getEmptySlotsForRow(emptySlots, i);
       //remove from overall list
@@ -136,22 +136,22 @@ class CardLocalizerFixedBoard {
 
     List<Recognition> detectedRowCards;
     Recognition smallestCard = allCards.reduce((value, element) => value.location.top < element.location.top ? value : element);
-    print("whole list");
-    detectedLocationsPrint(allCards);
-    print(smallestCard.location.top);
+    // print("whole list");
+    // detectedLocationsPrint(allCards);
+    // print(smallestCard.location.top);
     for (int i = 0; i < 3; i++) {
       //get the cards for the row
       detectedRowCards = _getRowRecogntions(allCards, i);
-      print("row " + i.toString() + "\n");
-      detectedLocationsPrint(detectedRowCards);
+      // print("row " + i.toString() + "\n");
+      // detectedLocationsPrint(detectedRowCards);
       //remove from overall list
       allCards = _removeListFromList(allCards, detectedRowCards);
-      print("rest of cards after removal");
-      detectedLocationsPrint(allCards);
+      // print("rest of cards after removal");
+      // detectedLocationsPrint(allCards);
       //finish card list with its empty spaces represented as null
       rowList[i] = _completeRowType2(detectedRowCards);
-      print("row with spaces " + i.toString() + "\n");
-      detectedLocationsPrint(rowList[i]);
+      // print("row with spaces " + i.toString() + "\n");
+      // detectedLocationsPrint(rowList[i]);
     }
 
     //if there are leftovers find a row with all e's and add them there
@@ -169,8 +169,8 @@ class CardLocalizerFixedBoard {
     }
 
     detectedLocationsWithoutNull = _removeNullsFromRecognitionList(detectedLocations); //make an additional list that opholds null safety
-    print("final list");
-    detectedLocationsPrint(detectedLocationsWithoutNull);
+    // print("final list");
+    // detectedLocationsPrint(detectedLocationsWithoutNull);
   }
 
   bool isRowEmpty(List<Recognition?> row) {
@@ -475,9 +475,9 @@ class CardLocalizerFixedBoard {
 
     double screenPart = imageHeight / 3;
 
-    print("third of screen: " + screenPart.toString());
-    print("card height: " + cardHeight.toString());
-    print("card width: " + cardWidth.toString());
+    // print("third of screen: " + screenPart.toString());
+    // print("card height: " + cardHeight.toString());
+    // print("card width: " + cardWidth.toString());
 
     List<Recognition> cardsToReturn = [];
     for (Recognition card in cards) {

@@ -60,6 +60,7 @@ flutter:
     - assets/card_aug_v1_best-512.tflite
     - assets/card_aug_v1.names
     - assets/StartScreenGraphics.png
+    - assets/Throphy.png
     - assets/cards/
 
   # The following line ensures that the Material Icons font is
