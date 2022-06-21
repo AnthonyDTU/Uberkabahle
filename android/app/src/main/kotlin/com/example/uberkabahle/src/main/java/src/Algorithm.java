@@ -15,28 +15,16 @@ public class Algorithm implements Solver  {
 
     private int cardFromPile;// = -10;
     private int cardToPile;// = -10;
-
     private Card fromCard;
     private Card toCard;
-
     private int cardFromComplexPileIndex;
-    private boolean complexMatch = false;
-    private  boolean printTable;
-    private boolean turnOverCard_playerDeck = false;
-    private boolean firstTurn = true;
-    //private boolean noNeedNextInput_algoritmClass = false;
     private int finalComplexPile;
-
     private int stockPileSize = 0;
     private int roundsToReturn = 0;
     private int currentRound = 0;
-
-    private boolean enterModThreeState = false;
-
     List<List<Card>> tempPile = new ArrayList<>();
     List<List<Card>> sortedList = new ArrayList<>();
     Table table;
-
     RestrictionLevel restrictionLevel = RestrictionLevel.HIGH;
 
     public Algorithm(Table table){
@@ -385,38 +373,6 @@ public class Algorithm implements Solver  {
 
     }
 
-    private boolean allStockCardAreKnown() {
-        for (int i = 0 ; i < table.getPlayerDeck_FaceUp().size() ; i++){
-            if (!table.getPlayerDeck_FaceUp().get(i).isFaceUp()){
-                return false;
-            }
-        }
-        for (int i = 0 ; i < table.getPlayerDeck_FaceDown().size() ; i++){
-            if (!table.getPlayerDeck_FaceDown().get(i).isFaceUp()){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean nextStockCardIsKnown() {
-        if (table.getPlayerDeck_FaceDown().size() > 2) {
-            if (table.getPlayerDeck_FaceDown().get(2).isFaceUp()) {
-                return true;
-            }
-        }
-        else if (table.getPlayerDeck_FaceDown().size() == 2) {
-            return table.getPlayerDeck_FaceUp().get(0).isFaceUp();
-        }
-        else if (table.getPlayerDeck_FaceDown().size() == 1 && table.getPlayerDeck_FaceUp().size() > 1) {
-            return table.getPlayerDeck_FaceUp().get(1).isFaceUp();
-        }
-        else if (table.getPlayerDeck_FaceDown().size() == 0) {
-            return table.getPlayerDeck_FaceUp().get(2).isFaceUp();
-        }
-        return false;
-    }
-
     private boolean checkForKingMatch_FromStack_ToEmptyPile() {
         //We try to match the king, with a already known card on the tablou or stock.
         //If restriction level is low, then we move the king no matter what.
@@ -512,7 +468,6 @@ public class Algorithm implements Solver  {
         }
         return false;
     }
-
 
     private boolean checkForMatch_TablouToTablou() {
 
@@ -676,7 +631,7 @@ public class Algorithm implements Solver  {
 
                             cardFromComplexPileIndex = k + 1;
                             table.setComplexSplitIndex(cardFromComplexPileIndex);
-                            complexMatch = true;
+                            boolean complexMatch = true;
                             return true;
                         }
                     }
@@ -690,40 +645,6 @@ public class Algorithm implements Solver  {
         int totalCardsInFaceUp_AndFaceDown = table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size();
         return totalCardsInFaceUp_AndFaceDown % 3 == 0;
     }
-
-    private boolean isStockPile_ModThree_EqualsToOne() {
-        int totalCardsInFaceUp_AndFaceDown = table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size();
-        return totalCardsInFaceUp_AndFaceDown % 3 == 1;
-    }
-
-    private boolean isAllCardsKnown() {
-        List<Card> tempFaceUp = new ArrayList<>(table.getPlayerDeck_FaceUp());
-        List<Card> tempFaceDown = new ArrayList<>(table.getPlayerDeck_FaceDown());
-
-        return false;
-
-    }
-
-//    private boolean checkMatchInStockPile() {
-//    //First clone the current state of the table.
-//        List<Card> tempFaceUp = new ArrayList<>(table.getPlayerDeck_FaceUp());
-//        List<Card> tempFaceDown = new ArrayList<>(table.getPlayerDeck_FaceDown());
-//        List<List<Card>> tempTablou = new ArrayList<>(table.getAllPiles());
-//        List<List<Card>> tempFoundation = new ArrayList<>(table.getFundamentPiles());
-//        TableIO tempTable = new TableIO(tempTablou, tempFoundation, tempFaceUp, tempFaceDown);
-//        Algorithm tempAlgorithm = new Algorithm(tempTable);
-//        Mover tempMover = new Mover(tempTable);
-//        Match match;
-//        int rounds = (tempTable.getPlayerDeck_FaceDown().size() + tempTable.getPlayerDeck_FaceUp().size() / 3) + table.getPlayerDeck_FaceDown().size()/3;
-//    //Check the next moves, if the card is moved from stock to the table
-//        match = tempAlgorithm.checkForAnyMatch();
-//        tempMover.moveCard_OrPile(match);
-////        if(tempTable.getPlayerDeck_FaceUp().get(tempTable.getPlayerDeck_FaceUp().size() - 1).isFaceUp()){
-////
-////        }
-//
-//        return false;
-//    }
 
     public RestrictionLevel getRestrictionState() {
         return restrictionLevel;

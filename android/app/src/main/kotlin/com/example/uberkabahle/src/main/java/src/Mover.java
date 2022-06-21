@@ -9,23 +9,9 @@ import java.util.List;
 public class Mover implements Move {
 
     Table table;
-    //int cardsLeft;
     public Mover(Table table){
         this.table = table;
     }
-
-    @Override
-    public void turnOverNewCard_PlayerDeck(Card newCard) {
-
-    }
-
-    @Override
-    public void moveComplexPile(int fromPile, int fromIndex, int toPile) {
-
-    }
-
-    private boolean stockPileIsEmpty = false;
-
     @Override
     public void moveCard_OrPile(Match match) {
 
@@ -192,12 +178,6 @@ public class Mover implements Move {
                     table.getPlayerDeck_FaceUp().remove(table.getPlayerDeck_FaceUp().size() - 1);
                     match.nextPlayerCard.setBelongToPile(match.fromPile);
                     table.getPlayerDeck_FaceUp().add(match.nextPlayerCard);
-
-//                    if (!table.getPlayerDeck_FaceUp().isEmpty()) {
-//                        table.getPlayerDeck_FaceUp().remove(table.getPlayerDeck_FaceUp().size() - 1);
-//                        match.nextPlayerCard.setBelongToPile(match.fromPile);
-//                        table.getPlayerDeck_FaceUp().add(match.nextPlayerCard);
-//                    }
                 }
                 else {
                     table.getFundamentPiles().get(match.toPile - 7).add(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1));
@@ -283,28 +263,12 @@ public class Mover implements Move {
         if (table.getPlayerDeck_FaceUp().size() > 0) {
             if (table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).isFaceUp()) {
                 match.setNoNextInput(true);
-                //System.out.println("Next card is known: " + table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).toString());
             }
             else if(table.getPlayerDeck_FaceDown().size() > 2){
                 if (table.getPlayerDeck_FaceDown().get(2).isFaceUp()){
                     match.setNoNextInput(true);
                 }
             }
-        }
-    }
-
-    @Override
-    public boolean getIsStockPileIsEmpty() {
-        return stockPileIsEmpty;
-    }
-
-    private void setNewCard(Match match) {
-        if(!table.getPlayerDeck_FaceUp().isEmpty()) {
-            table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).setFaceUp(true);
-            table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).setColor(match.nextPlayerCard.getColor());
-            table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).setValue(match.nextPlayerCard.getValue());
-            table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).setType(match.nextPlayerCard.getType());
-            table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1).setBelongToPile(match.fromPile);
         }
     }
 }
