@@ -1,5 +1,7 @@
 package com.example.uberkabahle.src.main.java.src.Interfaces;
 
+import com.example.uberkabahle.src.main.java.src.Card;
+
 import java.util.List;
 
 public interface Table {
