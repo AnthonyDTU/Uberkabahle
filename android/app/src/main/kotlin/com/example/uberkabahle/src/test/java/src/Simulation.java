@@ -1,4 +1,4 @@
-/*package com.example.uberkabahle.src.test.java.src;
+package com.example.uberkabahle.src.test.java.src;
 
 
 import com.example.uberkabahle.src.main.java.src.Algorithm;
@@ -12,7 +12,7 @@ public class Simulation {
 
     //Run the simulation from this main method
     public static void main(String[] args) {
-        Simulation simulation = new Simulation(1000, 800, false);
+        Simulation simulation = new Simulation(10000, 400, false);
         TestResult testResult = simulation.runSimulation();
         System.out.println(testResult);
     }
@@ -60,7 +60,7 @@ public class Simulation {
                 }
 
             //Match from foundation to tablou - no next input
-                else if(match.isMatch() && match.getFromPile() > 6 && match.isNoNextInput()){
+                else if(match.isMatch() && match.getFromPile() > 6 && match.getFromPile() != 11 && match.isNoNextInput()){
                     if(printTable) {
                         System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
                         System.out.println("After that move the card from talon to tablo " + match.getToPile());
@@ -69,7 +69,7 @@ public class Simulation {
                 }
 
             //Match from foundation to tablou - next input
-                else if(match.isMatch() && match.getFromPile() > 6 && !match.isNoNextInput()){
+                else if(match.isMatch() && match.getFromPile() > 6 && match.getFromPile() != 11 && !match.isNoNextInput()){
                     if(printTable) {
                         System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
                         System.out.println("After that move the card from talon to tablo " + match.getToPile());
@@ -191,6 +191,6 @@ public class Simulation {
         }
         return new TestResult(handsWon, handsLost);
     }
-}*/
+}
 
 

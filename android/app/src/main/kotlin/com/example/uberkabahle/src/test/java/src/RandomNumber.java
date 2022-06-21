@@ -1,4 +1,4 @@
-/*package com.example.uberkabahle.src.test.java.src;
+package com.example.uberkabahle.src.test.java.src;
 
 import java.util.Random;
 
@@ -28,4 +28,4 @@ public class RandomNumber {
     public int getUpperbound() {
         return upperbound;
     }
-}*/
+}

@@ -1,4 +1,4 @@
-/*package com.example.uberkabahle.src.test.java.src;
+package com.example.uberkabahle.src.test.java.src;
 
 import com.example.uberkabahle.src.main.java.src.Algorithm;
 import com.example.uberkabahle.src.main.java.src.Interfaces.Move;
@@ -45,4 +45,4 @@ public class RestrictionLevelTest {
 
     }
 
-}*/
+}

@@ -29,18 +29,22 @@ public class BackendInterfaceImpl2 implements BackendInterface {
         if (match.match){
 
             //Cards from second implementation
-            if (match.getFromPile() > 6 && match.getFromPile() < 11){
+            if (match.getFromCard() == null){
+                retMove.append('0').append(",");
+            }
+            else if (match.getFromPile() > 6 && match.getToPile() <= 10){
                 retMove.append('F').append(",");
             }
             else {
                 retMove.append(getType(match.getFromCard().getType())).append(match.getFromCard().getValue() + 1).append(",");
             }
 
-            if (match.getToPile() > 6) {
-                retMove.append('F').append(",");
-            }
-            else if (match.getToCard() == null){
+
+            if (match.getToCard() == null){
                 retMove.append('0').append(",");
+            }
+            else if (match.getToPile() > 6){
+                retMove.append('F').append(",");
             }
             else {
                 retMove.append(getType(match.getToCard().getType())).append(match.getToCard().getValue() + 1).append(",");
@@ -60,6 +64,50 @@ public class BackendInterfaceImpl2 implements BackendInterface {
                 isComplex = "1";
             }
             retMove.append(isComplex).append(";");
+
+            if (match.getFromPile() > 6 && match.getFromPile() < 11){
+                Card fromCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
+                Card toCard = table.getAllPiles().get(match.toPile).get(table.getAllPiles().get(match.toPile).size() - 1);
+
+                retMove.append(getType(fromCard.getType())).append(fromCard.getValue() + 1).append(",");
+                retMove.append(getType(toCard.getType())).append(toCard.getValue() + 1).append(",");
+
+                retMove.append("11,").append(match.toPile).append(",");
+
+                String isSolved1 = "0";
+                if (match.isSolved()){
+                    isSolved1 = "1";
+                }
+                retMove.append(isSolved).append(",");
+
+                String isComplex1 = "0";
+                if (match.isComplex()){
+                    isComplex1 = "1";
+                }
+                retMove.append(isComplex).append(";");
+            }
+            if (match.isComplex()){
+                Card fromCard = table.getAllPiles().get(match.fromPile).get(match.getComplexIndex() - 1);
+                retMove.append(getType(table.getAllPiles().get(match.fromPile).get(match.getComplexIndex() - 1).getType())).append(",");
+                retMove.append('F').append(",");
+                retMove.append(match.getFromPile()).append(",");
+                retMove.append(match.getComplexFinalFoundationPile());
+
+                String isSolved1 = "0";
+                if (match.isSolved()){
+                    isSolved1 = "1";
+                }
+                retMove.append(isSolved).append(",");
+
+                String isComplex1 = "0";
+                if (match.isComplex()){
+                    isComplex1 = "1";
+                }
+                retMove.append(isComplex).append(";");
+            }
+
+
+
         }
         else {
             retMove.append('0').append(";");
