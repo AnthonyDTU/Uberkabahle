@@ -26,7 +26,14 @@ public class BackendInterfaceImpl2 implements BackendInterface {
         if (match.match){
 
             //Cards from second implementation
-            retMove.append(getType(match.getFromCard().getType())).append(match.getFromCard().getValue() + 1).append(",");
+            if (match.getFromPile() > 6 && match.getFromPile() < 11){
+                retMove.append('F').append(",");
+            }
+            else {
+                retMove.append(getType(match.getFromCard().getType())).append(match.getFromCard().getValue() + 1).append(",");
+            }
+
+
             if (match.getToPile() > 6) {
                 retMove.append('F').append(",");
             }
@@ -46,7 +53,13 @@ public class BackendInterfaceImpl2 implements BackendInterface {
             }
             retMove.append(isSolved).append(",");
             String solvable = "1";
-            retMove.append(solvable).append(";");
+
+            String isComplex = "0";
+            if (match.isComplex()){
+                isComplex = "1";
+            }
+
+            retMove.append(solvable).append(",").append(isComplex).append(";");
 
         }
         else {
@@ -91,10 +104,10 @@ public class BackendInterfaceImpl2 implements BackendInterface {
                         Card tmpCard = null;
                         if (!table.getPlayerDeck_FaceUp().isEmpty()){
                             tmpCard = table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 1);
-                            System.out.println("tmpCard Val: " + tmpCard.getValue() + "tmpCard type: " + tmpCard.getType() + "Belong to pile: " + tmpCard.getBelongToPile());
+                            System.out.println("tmpCard Val: " + tmpCard.getValue() + " tmpCard type: " + tmpCard.getType() + " Belong to pile: " + tmpCard.getBelongToPile());
                         }
                         Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
-                        System.out.println("tmpCard1 Val: " + tmpCard1.getValue() + "tmpCard1 type: " + tmpCard1.getType());
+                        System.out.println("tmpCard1 Val: " + tmpCard1.getValue() + " tmpCard1 type: " + tmpCard1.getType() + " Belong to pile: " + tmpCard1.getBelongToPile());
                         if (table.getPlayerDeck_FaceUp().isEmpty() || (tmpCard.getValue() != tmpCard1.getValue() ||
                                 tmpCard.getType() != tmpCard1.getType()) && match.fromPile == tmpCard.getBelongToPile()){
                             cardDif = table.stringToCardConverter(cardSplit[i]);
@@ -111,8 +124,10 @@ public class BackendInterfaceImpl2 implements BackendInterface {
                         Card tmpCard = null;
                         if (table.getAllPiles().get(i).size() > 0){
                             tmpCard = table.getAllPiles().get(i).get(table.getAllPiles().get(i).size() - 1);
+                            System.out.println("tmpCard Val: " + tmpCard.getValue() + " tmpCard type: " + tmpCard.getType() + " Belong to pile: " + tmpCard.getBelongToPile());
                         }
                         Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
+                        System.out.println("tmpCard1 Val: " + tmpCard1.getValue() + " tmpCard1 type: " + tmpCard1.getType() + " Belong to pile: " + tmpCard1.getBelongToPile());
                         if (tmpCard != null && (tmpCard.getValue() != tmpCard1.getValue() || tmpCard.getType() != tmpCard1.getType()) &&
                                 match.fromPile == tmpCard.getBelongToPile()){
                             System.out.println("#### Tableau card difference detected ####");

@@ -29,9 +29,6 @@ class MoverTest {
         assertTrue(match.isMatch(), "Assert that match is found");
         assertTrue(match.getFromPile() > 6, "Assert that the match is from foundation to tablou");
         move.moveCard_OrPile(match);
-        System.out.printf("");
-
-
     }
 
     @Test
@@ -65,7 +62,6 @@ class MoverTest {
         table.getPlayerDeck_FaceUp().add(table.stringToCardConverter("H12"));
         match = algorithm.checkForAnyMatch();
         move.moveCard_OrPile(match);
-        System.out.println("");
     }
 
 
@@ -85,7 +81,6 @@ class MoverTest {
         match = algorithm.checkForAnyMatch();
         assertFalse(match.isMatch(), "Assert no match");
         assertTrue(match.isNoNextInput());
-        //System.out.printf("");
     //Check when 2 cards left at the end
         table = new TableIO();
         algorithm = new Algorithm(table);
@@ -125,7 +120,6 @@ class MoverTest {
         assertEquals(-1, table.getPlayerDeck_FaceUp().get(0).getValue() , "Assert first card is still facedown");
         assertEquals(12, table.getPlayerDeck_FaceUp().get(1).getValue(), "Assert that second card is moved correctly");
         assertEquals(7, table.getPlayerDeck_FaceUp().get(2).getValue(), "Assert third card is moved correctly");
-        //System.out.printf("");
     //Another test, with 1 card left at the end
         table = new TableIO();
         algorithm = new Algorithm(table);
@@ -148,11 +142,6 @@ class MoverTest {
             match.nextPlayerCard = table.stringToCardConverter("K13");
             move.moveCard_OrPile(match);
         }
-//        match = algorithm.checkForAnyMatch();
-//        assertFalse(match.match, "Assert that there is no match");
-//        match.nextPlayerCard = table.stringToCardConverter("K9");
-//        move.moveCard_OrPile(match);
-//        System.out.printf("");
         for (int i = 0 ; i < 7 ; i++) {
             match = algorithm.checkForAnyMatch();
             assertFalse(match.isMatch(), "Assert that there is no match");
@@ -184,7 +173,6 @@ class MoverTest {
         assertTrue(match.isNoNextInput(), "Assert that next input is known");
         move.moveCard_OrPile(match);
         match = algorithm.checkForAnyMatch();
-        System.out.printf("");
 
     //End game cases:
         table = new TableIO();
@@ -194,7 +182,6 @@ class MoverTest {
         for (int i = 0 ; i < 24 ; i++){
             table.getPlayerDeck_FaceDown().remove(0);
         }
-        System.out.printf("");
         table.getPlayerDeck_FaceDown().add(table.stringToCardConverter("E"));
         table.getPlayerDeck_FaceDown().add(table.stringToCardConverter("K13"));
         match = algorithm.checkForAnyMatch();
@@ -219,14 +206,11 @@ class MoverTest {
         assertFalse(match.isMatch());
         match.nextPlayerCard = table.stringToCardConverter("S0");
         move.moveCard_OrPile(match);
-
         match = algorithm.checkForAnyMatch();
         assertTrue(match.isMatch());
         match.nextPlayerCard = table.stringToCardConverter("K9");
         move.moveCard_OrPile(match);
-
         match = algorithm.checkForAnyMatch();
-        System.out.printf("");
     }
 
     @Test
@@ -252,12 +236,10 @@ class MoverTest {
         table = new TableIO();
         algorithm = new Algorithm(table);
         move = new Mover(table);
-        table.initStartTable("H13,H13,K13,R13,R13,H13,R0");
+        table.initStartTable("H0,H13,K13,R13,R13,H13,R13");
         match = algorithm.checkForAnyMatch();
         assertTrue(match.isNoNextInput());
         move.moveCard_OrPile(match);
-
-        System.out.printf("");
     }
 
     @Test
@@ -274,14 +256,10 @@ class MoverTest {
         assertFalse(match.isNoNextInput());
         match.nextPlayerCard = table.stringToCardConverter("K13");
         move.moveCard_OrPile(match);
-
         match = algorithm.checkForAnyMatch();
         match.nextPlayerCard = table.stringToCardConverter("K13");
         move.moveCard_OrPile(match);
-
         table.getFundamentPiles().get(0).add(table.stringToCardConverter("S0"));
-
-
     }
 
     @Test
@@ -301,8 +279,6 @@ class MoverTest {
         assertEquals(11, match.getFromPile(), "Assert from pile");
         match.nextPlayerCard = table.stringToCardConverter("K6");
         move.moveCard_OrPile(match);
-        System.out.println("");
-
     }
 
     @Test
@@ -323,7 +299,6 @@ class MoverTest {
         match = algorithm.checkForAnyMatch();
         match.nextPlayerCard = table.stringToCardConverter("K13");
         move.moveCard_OrPile(match);
-
         table = new TableIO();
         algorithm = new Algorithm(table);
         move = new Mover(table);
@@ -335,11 +310,7 @@ class MoverTest {
         table.getAllPiles().get(3).get(table.getAllPiles().get(3).size() - 1).setBelongToPile(3);
         table.getAllPiles().get(3).add(table.stringToCardConverter("R12"));
         table.getAllPiles().get(3).get(table.getAllPiles().get(3).size() - 1).setBelongToPile(3);
-
         match = algorithm.checkForAnyMatch();
-
-
-        System.out.printf("");
     }
     @Test
     void complexMatch(){
@@ -359,11 +330,11 @@ class MoverTest {
         table.getFundamentPiles().get(0).add(table.stringToCardConverter("K5"));
         match = algorithm.checkForAnyMatch();
         assertTrue(match.isComplex());
-        assertFalse(match.isNoNextInput());
+        assertTrue(match.isNoNextInput());
         match.nextPlayerCard = table.stringToCardConverter("K3");
         move.moveCard_OrPile(match);
-        System.out.printf("");
     }
+<<<<<<< HEAD
 }*/
 
 
