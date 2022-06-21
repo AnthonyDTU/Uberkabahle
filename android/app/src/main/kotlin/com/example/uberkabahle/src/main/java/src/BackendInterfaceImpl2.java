@@ -60,6 +60,9 @@ public class BackendInterfaceImpl2 implements BackendInterface {
                 isComplex = "1";
             }
             retMove.append(isComplex).append(";");
+
+
+
         }
         else {
             retMove.append('0').append(";");
