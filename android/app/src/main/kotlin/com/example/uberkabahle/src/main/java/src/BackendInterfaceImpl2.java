@@ -33,6 +33,7 @@ public class BackendInterfaceImpl2 implements BackendInterface {
                 retMove.append(getType(match.getFromCard().getType())).append(match.getFromCard().getValue() + 1).append(",");
             }
 
+
             if (match.getToPile() > 6) {
                 retMove.append('F').append(",");
             }
