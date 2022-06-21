@@ -32,7 +32,7 @@ public class BackendInterfaceImpl2 implements BackendInterface {
             if (match.getFromCard() == null){
                 retMove.append('0').append(",");
             }
-            else if (match.getFromPile() > 6 && match.getToPile() <= 10){
+            else if (match.getFromPile() > 6 && match.getFromPile() <= 10){
                 retMove.append('F').append(",");
             }
             else {
