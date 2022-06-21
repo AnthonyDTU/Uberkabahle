@@ -51,14 +51,12 @@ public class BackendInterfaceImpl2 implements BackendInterface {
                 isSolved = "1";
             }
             retMove.append(isSolved).append(",");
-            String solvable = "1";
 
             String isComplex = "0";
             if (match.isComplex()){
                 isComplex = "1";
             }
-            retMove.append(isComplex);
-            retMove.append(solvable).append(";");
+            retMove.append(isComplex).append(";");
         }
         else {
             retMove.append('0').append(";");
@@ -106,8 +104,9 @@ public class BackendInterfaceImpl2 implements BackendInterface {
                         }
                         Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
                         System.out.println("tmpCard1 Val: " + tmpCard1.getValue() + " tmpCard1 type: " + tmpCard1.getType() + " Belong to pile: " + tmpCard1.getBelongToPile());
-                        if (table.getPlayerDeck_FaceUp().isEmpty() || (tmpCard.getValue() != tmpCard1.getValue() ||
-                                tmpCard.getType() != tmpCard1.getType()) && match.fromPile == tmpCard.getBelongToPile()){
+                        if ((table.getPlayerDeck_FaceUp().isEmpty() || (tmpCard.getValue() != tmpCard1.getValue() ||
+                                tmpCard.getType() != tmpCard1.getType()) && match.fromPile == tmpCard.getBelongToPile()) ||
+                                (match.fromPile > 6 && match.fromPile <= 10)){
                             cardDif = table.stringToCardConverter(cardSplit[i]);
                             System.out.println("#### Pile 11 card difference detected ####");
                             cardDif.setFaceUp(true);
