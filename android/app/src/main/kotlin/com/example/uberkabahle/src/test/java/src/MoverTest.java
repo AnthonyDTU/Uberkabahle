@@ -13,7 +13,6 @@ import static org.testng.Assert.*;
 
 
 class MoverTest {
-
     @Test
     void foundationToTablou(){
         Table table = new TableIO();
