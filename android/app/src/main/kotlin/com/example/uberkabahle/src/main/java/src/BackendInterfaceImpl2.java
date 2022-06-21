@@ -28,6 +28,9 @@ public class BackendInterfaceImpl2 implements BackendInterface {
             //Cards from second implementation
             if (match.getFromPile() > 6 && match.getFromPile() < 11){
                 retMove.append('F').append(",");
+                if (!match.noNextInput){
+                    move.moveCard_OrPile(match);
+                }
             }
             else {
                 retMove.append(getType(match.getFromCard().getType())).append(match.getFromCard().getValue() + 1).append(",");
@@ -108,8 +111,9 @@ public class BackendInterfaceImpl2 implements BackendInterface {
                         }
                         Card tmpCard1 = table.stringToCardConverter(cardSplit[i]);
                         System.out.println("tmpCard1 Val: " + tmpCard1.getValue() + " tmpCard1 type: " + tmpCard1.getType() + " Belong to pile: " + tmpCard1.getBelongToPile());
-                        if (table.getPlayerDeck_FaceUp().isEmpty() || (tmpCard.getValue() != tmpCard1.getValue() ||
-                                tmpCard.getType() != tmpCard1.getType()) && match.fromPile == tmpCard.getBelongToPile()){
+                        if ((table.getPlayerDeck_FaceUp().isEmpty() || (tmpCard.getValue() != tmpCard1.getValue() ||
+                                tmpCard.getType() != tmpCard1.getType()) && match.fromPile == tmpCard.getBelongToPile())  ||
+                                match.fromPile == 11){
                             cardDif = table.stringToCardConverter(cardSplit[i]);
                             System.out.println("#### Pile 11 card difference detected ####");
                             cardDif.setFaceUp(true);
