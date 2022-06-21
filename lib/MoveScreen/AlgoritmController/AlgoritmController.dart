@@ -68,6 +68,8 @@ class AlgorithmController {
   String translateLabelToEnglish(String label, int column) {
     if (label == 'F') {
       return foundationsOrder[column - 7].toString();
+    } else if (label == '0') {
+      return "Thropy";
     } else {
       label = label.replaceAll("R", "D");
       label = label.replaceAll("K", "C");
