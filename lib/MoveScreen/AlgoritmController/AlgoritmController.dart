@@ -41,7 +41,7 @@ class AlgorithmController {
     // If all spots are empty, the solatary is solved
     // Else send new values
     if (emptyCounter == 8) {
-      return [SuggestedMove("0C", 0, "", 0, false, true)];
+      return [SuggestedMove("", 0, "", 0, false, true)];
     } else {
       bool status = await setRecognizedCards(cardConfigurationMessage);
       if (status == true) {
