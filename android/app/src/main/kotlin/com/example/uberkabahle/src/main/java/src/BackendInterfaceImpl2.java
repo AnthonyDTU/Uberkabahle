@@ -58,8 +58,8 @@ public class BackendInterfaceImpl2 implements BackendInterface {
             if (match.isComplex()){
                 isComplex = "1";
             }
-            retMove.append(isComplex);
-            retMove.append(solvable).append(";");
+
+            retMove.append(solvable).append(",").append(isComplex).append(";");
 
         }
         else {
