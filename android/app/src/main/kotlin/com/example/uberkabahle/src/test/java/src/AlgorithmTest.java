@@ -70,5 +70,29 @@ class AlgorithmTest {
 
     @Test
     void isSolitaireSolved() {
+        Table table = new TableIO();
+        table.initStartTable("H0,H0,H0,H0,H0,H0,H0"); // Random start table
+        Algorithm algorithm = new Algorithm(table);
+
+        for (int i = 0; i < 13; i++){
+            for (int j = 0; j < 4; j++){
+                switch (j){
+                    case 0:
+                        table.getFundamentPiles().get(j).add(table.stringToCardConverter("H" + i));
+                        break;
+                    case 1:
+                        table.getFundamentPiles().get(j).add(table.stringToCardConverter("K" + i));
+                        break;
+                    case 2:
+                        table.getFundamentPiles().get(j).add(table.stringToCardConverter("R" + i));
+                        break;
+                    case 3:
+                        table.getFundamentPiles().get(j).add(table.stringToCardConverter("S" + i));
+                        break;
+                }
+            }
+        }
+
+        assertTrue(algorithm.isSolitaireSolved());
     }
 }

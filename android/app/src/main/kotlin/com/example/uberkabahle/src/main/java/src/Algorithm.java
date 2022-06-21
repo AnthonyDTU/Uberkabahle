@@ -89,6 +89,9 @@ public class Algorithm implements Solver  {
 //            return match;
 //        }
 
+        fromCard = null;
+        toCard = null;
+
         if(aceToFoundation()){
             Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getAllPiles().get(cardFromPile).size() < 2){
