@@ -180,7 +180,7 @@ class Classifier {
     recognitions = _runNMS(recognitions);
 
     // Debug
-    _printRecognitions(recognitions);
+    //_printRecognitions(recognitions);
 
     return recognitions;
   }
