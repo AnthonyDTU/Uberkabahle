@@ -11,18 +11,6 @@ import java.util.*;
 
 public class Algorithm implements Solver  {
 
-
-    /*
-    * IDE TIL STOCK ALGORITME
-    *
-    * - Undgå at komme i loop, hvor man ikke kan bruge de kort man får.
-    *   Dette kan undgås ved, at (faceUp + FaceDown) % 3    !=   0
-    *
-    * - Før hver gang man trækker fra stock til foundation eller tablou, tjek om (faceUp + FaceDown - 1) % 3  =  0
-    * - Hvis denne bliver 0 næste gang, kan man gennemgå hele bunken - måske
-    *
-    * */
-
     //TODO Tjek om bunken bliver vendt rigtigt
 
     private int cardFromPile;// = -10;
@@ -90,7 +78,7 @@ public class Algorithm implements Solver  {
        //List<List<Card>> sorted = listToSort.stream().sorted(Comparator.comparing(List<List<Card>>::get())).collect(Collectors.toList());
     }
 
-    private void createSortedList_OfCards(){        //TODO Lav disse to finctioner createSortedList_OfCards() & sortList mere overskuelige
+    private void createSortedList_OfCards(){        //TODO Lav disse to funtioner createSortedList_OfCards() & sortList mere overskuelige
         /*
          * Initialize the temporary pile of cars and create a sorted list from low value to high value
          * */
@@ -561,7 +549,7 @@ public class Algorithm implements Solver  {
                 cardToPile = i + 7;
                 if(table.getPlayerDeck_FaceUp().size() > 1){
                     if(!table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 2).isFaceUp()){
-                        //TODO implement noNextInput here
+                        //TODO hvad sker der her?
                     }
                 }
                 return true;
@@ -570,49 +558,12 @@ public class Algorithm implements Solver  {
         return false;
     }
 
-//    private boolean kingHasMatch(Card king) {   //TODO maybe improve this
-//        int validValue = 11;
-//        int validColor = 0;
-//
-//        if(king.getColor() == 0)
-//        {
-//            validColor = 1;
-//        }
-//
-//        for (int i = 0 ; i < table.getAllPiles().size() ; i++)
-//        {
-//            if(table.getBottomFaceUpCard_FromPile(i).getColor() == validColor && table.getBottomFaceUpCard_FromPile(i).getValue() == validValue)
-//            {
-//                return true;
-//            }
-//        }
-//        for (int i = 0 ; i < table.getPlayerDeck_FaceUp().size() ; i++){
-//            if(!table.getPlayerDeck_FaceUp().get(i).isFaceUp()){continue;}
-//            if(table.getPlayerDeck_FaceUp().get(i).getValue() == validValue && table.getPlayerDeck_FaceUp().get(i).getColor() == validColor){return true;}
-//        }
-//        for (int i = 0 ; i < table.getPlayerDeck_FaceDown().size() ; i++){
-//            if(!table.getPlayerDeck_FaceDown().get(i).isFaceUp()){continue;}
-//            if(table.getPlayerDeck_FaceDown().get(i).getValue() == validValue && table.getPlayerDeck_FaceDown().get(i).getColor() == validColor){return true;}
-//        }
-//        return false;
-//    }
-//
-//    private boolean checkForAnyEmptyPile() {
-//        for (int i = 0 ; i < 7 ; i++) {
-//            if (table.getAllPiles().get(i).size() == 0) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
     private boolean checkForMatch_tablou_to_TopPile() {
         createSortedList_OfCards();
         //Check for simple match only at the top card in a pile
         while (!sortedList.isEmpty())
         {
-            for (int j = 0 ; j < 4 ; j++)
-            {
+            for (int j = 0 ; j < 4 ; j++) {
                 if(sortedList.get(0).isEmpty()){continue;}
                 if(sortedList.get(0).get(sortedList.get(0).size() - 1).getValue() == table.getTopCard_fromFundamentStack(j).getValue() + 1
                         && sortedList.get(0).get(sortedList.get(0).size() - 1).getType() == table.getTopCard_fromFundamentStack(j).getType())
