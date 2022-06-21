@@ -217,6 +217,26 @@ public class Algorithm implements Solver  {
 //            }
             Match match = new Match(11, -1, false, false, fromCard, toCard);
         //If we are at the end of the pile
+
+            //Check fucked rule
+//            if((table.getPlayerDeck_FaceUp().size() + table.getPlayerDeck_FaceDown().size()) == 3){
+//                if(table.getPlayerDeck_FaceDown().size() == 0 && table.getPlayerDeck_FaceUp().size() == 3){
+//                    if(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() - 2).isFaceUp()){
+//                        match.setNoNextInput(true);
+//                    }
+//                }
+//                else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() == 2){
+//                    match.setNoNextInput(true);
+//                }
+//                else if(table.getPlayerDeck_FaceUp().size() == 2 && table.getPlayerDeck_FaceDown().size() == 1){
+//                    match.setNoNextInput(true);
+//                }
+//                else if(table.getPlayerDeck_FaceUp().size() == 3 && table.getPlayerDeck_FaceDown().size() == 0){
+//                    if(table.getPlayerDeck_FaceUp().get(1).isFaceUp()) {
+//                        match.setNoNextInput(true);
+//                    }
+//                }
+//            }
             if(table.getPlayerDeck_FaceUp().size() > 2 && table.getPlayerDeck_FaceDown().size() > 2){
                 if (table.getPlayerDeck_FaceDown().get(2).isFaceUp()){
                     match.setNoNextInput(true);
@@ -246,8 +266,8 @@ public class Algorithm implements Solver  {
                 }
             }
             else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() == 2){
-                match.setNoNextInput(true);
                 match.setMatch(false);
+                match.setNoNextInput(true);
             }
             else if(table.getPlayerDeck_FaceUp().size() == 0 && table.getPlayerDeck_FaceDown().size() == 2){
                 if(table.getPlayerDeck_FaceDown().get(1).isFaceUp()){
@@ -266,7 +286,6 @@ public class Algorithm implements Solver  {
             }
             else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() == 1){
                 match.setNoNextInput(true);
-                match.setMatch(false);
             }
             else if(table.getPlayerDeck_FaceUp().size() == 0 && table.getPlayerDeck_FaceDown().size() == 1){
                 if(table.getPlayerDeck_FaceDown().get(0).isFaceUp()){

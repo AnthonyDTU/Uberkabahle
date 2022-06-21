@@ -36,6 +36,9 @@ public class Simulation {
             table.initStartTable(randomCards.getStartTableString());
 
             for (int j = 0; j < maximumNumberOfHandsInEachGame; j++) {
+                if((table.getPlayerDeck_FaceDown().size()  + table.getPlayerDeck_FaceUp().size()) == 3){
+                    System.out.println("");
+                }
                 match = algorithm.checkForAnyMatch();
                 if (match.isComplex() && (match.isNoNextInput() || match.isLastCardInPile())) {
                     if (printTable) {
