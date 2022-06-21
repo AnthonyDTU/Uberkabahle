@@ -30,18 +30,26 @@ class AlgorithmController {
 
   Future<List<SuggestedMove>> determineNextMove(List<Recognition> sortedRecognitions) async {
     String cardConfigurationMessage = "";
+    int emptyCounter = 0;
     for (int index = 4; index < sortedRecognitions.length; index++) {
       String label = translateLabelToDanish(sortedRecognitions[index].label);
       cardConfigurationMessage += (index != sortedRecognitions.length - 1) ? "$label," : "$label";
+      emptyCounter++;
     }
-    bool status = await setRecognizedCards(cardConfigurationMessage);
 
-    if (status == true) {
-      String suggestedMoves = await getNextMove();
-      isFirstMove = false;
-      return buildMoves(suggestedMoves);
+    // If all spots are empty, the solatary is solved
+    // Else send new values
+    if (emptyCounter == 8) {
+      return [SuggestedMove("0C", 0, "", 0, false, true)];
     } else {
-      return [];
+      bool status = await setRecognizedCards(cardConfigurationMessage);
+      if (status == true) {
+        String suggestedMoves = await getNextMove();
+        isFirstMove = false;
+        return buildMoves(suggestedMoves);
+      } else {
+        return [];
+      }
     }
 
     return buildDebugMoves(sortedRecognitions);
