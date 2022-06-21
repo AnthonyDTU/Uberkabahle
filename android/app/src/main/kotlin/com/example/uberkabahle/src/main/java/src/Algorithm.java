@@ -280,9 +280,11 @@ public class Algorithm implements Solver  {
                 }
             }
             else if(table.getPlayerDeck_FaceUp().size() == 2 && table.getPlayerDeck_FaceDown().size() == 1){
-                if(table.getPlayerDeck_FaceUp().get(1).isFaceUp()){
-                    match.setNoNextInput(true);
-                }
+                match.setMatch(false);
+                match.setNoNextInput(true);
+//                if(table.getPlayerDeck_FaceUp().get(1).isFaceUp()){
+//                    match.setNoNextInput(true);
+//                }
             }
             else if(table.getPlayerDeck_FaceUp().size() == 1 && table.getPlayerDeck_FaceDown().size() == 1){
                 match.setNoNextInput(true);

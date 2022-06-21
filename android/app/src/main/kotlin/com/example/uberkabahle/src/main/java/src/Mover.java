@@ -94,7 +94,7 @@ public class Mover implements Move {
 
 //IF THERE IS NO MATCH, AND WE NEED 3 NEW CARDS - WITH INPUT
         else if (!match.match && !match.noNextInput) {
-            //First check speciual end stock rule
+//            First check speciual end stock rule
 //            if((table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size()) == 3){
 //                table.getPlayerDeck_FaceDown().addAll(table.getPlayerDeck_FaceUp());
 //                table.getPlayerDeck_FaceUp().clear();
@@ -141,12 +141,12 @@ public class Mover implements Move {
 //If there is no match, and we need 3 new cards - no next input
         else if(/*!match.lastCardInPile && */match.noNextInput && !match.match){
             //First check speciual end stock rule
-//            if((table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size()) == 3){
-//                table.getPlayerDeck_FaceDown().addAll(table.getPlayerDeck_FaceUp());
-//                table.getPlayerDeck_FaceUp().clear();
-//                table.getPlayerDeck_FaceUp().addAll(table.getPlayerDeck_FaceDown());
-//                table.getPlayerDeck_FaceDown().clear();
-//            }
+            if((table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size()) == 3){
+                table.getPlayerDeck_FaceDown().addAll(table.getPlayerDeck_FaceUp());
+                table.getPlayerDeck_FaceUp().clear();
+                table.getPlayerDeck_FaceUp().addAll(table.getPlayerDeck_FaceDown());
+                table.getPlayerDeck_FaceDown().clear();
+            }
             if (table.getPlayerDeck_FaceDown().size() > 2) {
                 for (int i = 0; i < 3; i++) {
                     table.getPlayerDeck_FaceUp().add(table.getPlayerDeck_FaceDown().get(0));
