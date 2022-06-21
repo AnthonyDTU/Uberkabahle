@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/services.dart';
 import 'package:uberkabahle/AppSettings.dart';
 import 'package:uberkabahle/CameraScreen/TensorFlow/Recognition.dart';
@@ -8,6 +6,8 @@ import 'package:uberkabahle/MoveScreen/AlgoritmController/SuggestedMove.dart';
 class AlgorithmController {
   static const backendAlgorithm = MethodChannel(AppSettings.methodChannelName);
   static bool isFirstMove = true;
+
+  List<String> foundationsOrder = ["C", "H", "D", "S"];
 
   Future<List<SuggestedMove>> determineFirstMove(List<Recognition> sortedRecognitions) async {
     String cardConfigurationMessage = "";
@@ -25,7 +25,6 @@ class AlgorithmController {
     } else {
       return [];
     }
-    return buildDebugMoves(sortedRecognitions);
   }
 
   Future<List<SuggestedMove>> determineNextMove(List<Recognition> sortedRecognitions) async {
@@ -34,13 +33,15 @@ class AlgorithmController {
     for (int index = 4; index < sortedRecognitions.length; index++) {
       String label = translateLabelToDanish(sortedRecognitions[index].label);
       cardConfigurationMessage += (index != sortedRecognitions.length - 1) ? "$label," : "$label";
-      emptyCounter++;
+      if (label == 'e') {
+        emptyCounter++;
+      }
     }
 
     // If all spots are empty, the solatary is solved
     // Else send new values
     if (emptyCounter == 8) {
-      return [SuggestedMove("0C", 0, "", 0, false, true)];
+      return [SuggestedMove("", 0, "", 0, false, true)];
     } else {
       bool status = await setRecognizedCards(cardConfigurationMessage);
       if (status == true) {
@@ -51,8 +52,6 @@ class AlgorithmController {
         return [];
       }
     }
-
-    return buildDebugMoves(sortedRecognitions);
   }
 
   String translateLabelToDanish(String label) {
@@ -66,17 +65,20 @@ class AlgorithmController {
     return label.substring(label.length - 1) + label.substring(0, label.length - 1);
   }
 
-  String translateLabelToEnglish(String label) {
-    label = label.replaceAll("R", "D");
-    label = label.replaceAll("K", "C");
-    label = label.replaceAll("13", "K");
-    label = label.replaceAll("12", "Q");
-    label = label.replaceAll("11", "J");
-    if (!label.contains("10")) {
-      label = label.replaceAll("1", "A");
+  String translateLabelToEnglish(String label, int column) {
+    if (label == 'F') {
+      return foundationsOrder[column - 7].toString();
+    } else {
+      label = label.replaceAll("R", "D");
+      label = label.replaceAll("K", "C");
+      label = label.replaceAll("13", "K");
+      label = label.replaceAll("12", "Q");
+      label = label.replaceAll("11", "J");
+      if (!label.contains("10")) {
+        label = label.replaceAll("1", "A");
+      }
+      return label.substring(1, label.length) + label.substring(0, 1);
     }
-
-    return label.substring(1, label.length) + label.substring(0, 1);
   }
 
   Future<String> getNextMove() async {
@@ -106,13 +108,13 @@ class AlgorithmController {
         suggestedMoves.add(SuggestedMove("", 0, "", 0, true, false));
       } else {
         List<String> moveComponents = move.split(',');
-        String moveCard = translateLabelToEnglish(moveComponents[0]);
-        String toCard = translateLabelToEnglish(moveComponents[1]);
         int fromColumn = int.parse(moveComponents[2]);
         int toColumn = int.parse(moveComponents[3]);
+        String moveCard = translateLabelToEnglish(moveComponents[0], fromColumn);
+        String toCard = translateLabelToEnglish(moveComponents[1], toColumn);
         bool flipStack = false;
-        bool solved = moveComponents[5] == "1";
-        suggestedMoves.add(SuggestedMove(moveCard, fromColumn, toCard, toColumn, flipStack, solved));
+        bool isSolved = false;
+        suggestedMoves.add(SuggestedMove(moveCard, fromColumn, toCard, toColumn, flipStack, isSolved));
       }
     }
     return suggestedMoves;

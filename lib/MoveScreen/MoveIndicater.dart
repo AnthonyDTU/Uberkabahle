@@ -18,6 +18,9 @@ class MoveIndicator extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: (suggestedMove.flipStack)
                 ? [
+                    // *****************************************
+                    // Flip Stack
+                    // *****************************************
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -45,61 +48,93 @@ class MoveIndicator extends StatelessWidget {
                       ],
                     ),
                   ]
-                : [
-                    SizedBox(
-                      width: 150,
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            "assets/cards/${suggestedMove.moveCard}.png",
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          (suggestedMove.fromColumn <= 6)
-                              ? Text(
-                                  "Tableau ${suggestedMove.fromColumn + 1}",
-                                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                                )
-                              : Text(
-                                  (suggestedMove.fromColumn == 11) ? "Stack" : "Foundation ${suggestedMove.fromColumn - 6}",
-                                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                :
+                // *****************************************
+                // Is Solved
+                // *****************************************
+                (suggestedMove.solved)
+                    ? [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: nextMoveHandler,
+                              child: SizedBox(
+                                width: 150,
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      "assets/Throphy.png",
+                                    ),
+                                    const Text(
+                                      "Solved!",
+                                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
                                 ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 30),
-                    GestureDetector(
-                      onTap: nextMoveHandler,
-                      child: const Icon(
-                        Icons.arrow_right_alt_rounded,
-                        size: 80,
-                      ),
-                    ),
-                    const SizedBox(width: 50),
-                    SizedBox(
-                      width: 150,
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            "assets/cards/${suggestedMove.toCard}.png",
+                              ),
+                            ),
+                          ],
+                        ),
+                      ]
+                    : [
+                        // *****************************************
+                        // Regular move
+                        // *****************************************
+                        SizedBox(
+                          width: 150,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                "assets/cards/${suggestedMove.moveCard}.png",
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              (suggestedMove.fromColumn <= 6)
+                                  ? Text(
+                                      "Tableau ${suggestedMove.fromColumn + 1}",
+                                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                    )
+                                  : Text(
+                                      (suggestedMove.fromColumn == 11) ? "Stack" : "Foundation ${suggestedMove.fromColumn - 6}",
+                                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                    ),
+                            ],
                           ),
-                          const SizedBox(
-                            height: 20,
+                        ),
+                        const SizedBox(width: 30),
+                        GestureDetector(
+                          onTap: nextMoveHandler,
+                          child: const Icon(
+                            Icons.arrow_right_alt_rounded,
+                            size: 80,
                           ),
-                          (suggestedMove.toColumn <= 6)
-                              ? Text(
-                                  "Tableau ${suggestedMove.toColumn + 1}",
-                                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                                )
-                              : Text(
-                                  "Foundation ${suggestedMove.toColumn - 6}",
-                                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                                ),
-                        ],
-                      ),
-                    ),
-                  ],
+                        ),
+                        const SizedBox(width: 50),
+                        SizedBox(
+                          width: 150,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                "assets/cards/${suggestedMove.toCard}.png",
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              (suggestedMove.toColumn <= 6)
+                                  ? Text(
+                                      "Tableau ${suggestedMove.toColumn + 1}",
+                                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                    )
+                                  : Text(
+                                      "Foundation ${suggestedMove.toColumn - 6}",
+                                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                    ),
+                            ],
+                          ),
+                        ),
+                      ],
           ),
         ],
       ),
