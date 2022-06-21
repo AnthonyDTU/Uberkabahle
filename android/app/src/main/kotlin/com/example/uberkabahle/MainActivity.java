@@ -2,8 +2,6 @@ package com.example.uberkabahle;
 
 import android.os.Bundle;
 
-import com.example.uberkabahle.src.main.java.src.BackendInterfaceImpl1;
-import com.example.uberkabahle.src.main.java.src.BackendInterfaceImpl2;
 import com.example.uberkabahle.src.main.java.src.Interfaces.comm.BackendInterface;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
