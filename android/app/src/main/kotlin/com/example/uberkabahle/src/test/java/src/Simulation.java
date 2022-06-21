@@ -60,7 +60,7 @@ public class Simulation {
                 }
 
             //Match from foundation to tablou - no next input
-                else if(match.isMatch() && match.getFromPile() > 6 && match.isNoNextInput()){
+                else if(match.isMatch() && match.getFromPile() > 6 && match.getFromPile() != 11 && match.isNoNextInput()){
                     if(printTable) {
                         System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
                         System.out.println("After that move the card from talon to tablo " + match.getToPile());
@@ -69,7 +69,7 @@ public class Simulation {
                 }
 
             //Match from foundation to tablou - next input
-                else if(match.isMatch() && match.getFromPile() > 6 && !match.isNoNextInput()){
+                else if(match.isMatch() && match.getFromPile() > 6 && match.getFromPile() != 11 && !match.isNoNextInput()){
                     if(printTable) {
                         System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
                         System.out.println("After that move the card from talon to tablo " + match.getToPile());

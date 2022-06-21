@@ -92,7 +92,20 @@ class AlgorithmTest {
                 }
             }
         }
-
         assertTrue(algorithm.isSolitaireSolved());
+    }
+
+    @Test
+    void matchFromTableauToTableau(){
+
+        Table table = new TableIO();
+        Algorithm algorithm = new Algorithm(table);
+        Move move = new Mover(table);
+        Match match;
+        table.initStartTable("H13,H5,K12,K3,K4,H12,K2");
+        match = algorithm.checkForAnyMatch();
+        assertTrue(match.isMatch(), "Assert that match is found");
+        assertEquals(4, match.getFromPile(), "Assert fromPile is correct");
+        assertEquals(1, match.getToPile(), "Assert toPile is correct");
     }
 }

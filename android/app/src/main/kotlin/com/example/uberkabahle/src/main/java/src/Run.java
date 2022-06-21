@@ -14,28 +14,27 @@ public class Run {
 
 
         //JONAS [
-        BackendInterface backendInterfaceImpl = new BackendInterfaceImpl2();
-        backendInterfaceImpl.initStartTable("R8,K10,S5,K3,H2,R13,S3");
-
-
-        Scanner scanner =  new Scanner(System.in);
-        String retMove;
-
-        while(true){
-            retMove = backendInterfaceImpl.getNextMove();
-            System.out.println(retMove);
-            if (retMove == null){
-                String cardsString = scanner.next();
-                backendInterfaceImpl.updateTable(cardsString);
-            }
-            else {
-                String cardsString = scanner.next();
-                backendInterfaceImpl.updateTable(cardsString);
-            }
-        }
+//        BackendInterface backendInterfaceImpl = new BackendInterfaceImpl2();
+//        backendInterfaceImpl.initStartTable("R8,K10,S5,K3,H2,R13,S3");
+//
+//
+//        Scanner scanner =  new Scanner(System.in);
+//        String retMove;
+//
+//        while(true){
+//            retMove = backendInterfaceImpl.getNextMove();
+//            System.out.println(retMove);
+//            if (retMove == null){
+//                String cardsString = scanner.next();
+//                backendInterfaceImpl.updateTable(cardsString);
+//            }
+//            else {
+//                String cardsString = scanner.next();
+//                backendInterfaceImpl.updateTable(cardsString);
+//            }
+//        }
         //JONAS ]
 
-        /*
         Scanner scanner = new Scanner(System.in);
         Table table = new TableIO();
         Algorithm algorithm = new Algorithm(table);
@@ -66,7 +65,7 @@ public class Run {
 
             }
             //Match from foundation to tablou - no next input
-            else if(match.isMatch() && match.getFromPile() > 6 && match.isNoNextInput()){
+            else if(match.isMatch() && match.getFromPile() > 6 && match.getFromPile() != 11 && match.isNoNextInput()){
 
                 System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
                 System.out.println("After that move the card from talon to tablo " + match.getToPile());
@@ -74,7 +73,7 @@ public class Run {
             }
 
             //Match from foundation to tablou - next input
-            else if(match.isMatch() && match.getFromPile() > 6 && !match.isNoNextInput()){
+            else if(match.isMatch() && match.getFromPile() > 6 && match.getFromPile() != 11 && !match.isNoNextInput()){
 
                 System.out.println("Move from foundation " + match.getFromPile() + " to tablou " + match.getToPile());
                 System.out.println("After that move the card from talon to tablo " + match.getToPile());
@@ -178,7 +177,7 @@ public class Run {
                 System.out.println("******************************* WE WON! CONGRATULATION!! *******************************");
                 System.out.println("****************************************************************************************");
             }
-        }*/
+        }
     }
 }
 

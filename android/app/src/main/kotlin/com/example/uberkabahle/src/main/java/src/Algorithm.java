@@ -120,17 +120,6 @@ public class Algorithm implements Solver  {
             return match;
         }
 
-        else if(checkFor_foundation_ToTablou_ToFreeStock()){
-            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
-            if(table.getPlayerDeck_FaceUp().size() < 2){
-                match.setNoNextInput(true);
-            }
-            else if(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() -2).isFaceUp()){
-                match.setNoNextInput(true);
-            }
-            return match;
-        }
-
         else if(checkForMatch_playerDeck()) {
             Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getPlayerDeck_FaceUp().size() > 1){
@@ -159,6 +148,17 @@ public class Algorithm implements Solver  {
             else if(table.getPlayerDeck_FaceUp().size() == 1){
                 match.setNoNextInput(true);
                 match.setLastCardInPile(true);
+            }
+            return match;
+        }
+
+        else if(checkFor_foundation_ToTablou_ToFreeStock()){
+            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
+            if(table.getPlayerDeck_FaceUp().size() < 2){
+                match.setNoNextInput(true);
+            }
+            else if(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() -2).isFaceUp()){
+                match.setNoNextInput(true);
             }
             return match;
         }
