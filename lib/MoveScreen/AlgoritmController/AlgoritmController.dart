@@ -38,19 +38,13 @@ class AlgorithmController {
       }
     }
 
-    // If all spots are empty, the solatary is solved
-    // Else send new values
-    if (emptyCounter == 8) {
-      return [SuggestedMove("", 0, "", 0, false, true)];
+    bool status = await setRecognizedCards(cardConfigurationMessage);
+    if (status == true) {
+      String suggestedMoves = await getNextMove();
+      isFirstMove = false;
+      return buildMoves(suggestedMoves);
     } else {
-      bool status = await setRecognizedCards(cardConfigurationMessage);
-      if (status == true) {
-        String suggestedMoves = await getNextMove();
-        isFirstMove = false;
-        return buildMoves(suggestedMoves);
-      } else {
-        return [];
-      }
+      return [];
     }
   }
 
@@ -69,7 +63,7 @@ class AlgorithmController {
     if (label == 'F') {
       return foundationsOrder[column - 7].toString();
     } else if (label == '0') {
-      return "Thropy";
+      return "Suits";
     } else {
       label = label.replaceAll("R", "D");
       label = label.replaceAll("K", "C");
@@ -108,6 +102,8 @@ class AlgorithmController {
     for (String move in rawMoves) {
       if (move == "0") {
         suggestedMoves.add(SuggestedMove("", 0, "", 0, true, false));
+      } else if (move == "1") {
+        suggestedMoves.add(SuggestedMove("", 0, "", 0, false, true));
       } else {
         List<String> moveComponents = move.split(',');
         int fromColumn = int.parse(moveComponents[2]);
