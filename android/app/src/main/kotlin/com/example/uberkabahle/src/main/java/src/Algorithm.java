@@ -565,7 +565,7 @@ public class Algorithm implements Solver  {
                     cardFromPile = sortedList.get(0).get(0).getBelongToPile();
                     cardToPile = 7 + j;
 
-                    fromCard = sortedList.get(0).get(0);
+                    fromCard = sortedList.get(0).get(sortedList.get(0).size() - 1);
                     toCard = table.getTopCard_fromFundamentStack(j);
 
                     return true;

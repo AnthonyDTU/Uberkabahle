@@ -21,6 +21,9 @@ public class BackendInterfaceImpl2 implements BackendInterface {
     }
 
     public String getNextMove(){
+        if (algorithm.isSolitaireSolved()){
+            return "1";
+        }
         match = algorithm.checkForAnyMatch();
 
         if (match.match){
