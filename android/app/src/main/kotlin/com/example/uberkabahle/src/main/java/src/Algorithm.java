@@ -92,6 +92,8 @@ public class Algorithm implements Solver  {
         fromCard = null;
         toCard = null;
 
+
+
         if(aceToFoundation()){
             Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getAllPiles().get(cardFromPile).size() < 2){
@@ -120,18 +122,6 @@ public class Algorithm implements Solver  {
             return match;
         }
 
-
-        else if(checkFor_foundation_ToTablou_ToFreeStock()){
-            Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
-            if(table.getPlayerDeck_FaceUp().size() < 2){
-                match.setNoNextInput(true);
-            }
-            else if(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() -2).isFaceUp()){
-                match.setNoNextInput(true);
-            }
-            //match.setNoNextInput(true);
-            return match;
-        }
         else if(checkForMatch_playerDeck()) {
             Match match = new Match(cardFromPile, cardToPile, true, false, fromCard, toCard);
             if(table.getPlayerDeck_FaceUp().size() > 1){
@@ -605,7 +595,7 @@ public class Algorithm implements Solver  {
             if (table.getPile(i).get(table.getPile(i).size() - 1).getValue() == validValue && table.getPile(i).get(table.getPile(i).size() - 1).getColor() == validColor)
             {
                 cardToPile = i;
-                fromCard = table.getPile(i).get(table.getPile(i).size() - 1);
+                toCard = table.getPile(i).get(table.getPile(i).size() - 1);
                 return true;
             }
         }
@@ -642,7 +632,7 @@ public class Algorithm implements Solver  {
                             cardFromPile = j;
 
                             //TODO Jonas - this might be wrong
-                            fromCard = table.getPile(j).get(k);
+                            fromCard = table.getPile(j).get(k+1);
 
                             cardFromComplexPileIndex = k + 1;
                             table.setComplexSplitIndex(cardFromComplexPileIndex);

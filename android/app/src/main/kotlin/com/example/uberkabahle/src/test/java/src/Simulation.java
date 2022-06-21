@@ -12,7 +12,7 @@ public class Simulation {
 
     //Run the simulation from this main method
     public static void main(String[] args) {
-        Simulation simulation = new Simulation(1000, 800, false);
+        Simulation simulation = new Simulation(10000, 400, false);
         TestResult testResult = simulation.runSimulation();
         System.out.println(testResult);
     }

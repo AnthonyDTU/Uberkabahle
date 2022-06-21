@@ -212,8 +212,8 @@ public class Mover implements Move {
             //If there is a match from tablou to foundation
             else if(match.fromPile < 7){
                 //Copy from tablou to foundation
-                table.printTable();
-                System.out.println("Match: " + match.fromPile + ", " + match.toPile);
+                /*table.printTable();
+                System.out.println("Match: " + match.fromPile + ", " + match.toPile);*/
                 table.getFundamentPiles().get(match.toPile - 7).add(table.getAllPiles().get(match.fromPile).get(table.getAllPiles().get(match.fromPile).size() - 1));
                 table.getFundamentPiles().get(match.toPile - 7).get(table.getFundamentPiles().get(match.toPile - 7).size() - 1).setBelongToPile(match.toPile);
                 //Remove the two next cards (we know that we need an input)
