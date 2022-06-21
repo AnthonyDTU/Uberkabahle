@@ -298,12 +298,69 @@ class RunSimulation {
     void findBestDeck() {
         ArrayList<String> decks = new ArrayList<>();
         String input = "H7,H6,H5,S8,S7,S6,S5,S4,R9,R8,R7,R6,R5,R4,R3,K10,K9,K8,K7,K6,K5,K4,K3,K2,R2,S3,S2,H4,H3,H2,K11,K12,K13,K1,R10,R11,R12,R13,R1,S9,S10,S11,S12,S13,S1,H8,H9,H10,H11,H12,H13,H1";
+        String input2 = "H12,R4,S7,H9,H5,K1,K7,R5,S8,H10,K12,R9,S2,K13,H3,H13,R13,K9,S4,S10,R12,S5,R10,R1,K6,S11,R2,K8,S1,H4,R7,K11,S13,K4,R6,S3,H6,S12,K2,R11,H11,H1,H7,K3,H2,K5,S6,K10,R8,S9,R3,H8";
         int elementInList = 0;
-        boolean printTable = true;
+        boolean printTable = false;
 
-        decks.add(input);
+        int amountOfGamesToRun = 50;
 
-        ArrayList<String> possible = new ArrayList<>();
+        for (int k = 0; k < amountOfGamesToRun; k++) {
+            List<Card> cards = new ArrayList<>();
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 13; j++) {
+                    Card newCard = new Card();
+                    newCard.setValue(j);
+                    switch (i) {
+                        case 0:
+                            newCard.setColor(0);
+                            newCard.setType(0);
+                            break;
+                        case 1:
+                            newCard.setColor(1);
+                            newCard.setType(1);
+                            break;
+                        case 2:
+                            newCard.setColor(1);
+                            newCard.setType(2);
+                            break;
+                        case 3:
+                            newCard.setColor(0);
+                            newCard.setType(3);
+                            break;
+                    }
+                    cards.add(newCard);
+                }
+            }
+            Collections.shuffle(cards);
+            String s = "";
+            while(cards.size() != 0) {
+                Card card = cards.get(0);
+                int type = card.getType();
+                switch (type) {
+                    case 0:
+                        s += "K";
+                        break;
+                    case 1:
+                        s += "H";
+                        break;
+                    case 2:
+                        s += "R";
+                        break;
+                    case 3:
+                        s += "S";
+                        break;
+                }
+                s += card.getValue()+1;
+                if (cards.size() != 1) s += ",";
+                cards.remove(0);
+            }
+            decks.add(s);
+        }
+
+
+        // decks.add(input2);
+
+        ArrayList<int[]> possible = new ArrayList<>();
         // The upper for loop. Starts by taking the input of element I and creating a starting table and an appropriate pile for each tableau row and card stock.
         // It then runs the game, finds out whether the deck is solvable and how many moves it can be solved in if it is solvable.
         for (int i  = 0; i < decks.size(); i++) {
@@ -354,6 +411,14 @@ class RunSimulation {
             int currentMovesTaken = 0;
             String lastMove = "";
             for (int p = 0 ; p < 250 ; p++) {
+
+                if (p == 32) {
+                    System.out.println("");
+                }
+
+                if (deckResults.get(8).size() != table.getPlayerDeck_FaceUp().size()) {
+                    System.out.println("");
+                }
 
                 if(printTable) {
                     table.printTable();
@@ -563,7 +628,7 @@ class RunSimulation {
                     if (table.getFundamentPiles().get(0).size() == 14) pilesCompleted++;
                 }
                 if (pilesCompleted == 4) {
-                    possible.add("Deck number: " + i + " was completed in " + currentMovesTaken + " moves.");
+                    possible.add(new int[] {i, currentMovesTaken});
                     System.out.println("GAME WON! " + currentMovesTaken + " moves taken for this win.");
                     break;
                 }
@@ -581,8 +646,19 @@ class RunSimulation {
                 }
             }
         }
+
         for (int i = 0; i < possible.size(); i++) {
-            System.out.println(possible.get(i));
+            for (int j = i+1; j < possible.size(); j++) {
+                if (possible.get(i)[1] > possible.get(j)[1]) {
+                    Collections.swap(possible, i, j);
+                    i = -1;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < possible.size(); i++) {
+            System.out.println("Deck: " + possible.get(i)[0] + " was solved in: " + possible.get(i)[1] + " moves.");
         }
 
     }
