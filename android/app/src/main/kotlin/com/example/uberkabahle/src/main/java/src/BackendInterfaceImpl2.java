@@ -28,9 +28,6 @@ public class BackendInterfaceImpl2 implements BackendInterface {
             //Cards from second implementation
             if (match.getFromPile() > 6 && match.getFromPile() < 11){
                 retMove.append('F').append(",");
-                if (!match.noNextInput){
-                    move.moveCard_OrPile(match);
-                }
             }
             else {
                 retMove.append(getType(match.getFromCard().getType())).append(match.getFromCard().getValue() + 1).append(",");
