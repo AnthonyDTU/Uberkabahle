@@ -1,4 +1,4 @@
-/*package com.example.uberkabahle.src.test.java.src;
+package com.example.uberkabahle.src.test.java.src;
 
 import com.example.uberkabahle.src.main.java.src.*;
 import com.example.uberkabahle.src.main.java.src.Interfaces.Move;
@@ -294,10 +294,9 @@ class RunSimulation {
 //        System.out.println("******************************************************************************************************\n");
     }
 
-*/
 
 
-    /*@Test
+    @Test
     void findBestDeck() {
         ArrayList<String> decks = new ArrayList<>();
         String input = "H7,H6,H5,S8,S7,S6,S5,S4,R9,R8,R7,R6,R5,R4,R3,K10,K9,K8,K7,K6,K5,K4,K3,K2,R2,S3,S2,H4,H3,H2,K11,K12,K13,K1,R10,R11,R12,R13,R1,S9,S10,S11,S12,S13,S1,H8,H9,H10,H11,H12,H13,H1";
@@ -385,11 +384,11 @@ class RunSimulation {
                         System.out.println("After that, move the card at tablou pile " + match.getFromPile() + " to foundation pile " + match.getComplexFinalFoundationPile());
                         System.out.println("Last turn over the facedown card in tablou " + match.getFromPile() + " and enter value:");
                     }
-            *//*
+
 
                 Logic for getting proper card from arrayList in a complex match.
 
-             *//*
+
 
                     Card card = deckResults.get(match.getFromPile()).get(deckResults.get(match.getFromPile()).size()-1);
                     deckResults.get(match.getFromPile()).remove(deckResults.get(match.getFromPile()).size()-1);
@@ -602,5 +601,5 @@ class RunSimulation {
         }
 
     }
-}*/
+}
 

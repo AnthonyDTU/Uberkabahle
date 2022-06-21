@@ -1,4 +1,4 @@
-/*package com.example.uberkabahle.src.test.java.src;
+package com.example.uberkabahle.src.test.java.src;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,4 +71,4 @@ public class RandomCards {
         cards.remove(0);
         return getCard;
     }
-}*/
+}

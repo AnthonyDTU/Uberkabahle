@@ -1,4 +1,4 @@
-/*package com.example.uberkabahle.src.test.java.src;
+package com.example.uberkabahle.src.test.java.src;
 
 public class TestResult {
 
@@ -17,4 +17,4 @@ public class TestResult {
                 ", gamesLost=" + gamesLost +
                 '}';
     }
-}*/
+}
