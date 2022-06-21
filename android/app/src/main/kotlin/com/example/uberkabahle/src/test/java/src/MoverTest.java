@@ -279,6 +279,8 @@ class MoverTest {
         match.nextPlayerCard = table.stringToCardConverter("K13");
         move.moveCard_OrPile(match);
 
+        table.getFundamentPiles().get(0).add(table.stringToCardConverter("S0"));
+
 
     }
 

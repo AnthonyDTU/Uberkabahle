@@ -169,6 +169,14 @@ public class Run {
             } else {
                 System.out.println("Meeeh");
             }
+            if (table.getFundamentPiles().get(0).size() == 14 &&
+                    table.getFundamentPiles().get(1).size() == 14 &&
+                    table.getFundamentPiles().get(2).size() == 14 &&
+                    table.getFundamentPiles().get(3).size() == 14 ){
+                System.out.println("****************************************************************************************");
+                System.out.println("******************************* WE WON! CONGRATULATION!! *******************************");
+                System.out.println("****************************************************************************************");
+            }
         }
     }
 }
