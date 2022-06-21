@@ -15,8 +15,7 @@ public class Run {
 
         //JONAS [
         BackendInterface backendInterfaceImpl = new BackendInterfaceImpl2();
-
-        backendInterfaceImpl.initStartTable("H13,R8,H12,R5,K10,S4,R1");
+        backendInterfaceImpl.initStartTable("S1,R1,K1,H1,R5,S11,H11");
 
 
         Scanner scanner =  new Scanner(System.in);

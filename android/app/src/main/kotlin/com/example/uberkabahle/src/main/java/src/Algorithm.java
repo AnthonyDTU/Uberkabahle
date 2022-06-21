@@ -128,6 +128,7 @@ public class Algorithm implements Solver  {
             else if(table.getPlayerDeck_FaceUp().get(table.getPlayerDeck_FaceUp().size() -2).isFaceUp()){
                 match.setNoNextInput(true);
             }
+            //match.setNoNextInput(true);
             return match;
         }
 
