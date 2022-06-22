@@ -193,7 +193,7 @@ public class Algorithm implements Solver  {
             }
             return match;
         }
-
+        /*
         else if(checkForComplexMatch()){
             Match match = new Match(cardFromPile, cardToPile, true, true, cardFromComplexPileIndex, finalComplexPile, fromCard, toCard);
             int index = 0;
@@ -207,7 +207,7 @@ public class Algorithm implements Solver  {
             }
             return match;
         }
-
+        */
 
     //If nothing of above apply, then we need to turn three new cards from stock.
         else {
