@@ -12,18 +12,12 @@ import 'package:uberkabahle/CameraScreen/TensorFlow/Utillities/CardlocalizerFixe
 import 'package:uberkabahle/CameraScreen/TensorFlow/Utillities/ImageConverter.dart';
 import 'package:uberkabahle/CameraScreen/TensorFlow/Utillities/Localizer.dart';
 import 'package:uberkabahle/CameraScreen/Widgets/TimeLabel.dart';
-import 'package:uberkabahle/StartScreen/StartPage.dart';
-import '../MoveScreen/MoveIndicater.dart';
-import 'Widgets/MovesLabel.dart';
-import 'Widgets/ScoreLabel.dart';
 import 'Widgets/TimeLabel.dart';
 import 'Widgets/ReturnButton.dart';
 import 'Widgets/HintButton.dart';
 import 'TensorFlow/Classifier.dart';
 import 'TensorFlow/Recognition.dart';
-import 'RecognizedImageView.dart';
-import 'TensorImageViewer.dart';
-import 'package:image/image.dart' as imageLib;
+//import 'package:image/image.dart' as imageLib;
 
 class CameraView extends StatefulWidget {
   const CameraView({
@@ -116,21 +110,6 @@ class CameraViewState extends State<CameraView> {
           HapticFeedback.heavyImpact();
           File imageFile = File(image.path);
 
-          // Display input image before classification:
-          // ******************************************************
-
-          // TensorImage tensorImage = TensorImage(TfLiteType.float32);
-          // tensorImage = _classifier.processImageForRecognition(ImageConverter.convertFileToImage(imageFile));
-          // Uint8List jpgTensorsImage = imageLib.encodeJpg(tensorImage.image) as Uint8List;
-
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (context) => TensorImageViewer(
-          //       imagebytes: jpgTensorsImage as Uint8List,
-          //     ),
-          //   ),
-          // );
-
           RecognitionIsolateModel recognitionIsolateModel =
               RecognitionIsolateModel(ImageConverter.convertFileToImage(imageFile), _classifier.interpreter.address, _classifier.labels);
 
@@ -139,17 +118,6 @@ class CameraViewState extends State<CameraView> {
           setState(() {
             _isRecognizing = false;
           });
-
-          // Display detected image with bounding boxes:
-          // ******************************************************
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (context) => RecognizedImageView(
-          //       imageFile: imageFile,
-          //       recognitions: recognitions,
-          //     ),
-          //   ),
-          // );
 
           // Display detected image with bounding boxes:
           // ******************************************************
@@ -215,13 +183,6 @@ class CameraViewState extends State<CameraView> {
     );
   }
 
-  /// Dummy function for handling the testbutton press
-  void incrementButtonPressed() {
-    setState(() {
-      numberOfMoves++;
-    });
-  }
-
   /// When wanting to run image recognition on a new image (when running on image stream)
   /// this function is used to pass data to the [Isolate], where the recognition will run.
   /// It is also here the main process waits (asyncronously) for a response from that
@@ -283,28 +244,6 @@ class CameraViewState extends State<CameraView> {
                       alignment: Alignment.bottomLeft,
                       margin: const EdgeInsets.all(20),
                       child: const TimeLabel(),
-                    ),
-                    Container(
-                      alignment: Alignment.topRight,
-                      margin: const EdgeInsets.all(20),
-                      child: MovesLabel(
-                        moves: numberOfMoves,
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.bottomRight,
-                      margin: const EdgeInsets.all(20),
-                      child: ScoreLabel(
-                        score: score,
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: const EdgeInsets.all(20),
-                      child: IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: incrementButtonPressed,
-                      ),
                     ),
                     Container(
                       alignment: Alignment.center,
