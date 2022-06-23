@@ -56,7 +56,6 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
   assets:
-    - assets/card_aug_v1_best-416.tflite
     - assets/card_aug_v1_best-512.tflite
     - assets/card_aug_v1.names
     - assets/StartScreenGraphics.png
