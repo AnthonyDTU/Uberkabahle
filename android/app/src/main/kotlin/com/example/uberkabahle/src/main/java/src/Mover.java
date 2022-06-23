@@ -94,6 +94,13 @@ public class Mover implements Move {
 
 //IF THERE IS NO MATCH, AND WE NEED 3 NEW CARDS - WITH INPUT
         else if (!match.match && !match.noNextInput) {
+//            First check speciual end stock rule
+//            if((table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size()) == 3){
+//                table.getPlayerDeck_FaceDown().addAll(table.getPlayerDeck_FaceUp());
+//                table.getPlayerDeck_FaceUp().clear();
+//                table.getPlayerDeck_FaceUp().addAll(table.getPlayerDeck_FaceDown());
+//                table.getPlayerDeck_FaceDown().clear();
+//            }
             if (table.getPlayerDeck_FaceDown().size() > 2) {
                 for (int i = 0; i < 2; i++) {
                     table.getPlayerDeck_FaceUp().add(table.getPlayerDeck_FaceDown().get(0));
@@ -132,7 +139,14 @@ public class Mover implements Move {
             }
         }
 //If there is no match, and we need 3 new cards - no next input
-        else if(!match.lastCardInPile && match.noNextInput && !match.match){
+        else if(/*!match.lastCardInPile && */match.noNextInput && !match.match){
+            //First check speciual end stock rule
+            if((table.getPlayerDeck_FaceDown().size() + table.getPlayerDeck_FaceUp().size()) == 3){
+                table.getPlayerDeck_FaceDown().addAll(table.getPlayerDeck_FaceUp());
+                table.getPlayerDeck_FaceUp().clear();
+                table.getPlayerDeck_FaceUp().addAll(table.getPlayerDeck_FaceDown());
+                table.getPlayerDeck_FaceDown().clear();
+            }
             if (table.getPlayerDeck_FaceDown().size() > 2) {
                 for (int i = 0; i < 3; i++) {
                     table.getPlayerDeck_FaceUp().add(table.getPlayerDeck_FaceDown().get(0));
@@ -212,8 +226,6 @@ public class Mover implements Move {
             //If there is a match from tablou to foundation
             else if(match.fromPile < 7){
                 //Copy from tablou to foundation
-                /*table.printTable();
-                System.out.println("Match: " + match.fromPile + ", " + match.toPile);*/
                 table.getFundamentPiles().get(match.toPile - 7).add(table.getAllPiles().get(match.fromPile).get(table.getAllPiles().get(match.fromPile).size() - 1));
                 table.getFundamentPiles().get(match.toPile - 7).get(table.getFundamentPiles().get(match.toPile - 7).size() - 1).setBelongToPile(match.toPile);
                 //Remove the two next cards (we know that we need an input)
